@@ -1,0 +1,394 @@
+<?xml version="1.0"?>
+<!DOCTYPE ipe SYSTEM "ipe.dtd">
+<ipe version="70010" creator="Ipe 7.0.10">
+<info created="D:20100909134504" modified="D:20100909150018"/>
+<ipestyle name="basic">
+<layout paper="595.0 842.0" origin="0 0" frame="595.0 842.0"/>
+<symbol name="arrow/arc(spx)">
+<path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
+0 0 m
+-1 0.333 l
+-1 -0.333 l
+h
+</path>
+</symbol>
+<symbol name="arrow/farc(spx)">
+<path stroke="sym-stroke" fill="white" pen="sym-pen">
+0 0 m
+-1 0.333 l
+-1 -0.333 l
+h
+</path>
+</symbol>
+<symbol name="mark/circle(sx)" transformations="translations">
+<path fill="sym-stroke">
+0.6 0 0 0.6 0 0 e
+0.4 0 0 0.4 0 0 e
+</path>
+</symbol>
+<symbol name="mark/disk(sx)" transformations="translations">
+<path fill="sym-stroke">
+0.6 0 0 0.6 0 0 e
+</path>
+</symbol>
+<symbol name="mark/fdisk(sfx)" transformations="translations">
+<group>
+<path fill="sym-stroke" fillrule="eofill">
+0.6 0 0 0.6 0 0 e
+0.4 0 0 0.4 0 0 e
+</path>
+<path fill="sym-fill">
+0.4 0 0 0.4 0 0 e
+</path>
+</group>
+</symbol>
+<symbol name="mark/box(sx)" transformations="translations">
+<path fill="sym-stroke" fillrule="eofill">
+-0.6 -0.6 m
+0.6 -0.6 l
+0.6 0.6 l
+-0.6 0.6 l
+h
+-0.4 -0.4 m
+0.4 -0.4 l
+0.4 0.4 l
+-0.4 0.4 l
+h
+</path>
+</symbol>
+<symbol name="mark/square(sx)" transformations="translations">
+<path fill="sym-stroke">
+-0.6 -0.6 m
+0.6 -0.6 l
+0.6 0.6 l
+-0.6 0.6 l
+h
+</path>
+</symbol>
+<symbol name="mark/fsquare(sfx)" transformations="translations">
+<group>
+<path fill="sym-stroke" fillrule="eofill">
+-0.6 -0.6 m
+0.6 -0.6 l
+0.6 0.6 l
+-0.6 0.6 l
+h
+-0.4 -0.4 m
+0.4 -0.4 l
+0.4 0.4 l
+-0.4 0.4 l
+h
+</path>
+<path fill="sym-fill">
+-0.4 -0.4 m
+0.4 -0.4 l
+0.4 0.4 l
+-0.4 0.4 l
+h
+</path>
+</group>
+</symbol>
+<symbol name="mark/cross(sx)" transformations="translations">
+<group>
+<path fill="sym-stroke">
+-0.43 -0.57 m
+0.57 0.43 l
+0.43 0.57 l
+-0.57 -0.43 l
+h
+</path>
+<path fill="sym-stroke">
+-0.43 0.57 m
+0.57 -0.43 l
+0.43 -0.57 l
+-0.57 0.43 l
+h
+</path>
+</group>
+</symbol>
+<symbol name="arrow/fnormal(spx)">
+<path stroke="sym-stroke" fill="white" pen="sym-pen">
+0 0 m
+-1 0.333 l
+-1 -0.333 l
+h
+</path>
+</symbol>
+<symbol name="arrow/pointed(spx)">
+<path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
+0 0 m
+-1 0.333 l
+-0.8 0 l
+-1 -0.333 l
+h
+</path>
+</symbol>
+<symbol name="arrow/fpointed(spx)">
+<path stroke="sym-stroke" fill="white" pen="sym-pen">
+0 0 m
+-1 0.333 l
+-0.8 0 l
+-1 -0.333 l
+h
+</path>
+</symbol>
+<symbol name="arrow/linear(spx)">
+<path stroke="sym-stroke" pen="sym-pen">
+-1 0.333 m
+0 0 l
+-1 -0.333 l
+</path>
+</symbol>
+<symbol name="arrow/fdouble(spx)">
+<path stroke="sym-stroke" fill="white" pen="sym-pen">
+0 0 m
+-1 0.333 l
+-1 -0.333 l
+h
+-1 0 m
+-2 0.333 l
+-2 -0.333 l
+h
+</path>
+</symbol>
+<symbol name="arrow/double(spx)">
+<path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
+0 0 m
+-1 0.333 l
+-1 -0.333 l
+h
+-1 0 m
+-2 0.333 l
+-2 -0.333 l
+h
+</path>
+</symbol>
+<pen name="heavier" value="0.8"/>
+<pen name="fat" value="1.2"/>
+<pen name="ultrafat" value="2"/>
+<symbolsize name="large" value="5"/>
+<symbolsize name="small" value="2"/>
+<symbolsize name="tiny" value="1.1"/>
+<arrowsize name="large" value="10"/>
+<arrowsize name="small" value="5"/>
+<arrowsize name="tiny" value="3"/>
+<color name="red" value="1 0 0"/>
+<color name="green" value="0 1 0"/>
+<color name="blue" value="0 0 1"/>
+<color name="yellow" value="1 1 0"/>
+<color name="orange" value="1 0.647 0"/>
+<color name="gold" value="1 0.843 0"/>
+<color name="purple" value="0.627 0.125 0.941"/>
+<color name="gray" value="0.745"/>
+<color name="brown" value="0.647 0.165 0.165"/>
+<color name="navy" value="0 0 0.502"/>
+<color name="pink" value="1 0.753 0.796"/>
+<color name="seagreen" value="0.18 0.545 0.341"/>
+<color name="turquoise" value="0.251 0.878 0.816"/>
+<color name="violet" value="0.933 0.51 0.933"/>
+<color name="darkblue" value="0 0 0.545"/>
+<color name="darkcyan" value="0 0.545 0.545"/>
+<color name="darkgray" value="0.663"/>
+<color name="darkgreen" value="0 0.392 0"/>
+<color name="darkmagenta" value="0.545 0 0.545"/>
+<color name="darkorange" value="1 0.549 0"/>
+<color name="darkred" value="0.545 0 0"/>
+<color name="lightblue" value="0.678 0.847 0.902"/>
+<color name="lightcyan" value="0.878 1 1"/>
+<color name="lightgray" value="0.827"/>
+<color name="lightgreen" value="0.565 0.933 0.565"/>
+<color name="lightyellow" value="1 1 0.878"/>
+<dashstyle name="dashed" value="[4] 0"/>
+<dashstyle name="dotted" value="[1 3] 0"/>
+<dashstyle name="dash dotted" value="[4 2 1 2] 0"/>
+<dashstyle name="dash dot dotted" value="[4 2 1 2 1 2] 0"/>
+<textsize name="large" value="\large"/>
+<textsize name="Large" value="\Large"/>
+<textsize name="LARGE" value="\LARGE"/>
+<textsize name="huge" value="\huge"/>
+<textsize name="Huge" value="\Huge"/>
+<textsize name="small" value="\small"/>
+<textsize name="footnote" value="ootnotesize"/>
+<textsize name="tiny" value="	iny"/>
+<textstyle name="center" begin="\begin{center}" end="\end{center}"/>
+<textstyle name="itemize" begin="\begin{itemize}" end="\end{itemize}"/>
+<textstyle name="item" begin="\begin{itemize}\item{}" end="\end{itemize}"/>
+<gridsize name="4 pts" value="4"/>
+<gridsize name="8 pts (~3 mm)" value="8"/>
+<gridsize name="16 pts (~6 mm)" value="16"/>
+<gridsize name="32 pts (~12 mm)" value="32"/>
+<gridsize name="10 pts (~3.5 mm)" value="10"/>
+<gridsize name="20 pts (~7 mm)" value="20"/>
+<gridsize name="14 pts (~5 mm)" value="14"/>
+<gridsize name="28 pts (~10 mm)" value="28"/>
+<gridsize name="56 pts (~20 mm)" value="56"/>
+<anglesize name="90 deg" value="90"/>
+<anglesize name="60 deg" value="60"/>
+<anglesize name="45 deg" value="45"/>
+<anglesize name="30 deg" value="30"/>
+<anglesize name="22.5 deg" value="22.5"/>
+<tiling name="falling" angle="-60" step="4" width="1"/>
+<tiling name="rising" angle="30" step="4" width="1"/>
+<opacity name="0%" value="0.0"/>
+<opacity name="10%" value="0.1"/>
+<opacity name="20%" value="0.2"/>
+<opacity name="30%" value="0.3"/>
+<opacity name="40%" value="0.4"/>
+<opacity name="50%" value="0.5"/>
+<opacity name="60%" value="0.6"/>
+<opacity name="70%" value="0.7"/>
+<opacity name="80%" value="0.8"/>
+<opacity name="90%" value="0.9"/>
+<opacity name="100%" value="1.0"/>
+<opacity name="25%" value="0.25"/>
+<opacity name="75%" value="0.75"/>
+</ipestyle>
+<page>
+<layer name="Geom"/>
+<layer name="Vertices"/>
+<view layers="Geom Vertices" active="Geom"/>
+<use name="mark/fdisk(sfx)" pos="38.28339882121807 8.474950884086443" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="76.56679764243614 7.305992141453831" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="121.27946954813359 7.013752455795677" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="155.4715127701375 0.0" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="175.05157170923377 2.337917485265226" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="202.22986247544202 37.99115913555992" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="208.95137524557956 67.79960707269154" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="190.5402750491159 102.28388998035363" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="194.04715127701374 138.8138506876228" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="224.14783889980353 147.28880157170923" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="252.4950884086444 160.4395874263261" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="268.86051080550095 167.4533398821218" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="285.5181728880157 175.34381139489193" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="303.92927308447935 181.48084479371315" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="322.04813359528487 189.66355599214145" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="344.2583497053045 198.72298624754418" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="367.63752455795674 208.95137524557956" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="393.35461689587424 243.14341846758347" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="411.7657170923379 278.50442043222" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="427.25442043222 290.48624754420433" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="445.95776031434184 318.24901768172884" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="475.4739685658153 336.9523575638507" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="495.6385068762279 368.5142436149312" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="515.5108055009823 396.8614931237721" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="541.520137524558 412.9346758349705" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="565.7760314341847 429.30009823182706" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="595.0 450.04911591355597" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="388.97102161100196 129.46218074656187" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="453.5559921414538 157.5171905697446" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="0.0 401.2450884086444" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="9.05943025540275 368.5142436149312" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="22.794695481335953 307.4361493123772" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="31.56188605108055 272.659626719057" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="66.33840864440079 253.95628683693516" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="76.56679764243614 231.74607072691552" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="75.69007858546169 201.9376227897839" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="79.48919449901767 161.3163064833006" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="108.42092337917485 110.75884086444007" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="161.02406679764243 93.51669941060904" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="218.01080550098231 118.35707269155206" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="243.14341846758347 130.33889980353635" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="263.89243614931235 135.0147347740668" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="285.22593320235757 143.48968565815323" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="304.51375245579567 152.84135559921413" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="322.6326129666012 161.60854616895872" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="312.696463654224 217.71856581532415" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="294.8698428290766 260.6777996070727" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="286.39489194499015 282.5957760314342" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="269.73722986247543 316.2033398821218" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="258.0476424361493 342.5049115913556" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="242.26669941060902 375.5279960707269" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="216.8418467583497 413.22691552062867" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="196.67730844793712 442.74312377210214" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="163.94646365422395 492.13163064833003" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="139.9828094302554 527.4926326129665" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="110.75884086444007 229.9926326129666" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="144.950884086444 245.18909626719056" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="175.05157170923377 262.13899803536344" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="195.21611001964635 305.098231827112" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="177.68172888015715 334.9066797642436" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="196.38506876227896 360.03929273084475" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="219.17976424361493 369.97544204322196" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="281.7190569744597 393.35461689587424" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="311.52750491159134 406.7976424361493" layer="Vertices" stroke="black"/>
+<use name="mark/fdisk(sfx)" pos="332.8610019646365 426.0854616895874" layer="Vertices" stroke="black"/>
+<path layer="Geom" stroke="black" pen="0.400000">
+38.28339882121807 8.474950884086443 m
+76.56679764243614 7.305992141453831 l
+121.27946954813359 7.013752455795677 l
+155.4715127701375 0.0 l
+175.05157170923377 2.337917485265226 l
+202.22986247544202 37.99115913555992 l
+208.95137524557956 67.79960707269154 l
+190.5402750491159 102.28388998035363 l
+194.04715127701374 138.8138506876228 l
+224.14783889980353 147.28880157170923 l
+252.4950884086444 160.4395874263261 l
+268.86051080550095 167.4533398821218 l
+285.5181728880157 175.34381139489193 l
+303.92927308447935 181.48084479371315 l
+322.04813359528487 189.66355599214145 l
+344.2583497053045 198.72298624754418 l
+367.63752455795674 208.95137524557956 l
+393.35461689587424 243.14341846758347 l
+411.7657170923379 278.50442043222 l
+427.25442043222 290.48624754420433 l
+445.95776031434184 318.24901768172884 l
+475.4739685658153 336.9523575638507 l
+495.6385068762279 368.5142436149312 l
+515.5108055009823 396.8614931237721 l
+541.520137524558 412.9346758349705 l
+565.7760314341847 429.30009823182706 l
+595.0 450.04911591355597 l
+</path>
+<path layer="Geom" stroke="black" pen="0.400000">
+322.04813359528487 189.66355599214145 m
+388.97102161100196 129.46218074656187 l
+453.5559921414538 157.5171905697446 l
+</path>
+<path layer="Geom" stroke="black" pen="0.400000">
+0.0 401.2450884086444 m
+9.05943025540275 368.5142436149312 l
+22.794695481335953 307.4361493123772 l
+31.56188605108055 272.659626719057 l
+66.33840864440079 253.95628683693516 l
+76.56679764243614 231.74607072691552 l
+75.69007858546169 201.9376227897839 l
+79.48919449901767 161.3163064833006 l
+108.42092337917485 110.75884086444007 l
+161.02406679764243 93.51669941060904 l
+190.5402750491159 102.28388998035363 l
+218.01080550098231 118.35707269155206 l
+243.14341846758347 130.33889980353635 l
+263.89243614931235 135.0147347740668 l
+285.22593320235757 143.48968565815323 l
+304.51375245579567 152.84135559921413 l
+322.6326129666012 161.60854616895872 l
+322.04813359528487 189.66355599214145 l
+312.696463654224 217.71856581532415 l
+294.8698428290766 260.6777996070727 l
+286.39489194499015 282.5957760314342 l
+269.73722986247543 316.2033398821218 l
+258.0476424361493 342.5049115913556 l
+242.26669941060902 375.5279960707269 l
+216.8418467583497 413.22691552062867 l
+196.67730844793712 442.74312377210214 l
+163.94646365422395 492.13163064833003 l
+139.9828094302554 527.4926326129665 l
+</path>
+<path layer="Geom" stroke="black" pen="0.400000">
+75.69007858546169 201.9376227897839 m
+110.75884086444007 229.9926326129666 l
+144.950884086444 245.18909626719056 l
+175.05157170923377 262.13899803536344 l
+195.21611001964635 305.098231827112 l
+177.68172888015715 334.9066797642436 l
+196.38506876227896 360.03929273084475 l
+219.17976424361493 369.97544204322196 l
+242.26669941060902 375.5279960707269 l
+281.7190569744597 393.35461689587424 l
+311.52750491159134 406.7976424361493 l
+332.8610019646365 426.0854616895874 l
+</path>
+</page>
+</ipe>
