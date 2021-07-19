@@ -47,10 +47,12 @@ def datadict2dcel(datadict):
     # assume ccw vertex order
     hedges = {}  # he_id: (v_origin, v_end), f, nextedge, prevedge
     vertices = {}  # v_id: (e0,...,en) i.e. the edges originating from this v
+    vertices_faces = {} # v_id: (e0,...,en) i.e. the faces contain this v
 
     m = len(datadict['coords'])
     for i in range(m):
         vertices[i] = []
+        vertices_faces[i] = set()
 
     # find all halfedges, keep track of their vertices and faces
     j = 0
@@ -61,7 +63,7 @@ def datadict2dcel(datadict):
         for v_i in range(n_vertices):
             # store reference to this hedge in vertex list
             vertices[face[v_i]].append(j)
-
+            vertices_faces[face[v_i]].add(i)
             if v_i == 0:
                 hedges[j] = (face[v_i], face[v_i+1]), i, j+1, j+(n_vertices-1)
                 vertices[face[v_i+1]].append(j)
@@ -79,6 +81,7 @@ def datadict2dcel(datadict):
     # create vertices for all points
     for v in datadict['coords']:
         dcel_v = D.createVertex(v[0], v[1], v[2])
+        dcel_v.incidentFaces = vertices_faces.get(dcel_v.identifier)
 
     # create faces
     for f in range(len(datadict['faces'])):
@@ -104,12 +107,12 @@ def datadict2dcel(datadict):
 
         e = D.hedgeList[this_edge]
 
-        if len(twin_edge) == 0:  # oh that must be incident to infinite face...
+        if len(twin_edge) == 0:  # that must be incident to infinite face...
             # face = infinite_face
             e_twin = D.createHedge()
             # oops, forgetting to set something here...
             e_twin.setTopology(
-                D.vertexList[v_end], e, infinite_face, None, None)
+                    D.vertexList[v_end], e, infinite_face, None, None)
             inf_edge = e_twin
         else:
             e_twin = D.hedgeList[twin_edge.pop()]
@@ -117,18 +120,24 @@ def datadict2dcel(datadict):
 
         e.setTopology(D.vertexList[v_origin], e_twin, D.faceList[face],
                       D.hedgeList[nextedge], D.hedgeList[prevedge])
+        D.vertexList[v_origin].incidentEdges.add(e.identifier)
+        D.vertexList[v_end].incidentEdges.add(e_twin.identifier)
         e.origin.setTopology(e)
 
     # now fix prev/next refs for all edges incident to inf face
-    infinite_face.innerComponent = inf_edge
+    infinite_face.innerHedges = inf_edge
     current_edge = last_correct_edge = inf_edge
-
+    distinct_vertex_set = set()
     while inf_edge.previous == None:
 
         current_edge = last_correct_edge
-        while current_edge.twin.incidentFace != infinite_face:
+        origin_v = current_edge.twin.origin.identifier
+        while current_edge.twin.incidentFace != infinite_face :
+            # if len(set(vertices[origin_v])) > 2:
+            #     pass
             current_edge = current_edge.twin.previous
         current_edge = current_edge.twin
+        
 
         last_correct_edge.next = current_edge
         current_edge.previous = last_correct_edge
@@ -186,7 +195,7 @@ def xml2ply(xml_path, ply_path):
         for loop_distinct_set in loop_distinct_set_list:
             if distinct_set  == loop_distinct_set:
                 flag = False
-        # 去重
+        # Remove repetition
         if flag :
             faceSet.add(face)
             loop_distinct_set_list.append(distinct_set)
@@ -228,9 +237,7 @@ def xml2graph(path):
     coord_list_all = []
     graph = {}
     coord_index_dict = {}
-    # 文档根元素
 
-    # 所有顾客
     page = domTree.find('page')
     ite = page.iter()
     count = 0
@@ -261,12 +268,12 @@ def xml2graph(path):
     return graph, coord_list_all[0]
 
 
-# 用集合去除重复路径
+# Remove duplicate paths with set
 vertex_index = 0
 def dfs(graph, trace, start, ans, vertexDict):
-    trace = dc(trace)  # 深拷贝，对不同起点，走过的路径不同
+    trace = dc(trace)  # Deep copy, different starting points, different paths
     global vertex_index
-    # 如果下一个点在trace中，则返回环
+    # If the next point is in trace, the circle is returned
     if start in trace:
         index = trace.index(start)
         tmp = [str(i) for i in trace[index:]]
@@ -287,7 +294,7 @@ def dfs(graph, trace, start, ans, vertexDict):
 
     trace.append(start)
 
-    # 深度优先递归递归
+    # DFS
     for i in graph[start]:
         dfs(graph, trace, i, ans, vertexDict)
 
@@ -355,12 +362,30 @@ def sort(loop_list):
  
     # 5、比较前后两个的X大小来确定顺逆时针
     res = polygon_point
-    if x[pre_index] < x[next_index]:
-        # X是朝大的方向移动，为顺时针
-        res = polygon_point
+    #   5.1、当前后X都在最高点左侧时
+    if x[pre_index] < x[max_y_index] and x[next_index] < x[max_y_index]:
+        if y[pre_index] < y[next_index]:
+            # Y是朝小的方向移动，为逆时针
+            res = polygon_point
+        else:
+            # Y是朝大的方向移动，为顺时针，重新排序
+            res = polygon_point[::-1]
+    
+    #   5.2、当前后X都在最高点右侧时
+    elif x[pre_index] > x[max_y_index] and x[next_index] > x[max_y_index]:
+        if y[pre_index] > y[next_index]:
+            # Y是朝大的方向移动，为逆时针
+            res = polygon_point
+        else:
+            # Y是朝小的方向移动，为顺时针，重新排序
+            res = polygon_point[::-1]
     else:
-        # X是朝小的方向移动，为逆时针，重新排序
-        res = polygon_point[::-1]
+        if x[pre_index] > x[next_index]:
+            # X是朝小的方向移动，为逆时针
+            res = polygon_point
+        else:
+            # X是朝大的方向移动，为顺时针，重新排序
+            res = polygon_point[::-1]
 
     result_list = []
     x_p = res[:, 0]

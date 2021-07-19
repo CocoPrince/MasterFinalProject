@@ -81,7 +81,7 @@ def datadict2dcel(datadict):
     # create vertices for all points
     for v in datadict['coords']:
         dcel_v = D.createVertex(v[0], v[1], v[2])
-        dcel_v.faces = vertices_faces.get(dcel_v.identifier)
+        dcel_v.incidentFaces = vertices_faces.get(dcel_v.identifier)
 
     # create faces
     for f in range(len(datadict['faces'])):

@@ -564,12 +564,11 @@ class DCEL(object):
             self.centroidEdges = edges          
             gui = pydcel.dcelVis(self)  
             
-            # use force_directed approach to rearrange the centroid.  note:初始化质心排列处理器
+            # use force_directed approach to rearrange the centroid
             force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges)
             isHandle = True
             for i in range(1000):
                 if switch == 'on' and isHandle:
-                    # 重新排列质心
                     isHandle = force_directed_draw.handler()
                     # gui = pydcel.dcelVis(self)
 
@@ -593,13 +592,9 @@ class DCEL(object):
                 # edge_list, edge_identifier_set = self.getAllIncidentEdge(vertex, edge_dict)
                 # destination_vertices = self.getDestinationVerticesOnCircle(face_dict, vertex)
                 centroidsOfIncidentFace = []
-                # 找到当前3度点周围的圆的质心
                 for faceIdentifier in vertex.incidentFaces:
-                    centroid = self.faceCentroidDict.get(faceIdentifier)
-                    centroidsOfIncidentFace.append(centroid)
-                
-                # 用质心列表给当前3度点计算吸引力与排斥力，并位移
-                force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
+                    self.faceCentroidDict.get(faceIdentifier)
+                force_directed_draw.handle3DimVertex(vertex, centroidsOfIncidentFace)
                 # x_distance, y_distance = self.calNewPosition(vertex, destination_vertices)
 
                 # 这里

@@ -286,7 +286,7 @@ class DCEL(object):
     def calCentroidAndRadius(self, face_vertices):
         centroid, real_area = self.calCentroid(face_vertices) # centroid of the circle is the same as the face 
         optimal_area = self.calEqualiteral(face_vertices) # real_area: current area of the face, optimal_area: area of the equilateral polygon
-        stand_radius = math.pow(optimal_area/math.pi, 1/2) * 1 # The radius of a circle that is as large as the area of the equilateral polygon
+        stand_radius = math.pow(optimal_area/math.pi, 1/2) * 0.8 # The radius of a circle that is as large as the area of the equilateral polygon
         radius = math.sqrt(real_area/optimal_area) * stand_radius # radius of this face's circle
         self.radiusList.append(radius)
         return centroid, radius
@@ -564,12 +564,11 @@ class DCEL(object):
             self.centroidEdges = edges          
             gui = pydcel.dcelVis(self)  
             
-            # use force_directed approach to rearrange the centroid.  note:初始化质心排列处理器
+            # use force_directed approach to rearrange the centroid
             force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges)
             isHandle = True
             for i in range(1000):
                 if switch == 'on' and isHandle:
-                    # 重新排列质心
                     isHandle = force_directed_draw.handler()
                     # gui = pydcel.dcelVis(self)
 
@@ -592,14 +591,8 @@ class DCEL(object):
                     continue
                 # edge_list, edge_identifier_set = self.getAllIncidentEdge(vertex, edge_dict)
                 # destination_vertices = self.getDestinationVerticesOnCircle(face_dict, vertex)
-                centroidsOfIncidentFace = []
-                # 找到当前3度点周围的圆的质心
-                for faceIdentifier in vertex.incidentFaces:
-                    centroid = self.faceCentroidDict.get(faceIdentifier)
-                    centroidsOfIncidentFace.append(centroid)
-                
-                # 用质心列表给当前3度点计算吸引力与排斥力，并位移
-                force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
+                centroidsOfVertex = [self.faceCentroidDict.get(faceIdentifier) for faceIdentifier in vertex.incidentFaces]
+                force_directed_draw.handle3DimVertex(vertex, centroidsOfVertex)
                 # x_distance, y_distance = self.calNewPosition(vertex, destination_vertices)
 
                 # 这里

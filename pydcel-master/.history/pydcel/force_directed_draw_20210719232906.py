@@ -159,6 +159,8 @@ class force_directed(object):
         xDisDit = 0.0
         yDisDit = 0.0
         for centroid in centroidsOfIncidentFace:
+            if threeDegVertex.identifier == centroid.identifier:
+                continue
             # D := v.pos - u.pos;
             distX = centroid.x - threeDegVertex.x
             distY = centroid.y - threeDegVertex.y
@@ -175,6 +177,8 @@ class force_directed(object):
         xDisDit = 0.0
         yDisDit = 0.0
         for centroid in centroidsOfIncidentFace:
+            if threeDegVertex.identifier == centroid.identifier:
+                continue
             # D := v.pos - u.pos;
             distX = centroid.x - threeDegVertex.x
             distY = centroid.y - threeDegVertex.y
