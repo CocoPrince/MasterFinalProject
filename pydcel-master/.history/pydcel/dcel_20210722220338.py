@@ -602,9 +602,7 @@ class DCEL(object):
                     centroidsOfIncidentFace.append(centroid)
 
                 # move the deg3+ vertex into the ploygon formed by centroids of the around circle
-                if len(centroidsOfIncidentFace) < 3:
-                    continue
-                centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
+                centroid_of_centroids = self.calCentroid(centroidsOfIncidentFace)
                 vertex.x = centroid_of_centroids.x
                 vertex.y = centroid_of_centroids.y
 
@@ -626,7 +624,7 @@ class DCEL(object):
 
                 # vertex.x = x_distance * proportion + vertex.x
                 # vertex.y = y_distance * proportion + vertex.y
-                # # -------------------------
+                # -------------------------
                 # count = 0
                 # while not self.checkNewPosition(vertex, x_distance, y_distance, edge_list, edge_identifier_set):
                 #     x_distance = x_distance / 2

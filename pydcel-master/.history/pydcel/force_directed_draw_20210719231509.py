@@ -152,14 +152,14 @@ class force_directed(object):
         return True
 
 
-
-################################################## Deal with deg3+ vertices #####################################################
-
-# all the centroids of deg3+'s incidentFace will have repulsive force to it
-    def cal3DegRepulsiveForce(self, threeDegVertex, centroidsOfIncidentFace):
+    # ********For every two vertices***********
+    def cal3DimRepulsiveForce(self, threeDegVertex, centroidList):
+        distX = distY = dist = 0.0
         xDisDit = 0.0
         yDisDit = 0.0
-        for centroid in centroidsOfIncidentFace:
+        for centroid in centroidList:
+            if threeDegVertex.identifier == centroid.identifier:
+                continue
             # D := v.pos - u.pos;
             distX = centroid.x - threeDegVertex.x
             distY = centroid.y - threeDegVertex.y
@@ -171,11 +171,14 @@ class force_directed(object):
         
         return xDisDit, yDisDit
 
-    # all the centroids of deg3+'s incidentFace will have attractive force to it
-    def cal3DegAttractiveForce(self, threeDegVertex, centroidsOfIncidentFace):
+    
+    def cal3DimAttractiveForce(self, threeDegVertex, centroidList):
+        distX = distY = dist = 0.0
         xDisDit = 0.0
         yDisDit = 0.0
-        for centroid in centroidsOfIncidentFace:
+        for centroid in centroidList:
+            if threeDegVertex.identifier == centroid.identifier:
+                continue
             # D := v.pos - u.pos;
             distX = centroid.x - threeDegVertex.x
             distY = centroid.y - threeDegVertex.y
@@ -187,28 +190,25 @@ class force_directed(object):
 
         return xDisDit, yDisDit
 
-    # Calculate the final force and move the deg3+ points
     def handle3DegVertex(self, threeDegVertex, centroidsOfIncidentFace):
         flag = True
         total = 0.0
         while flag:
-            xDisRepulsive, yDisRepulsive = self.cal3DegRepulsiveForce(threeDegVertex, centroidsOfIncidentFace)
-            xDisAttractive, yDisAttractive = self.cal3DegAttractiveForce(threeDegVertex, centroidsOfIncidentFace)
-            # Using the repulsive and attractive force calculated above, move of deg3+ points
-            threeDegVertex.x = threeDegVertex.x + xDisAttractive + xDisRepulsive
-            threeDegVertex.y = threeDegVertex.y + yDisAttractive + yDisRepulsive
-            # store last time total energy
-            last_time_total_energy = total
-            # calculate current total energy
+            xDisRepulsive, yDisRepulsive = self.cal3DimRepulsiveForce( threeDegVertex, centroidsOfIncidentFace)
+            xDisAttractive, yDisAttractive = self.cal3DimAttractiveForce(threeDegVertex, centroidsOfIncidentFace)
             for centroid in centroidsOfIncidentFace:
+                threeDegVertex.x = threeDegVertex.x + xDisAttractive + xDisRepulsive
+                threeDegVertex.y = threeDegVertex.y + yDisAttractive + yDisRepulsive
                 distX = centroid.x - threeDegVertex.x
                 distY = centroid.y - threeDegVertex.y
                 dist = math.sqrt(distX**2 + distY**2)
                 idealDis = self.centroidRadiusDict.get(centroid.identifier)
+                last_time_total_energy = total
                 total = total + (abs(dist) - idealDis) * (abs(dist) - idealDis)
-                print(total)                               
-            # check if the total energy is the minimum
-            if last_time_total_energy != 0.0 and last_time_total_energy <= total:
-                print("\n")
-                flag = False
+                print(total)
+                    
+                if last_time_total_energy != 0.0 and last_time_total_energy <= total:
+                    print("\n")
+                    flag = False
                         
+

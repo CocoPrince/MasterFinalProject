@@ -242,6 +242,9 @@ class dcelVis(Tk):
         for v in self.D.vertexOnCircleList:
             self.bgdcel_cache.append(self.draw_dcel_vertex(v, size=5, fill='red', outline = ''))
 
+    # def draw_arc(self):
+    #     return self.draw.circle()
+
     def draw_dcel_circle(self, v, **options):
         return self.draw.circle(v.x, v.y, **options)
 

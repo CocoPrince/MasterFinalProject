@@ -618,15 +618,15 @@ class DCEL(object):
 
                 # TODO: Check for crossovers
                 
-                # proportion = 0
-                # for i in range(1, 10):
-                #     if not self.checkNewPosition(vertex, x_distance * (i / 10), y_distance * (i / 10), edge_list, edge_identifier_set):
-                #         break
-                #     proportion = i / 10
+                proportion = 0
+                for i in range(1, 10):
+                    if not self.checkNewPosition(vertex, x_distance * (i / 10), y_distance * (i / 10), edge_list, edge_identifier_set):
+                        break
+                    proportion = i / 10
 
-                # vertex.x = x_distance * proportion + vertex.x
-                # vertex.y = y_distance * proportion + vertex.y
-                # # -------------------------
+                vertex.x = x_distance * proportion + vertex.x
+                vertex.y = y_distance * proportion + vertex.y
+                # -------------------------
                 # count = 0
                 # while not self.checkNewPosition(vertex, x_distance, y_distance, edge_list, edge_identifier_set):
                 #     x_distance = x_distance / 2

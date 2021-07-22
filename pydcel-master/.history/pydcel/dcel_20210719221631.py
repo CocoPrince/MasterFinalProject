@@ -103,8 +103,6 @@ class DCEL(object):
         self.radiusList = []    # all the radius of the circle
         self.infiniteFace = None
         self.centroidEdges = [] # all the edges of the centroid graph
-        self.apolloCenterList = []
-        self.apolloRadiusList = []
 
     def getNewId(self, L):
         if len(L) == 0:
@@ -288,7 +286,7 @@ class DCEL(object):
     def calCentroidAndRadius(self, face_vertices):
         centroid, real_area = self.calCentroid(face_vertices) # centroid of the circle is the same as the face 
         optimal_area = self.calEqualiteral(face_vertices) # real_area: current area of the face, optimal_area: area of the equilateral polygon
-        stand_radius = math.pow(optimal_area/math.pi, 1/2) * 1 # The radius of a circle that is as large as the area of the equilateral polygon
+        stand_radius = math.pow(optimal_area/math.pi, 1/2) * 0.8 # The radius of a circle that is as large as the area of the equilateral polygon
         radius = math.sqrt(real_area/optimal_area) * stand_radius # radius of this face's circle
         self.radiusList.append(radius)
         return centroid, radius
@@ -566,13 +564,11 @@ class DCEL(object):
             self.centroidEdges = edges          
             gui = pydcel.dcelVis(self)  
             
-            # use force_directed approach to rearrange the centroid.  
-            # note:Initialize the centroid to arrange the processor
+            # use force_directed approach to rearrange the centroid
             force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges)
             isHandle = True
             for i in range(1000):
                 if switch == 'on' and isHandle:
-                    # Rearrange the centroid
                     isHandle = force_directed_draw.handler()
                     # gui = pydcel.dcelVis(self)
 
@@ -595,26 +591,11 @@ class DCEL(object):
                     continue
                 # edge_list, edge_identifier_set = self.getAllIncidentEdge(vertex, edge_dict)
                 # destination_vertices = self.getDestinationVerticesOnCircle(face_dict, vertex)
-                centroidsOfIncidentFace = []
-                # Find the centroids of the circle around the current deg3+ point
-                for faceIdentifier in vertex.incidentFaces:
-                    centroid = self.faceCentroidDict.get(faceIdentifier)
-                    centroidsOfIncidentFace.append(centroid)
-
-                # move the deg3+ vertex into the ploygon formed by centroids of the around circle
-                if len(centroidsOfIncidentFace) < 3:
-                    continue
-                centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
-                vertex.x = centroid_of_centroids.x
-                vertex.y = centroid_of_centroids.y
-
-
-                
-                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
-                force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
+                centroidsOfVertex = [self.faceCentroidDict.get(faceIdentifier) for face in vertex.incidentFaces]
+                x_distance, y_distance = force_directed_draw.cal3DimRepulsiveForce(vertex, centroidsOfVertex)
                 # x_distance, y_distance = self.calNewPosition(vertex, destination_vertices)
 
-                
+                # 这里
 
                 # TODO: Check for crossovers
                 
@@ -626,28 +607,22 @@ class DCEL(object):
 
                 # vertex.x = x_distance * proportion + vertex.x
                 # vertex.y = y_distance * proportion + vertex.y
-                # # -------------------------
+                # -------------------------
                 # count = 0
                 # while not self.checkNewPosition(vertex, x_distance, y_distance, edge_list, edge_identifier_set):
                 #     x_distance = x_distance / 2
                 #     y_distance = y_distance / 2
                 #     count +=1
-                # vertex.x = x_distance + vertex.x
-                # vertex.y = y_distance + vertex.y
+                vertex.x = x_distance + vertex.x
+                vertex.y = y_distance + vertex.y
 
             # draw the adjusted graph   
             gui = pydcel.dcelVis(self)  
 
 
 
-            chainList = self.findChain(self.vertexList, edge_dict)
-            print(chainList)
-            # for chain in chainList:
-            #     first_deg2 = chain[1]
-            #     if len(first_deg2.incidentEdges) > 2:
-            #         continue
-            #     face = first_deg2.incidentFaces
-
+            # chainList = self.findChain(self.vertexList, edge_dict)
+            # print(chainList)
 
         gui.mainloop()
 

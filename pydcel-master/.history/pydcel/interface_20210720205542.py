@@ -119,7 +119,7 @@ class dcelVis(Tk):
         self.draw_centroid()
         self.draw_vertex_on_circle()
         self.draw_centroid_edges()
-        self.draw_arc()
+        # self.draw_arc()
         
         self.hedge_it = self.type_iterator('hedge')
         self.face_it = self.type_iterator('face')
@@ -225,15 +225,6 @@ class dcelVis(Tk):
             self.bgdcel_cache.append(self.draw_dcel_text(v, fill='black', size=15 * count, text=text_str))
             count += 1
 
-    def draw_arc(self):
-        options = {'size':5, 'fill':'red', 'outline':''}
-        count = 1
-        for v, radius in zip(self.D.apolloCenterList, self.D.apolloRadiusList):
-            self.bgdcel_cache.append(self.draw_dcel_vertex(v, size=2, fill='orange', outline = ''))
-            self.bgdcel_cache.append(self.draw_dcel_circle(v, size=radius, fill='', outline = 'orange'))
-            count += 1
-    
-
     def draw_centroid_edges(self):
         for edge in self.D.centroidEdges:
             self.bgdcel_cache.append(self.draw_dcel_centroid_edge(edge.start, edge.end))
@@ -241,6 +232,9 @@ class dcelVis(Tk):
     def draw_vertex_on_circle(self):
         for v in self.D.vertexOnCircleList:
             self.bgdcel_cache.append(self.draw_dcel_vertex(v, size=5, fill='red', outline = ''))
+
+    # def draw_arc(self):
+    #     return self.draw.circle()
 
     def draw_dcel_circle(self, v, **options):
         return self.draw.circle(v.x, v.y, **options)

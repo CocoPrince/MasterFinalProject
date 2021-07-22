@@ -566,13 +566,12 @@ class DCEL(object):
             self.centroidEdges = edges          
             gui = pydcel.dcelVis(self)  
             
-            # use force_directed approach to rearrange the centroid.  
-            # note:Initialize the centroid to arrange the processor
+            # use force_directed approach to rearrange the centroid.  note:初始化质心排列处理器
             force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges)
             isHandle = True
             for i in range(1000):
                 if switch == 'on' and isHandle:
-                    # Rearrange the centroid
+                    # 重新排列质心
                     isHandle = force_directed_draw.handler()
                     # gui = pydcel.dcelVis(self)
 
@@ -596,25 +595,16 @@ class DCEL(object):
                 # edge_list, edge_identifier_set = self.getAllIncidentEdge(vertex, edge_dict)
                 # destination_vertices = self.getDestinationVerticesOnCircle(face_dict, vertex)
                 centroidsOfIncidentFace = []
-                # Find the centroids of the circle around the current deg3+ point
+                # 找到当前3度点周围的圆的质心
                 for faceIdentifier in vertex.incidentFaces:
                     centroid = self.faceCentroidDict.get(faceIdentifier)
                     centroidsOfIncidentFace.append(centroid)
-
-                # move the deg3+ vertex into the ploygon formed by centroids of the around circle
-                if len(centroidsOfIncidentFace) < 3:
-                    continue
-                centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
-                vertex.x = centroid_of_centroids.x
-                vertex.y = centroid_of_centroids.y
-
-
                 
-                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
+                # 用质心列表给当前3度点计算吸引力与排斥力，并位移
                 force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
                 # x_distance, y_distance = self.calNewPosition(vertex, destination_vertices)
 
-                
+                # 这里
 
                 # TODO: Check for crossovers
                 
@@ -626,7 +616,7 @@ class DCEL(object):
 
                 # vertex.x = x_distance * proportion + vertex.x
                 # vertex.y = y_distance * proportion + vertex.y
-                # # -------------------------
+                # -------------------------
                 # count = 0
                 # while not self.checkNewPosition(vertex, x_distance, y_distance, edge_list, edge_identifier_set):
                 #     x_distance = x_distance / 2

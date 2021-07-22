@@ -626,7 +626,7 @@ class DCEL(object):
 
                 # vertex.x = x_distance * proportion + vertex.x
                 # vertex.y = y_distance * proportion + vertex.y
-                # # -------------------------
+                # -------------------------
                 # count = 0
                 # while not self.checkNewPosition(vertex, x_distance, y_distance, edge_list, edge_identifier_set):
                 #     x_distance = x_distance / 2
