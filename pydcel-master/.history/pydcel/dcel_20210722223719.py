@@ -634,7 +634,8 @@ class DCEL(object):
                 # vertex.x = x_distance + vertex.x
                 # vertex.y = y_distance + vertex.y
 
-            
+            # draw the adjusted graph   
+            gui = pydcel.dcelVis(self)  
 
 
 
@@ -661,8 +662,7 @@ class DCEL(object):
                     deg2.y = chain[0].y + multi * yUnitDis
                     multi += 1
 
-            # draw the adjusted graph   
-            gui = pydcel.dcelVis(self)  
+            
              
 
 

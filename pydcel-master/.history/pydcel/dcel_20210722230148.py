@@ -642,24 +642,24 @@ class DCEL(object):
             print(chainList)
 
             # just use straight line to show the results
-            for chain in chainList:
-                first_deg2 = chain[1]
-                if len(first_deg2.incidentEdges) > 2:
-                    continue
-                face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
+            # for chain in chainList:
+            #     first_deg2 = chain[1]
+            #     if len(first_deg2.incidentEdges) > 2:
+            #         continue
+            #     face = first_deg2.incidentFaces
+            #     if len(face) < 2:
+            #         continue
 
-                xdis = chain[-1].x - chain[0].x
-                ydis = chain[-1].y - chain[0].y
-                xUnitDis = xdis / (len(chain) - 1)
-                yUnitDis = ydis / (len(chain) - 1)
+            #     xdis = chain[-1].x - chain[0].x
+            #     ydis = chain[-1].y - chain[0].y
+            #     xUnitDis = xdis / (len(chain) - 1)
+            #     yUnitDis = ydis / (len(chain) - 1)
 
-                multi = 1
-                for deg2 in chain[1:-1]:                    
-                    deg2.x = chain[0].x + multi * xUnitDis
-                    deg2.y = chain[0].y + multi * yUnitDis
-                    multi += 1
+            #     multi = 1
+            #     for deg2 in chain[1:-1]:                    
+            #         deg2.x = chain[0].x + multi * xUnitDis
+            #         deg2.y = chain[0].y + multi * yUnitDis
+            #         multi += 1
 
             # draw the adjusted graph   
             gui = pydcel.dcelVis(self)  
