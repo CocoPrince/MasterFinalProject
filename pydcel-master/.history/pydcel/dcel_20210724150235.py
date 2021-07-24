@@ -631,11 +631,21 @@ class DCEL(object):
 
                 # move the deg3+ vertex into the ploygon formed by centroids of the around circle
                 if len(centroidsOfIncidentFace) < 3:
-                    continue
-                centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
-                vertex.x = centroid_of_centroids.x
-                vertex.y = centroid_of_centroids.y
-                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
+                    # continue
+                    x_total = 0
+                    y_total = 0
+                    # 只有两个incidentFace的3度点，横纵坐标取平均值
+                    for c in centroidsOfIncidentFace:
+                        x_total += c.x
+                        y_total += c.y
+                    vertex.x = x_total / len(centroidsOfIncidentFace)
+                    vertex.y = y_total / len(centroidsOfIncidentFace)
+                else:
+                    centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
+                    vertex.x = centroid_of_centroids.x
+                    vertex.y = centroid_of_centroids.y
+
+                    # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
                 force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
                 
                 
