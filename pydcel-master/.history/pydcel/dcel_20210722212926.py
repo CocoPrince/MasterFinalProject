@@ -103,8 +103,6 @@ class DCEL(object):
         self.radiusList = []    # all the radius of the circle
         self.infiniteFace = None
         self.centroidEdges = [] # all the edges of the centroid graph
-        self.apolloCenterList = []
-        self.apolloRadiusList = []
 
     def getNewId(self, L):
         if len(L) == 0:
@@ -516,56 +514,6 @@ class DCEL(object):
         return centroid, radius
 
 
-    def calEdgesOfCentroid(self, face_dict, distinct_edge, edges):
-        for face in self.faceList:
-            face_vertices = [v for v in face.loopOuterVertices()] 
-            centroid, radius = self.getCentroidAndRadius(face, face_vertices)
-         
-            # Find adjacent faces and construct the graph for centroids
-            for vertex in face_vertices:
-                for neighbour_face_id in vertex.incidentFaces:
-                    neighbour_face = face_dict[neighbour_face_id]
-                    # The following two filters
-                    if neighbour_face.identifier == face.identifier: # remove the face itself
-                        continue
-                    distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
-                    distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
-                    if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
-                        continue
-
-                    neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
-                    neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
-                    self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
-                    self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
-                    centroid_edge = edge(centroid, neighbour_centroid)
-                    edges.append(centroid_edge)
-                    distinct_edge.add(distinct_key)
-            # face_vertices = [v for v in face.loopOuterVertices()] 
-            # face_hedges = [e for e in face.loopOuterEdges()] 
-            # centroid, radius = self.getCentroidAndRadius(face, face_vertices)
-         
-            # # Find adjacent faces and construct the graph for centroids
-            # for hedge in face_hedges:
-            #     neighbour_face = hedge.twin.incidentFace
-            #     if "i" == neighbour_face.identifier:
-            #         continue
-                
-            #     # The following two filters
-            #     if neighbour_face.identifier == face.identifier: # remove the face itself
-            #         continue
-                
-            #     distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
-            #     distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
-            #     if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
-            #         continue
-
-            #     neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
-            #     neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
-            #     self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
-            #     self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
-            #     centroid_edge = edge(centroid, neighbour_centroid)
-            #     edges.append(centroid_edge)
-            #     distinct_edge.add(distinct_key)
 
 
     '''------------------------------------------------------------------------------------
@@ -588,19 +536,40 @@ class DCEL(object):
             #-------------------------------------------------------------------    
             # Traversal faces 1st time: calculate the centroids and radius of all faces
             # and calculate all the adjacent faces of this face(centroid graph)
-            self.calEdgesOfCentroid(face_dict, distinct_edge, edges)
+            for face in self.faceList:
+                face_vertices = [v for v in face.loopOuterVertices()] 
+                centroid, radius = self.getCentroidAndRadius(face, face_vertices)
+         
+                # Find adjacent faces and construct the graph for centroids
+                for vertex in face_vertices:
+                    for neighbour_face_id in vertex.incidentFaces:
+                        neighbour_face = face_dict[neighbour_face_id]
+                        # The following two filters
+                        if neighbour_face.identifier == face.identifier: # remove the face itself
+                            continue
+                        distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
+                        distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
+                        if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
+                            continue
+
+                        neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
+                        neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
+                        self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
+                        self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
+                        centroid_edge = edge(centroid, neighbour_centroid)
+                        edges.append(centroid_edge)
+                        distinct_edge.add(distinct_key)
 
             # draw original map  
             self.centroidEdges = edges          
             gui = pydcel.dcelVis(self)  
             
-            # use force_directed approach to rearrange the centroid.  
-            # note:Initialize the centroid to arrange the processor
+            # use force_directed approach to rearrange the centroid.  note:初始化质心排列处理器
             force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges)
             isHandle = True
             for i in range(1000):
                 if switch == 'on' and isHandle:
-                    # Rearrange the centroid
+                    # 重新排列质心
                     isHandle = force_directed_draw.handler()
                     # gui = pydcel.dcelVis(self)
 
@@ -624,24 +593,19 @@ class DCEL(object):
                 # edge_list, edge_identifier_set = self.getAllIncidentEdge(vertex, edge_dict)
                 # destination_vertices = self.getDestinationVerticesOnCircle(face_dict, vertex)
                 centroidsOfIncidentFace = []
-                # Find the centroids of the circle around the current deg3+ point
+                # 找到当前3度点周围的圆的质心
                 for faceIdentifier in vertex.incidentFaces:
                     centroid = self.faceCentroidDict.get(faceIdentifier)
                     centroidsOfIncidentFace.append(centroid)
-
-                # move the deg3+ vertex into the ploygon formed by centroids of the around circle
-                if len(centroidsOfIncidentFace) < 3:
-                    continue
-                centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
-                vertex.x = centroid_of_centroids.x
-                vertex.y = centroid_of_centroids.y
-                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
+                
+                # 用质心列表给当前3度点计算吸引力与排斥力，并位移
                 force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
-                
-                
+                # x_distance, y_distance = self.calNewPosition(vertex, destination_vertices)
+
+                # 这里
 
                 # TODO: Check for crossovers
-                # x_distance, y_distance = self.calNewPosition(vertex, destination_vertices)
+                
                 # proportion = 0
                 # for i in range(1, 10):
                 #     if not self.checkNewPosition(vertex, x_distance * (i / 10), y_distance * (i / 10), edge_list, edge_identifier_set):
@@ -650,7 +614,7 @@ class DCEL(object):
 
                 # vertex.x = x_distance * proportion + vertex.x
                 # vertex.y = y_distance * proportion + vertex.y
-                # # -------------------------
+                # -------------------------
                 # count = 0
                 # while not self.checkNewPosition(vertex, x_distance, y_distance, edge_list, edge_identifier_set):
                 #     x_distance = x_distance / 2
@@ -659,34 +623,13 @@ class DCEL(object):
                 # vertex.x = x_distance + vertex.x
                 # vertex.y = y_distance + vertex.y
 
-
-            chainList = self.findChain(self.vertexList, edge_dict)
-            print(chainList)
-
-            # just use straight line to show the results
-            for chain in chainList:
-                first_deg2 = chain[1]
-                if len(first_deg2.incidentEdges) > 2:
-                    continue
-                face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
-
-                xdis = chain[-1].x - chain[0].x
-                ydis = chain[-1].y - chain[0].y
-                xUnitDis = xdis / (len(chain) - 1)
-                yUnitDis = ydis / (len(chain) - 1)
-
-                multi = 1
-                for deg2 in chain[1:-1]:                    
-                    deg2.x = chain[0].x + multi * xUnitDis
-                    deg2.y = chain[0].y + multi * yUnitDis
-                    multi += 1
-
             # draw the adjusted graph   
             gui = pydcel.dcelVis(self)  
-             
 
+
+
+            # chainList = self.findChain(self.vertexList, edge_dict)
+            # print(chainList)
 
         gui.mainloop()
 

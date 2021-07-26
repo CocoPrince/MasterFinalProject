@@ -518,54 +518,54 @@ class DCEL(object):
 
     def calEdgesOfCentroid(self, face_dict, distinct_edge, edges):
         for face in self.faceList:
-            face_vertices = [v for v in face.loopOuterVertices()] 
-            centroid, radius = self.getCentroidAndRadius(face, face_vertices)
-         
-            # Find adjacent faces and construct the graph for centroids
-            for vertex in face_vertices:
-                for neighbour_face_id in vertex.incidentFaces:
-                    neighbour_face = face_dict[neighbour_face_id]
-                    # The following two filters
-                    if neighbour_face.identifier == face.identifier: # remove the face itself
-                        continue
-                    distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
-                    distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
-                    if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
-                        continue
-
-                    neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
-                    neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
-                    self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
-                    self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
-                    centroid_edge = edge(centroid, neighbour_centroid)
-                    edges.append(centroid_edge)
-                    distinct_edge.add(distinct_key)
             # face_vertices = [v for v in face.loopOuterVertices()] 
-            # face_hedges = [e for e in face.loopOuterEdges()] 
             # centroid, radius = self.getCentroidAndRadius(face, face_vertices)
          
             # # Find adjacent faces and construct the graph for centroids
-            # for hedge in face_hedges:
-            #     neighbour_face = hedge.twin.incidentFace
-            #     if "i" == neighbour_face.identifier:
-            #         continue
-                
-            #     # The following two filters
-            #     if neighbour_face.identifier == face.identifier: # remove the face itself
-            #         continue
-                
-            #     distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
-            #     distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
-            #     if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
-            #         continue
+            # for vertex in face_vertices:
+            #     for neighbour_face_id in vertex.incidentFaces:
+            #         neighbour_face = face_dict[neighbour_face_id]
+            #         # The following two filters
+            #         if neighbour_face.identifier == face.identifier: # remove the face itself
+            #             continue
+            #         distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
+            #         distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
+            #         if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
+            #             continue
 
-            #     neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
-            #     neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
-            #     self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
-            #     self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
-            #     centroid_edge = edge(centroid, neighbour_centroid)
-            #     edges.append(centroid_edge)
-            #     distinct_edge.add(distinct_key)
+            #         neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
+            #         neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
+            #         self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
+            #         self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
+            #         centroid_edge = edge(centroid, neighbour_centroid)
+            #         edges.append(centroid_edge)
+            #         distinct_edge.add(distinct_key)
+            face_vertices = [v for v in face.loopOuterVertices()] 
+            face_hedges = [e for e in face.loopOuterEdges()] 
+            centroid, radius = self.getCentroidAndRadius(face, face_vertices)
+         
+            # Find adjacent faces and construct the graph for centroids
+            for hedge in face_hedges:
+                neighbour_face = hedge.twin.incidentFace
+                if "fi" == neighbour_face.identifier:
+                    continue
+                
+                # The following two filters
+                if neighbour_face.identifier == face.identifier: # remove the face itself
+                    continue
+                
+                distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
+                distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
+                if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
+                    continue
+                
+                neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
+                neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
+                self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
+                self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
+                centroid_edge = edge(centroid, neighbour_centroid)
+                edges.append(centroid_edge)
+                distinct_edge.add(distinct_key)
 
 
     '''------------------------------------------------------------------------------------
@@ -635,9 +635,12 @@ class DCEL(object):
                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
                 vertex.x = centroid_of_centroids.x
                 vertex.y = centroid_of_centroids.y
+
                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
                 force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
                 
+                
+
                 
 
                 # TODO: Check for crossovers
@@ -658,6 +661,9 @@ class DCEL(object):
                 #     count +=1
                 # vertex.x = x_distance + vertex.x
                 # vertex.y = y_distance + vertex.y
+
+            
+
 
 
             chainList = self.findChain(self.vertexList, edge_dict)
