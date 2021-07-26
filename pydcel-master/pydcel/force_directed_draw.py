@@ -61,6 +61,15 @@ class force_directed(object):
         # idealDis = nx.dijkstra_path_length(self.networkGraph, source=startcentroid.identifier, target=endcentroid.identifier)
         return idealDis
 
+
+    def repulsiveForce(self, idealDis, dist):
+        dist = abs(dist)
+        return - idealDis / dist 
+
+    def attractiveForce(self, idealDis, dist):
+        dist = abs(dist)
+        return dist / idealDis
+
     # ********For every two vertices***********
     # def calRepulsiveForce(self):
     #     distX = distY = dist = 0.0
@@ -124,14 +133,6 @@ class force_directed(object):
             self.yDisDit[endcentroid.identifier] = self.yDisDit[endcentroid.identifier] + distY / abs(distY) * self.attractiveForce(idealDis, dist) * abs(distY) / abs(dist)
 
 
-    def repulsiveForce(self, idealDis, dist):
-        dist = abs(dist)
-        return - idealDis / dist 
-
-    def attractiveForce(self, idealDis, dist):
-        dist = abs(dist)
-        return dist / idealDis
-
     def updateCoordinates(self):
         for centroid in self.centroidList:
             disp_x = self.xDisDit[centroid.identifier]
@@ -163,11 +164,11 @@ class force_directed(object):
             # D := v.pos - u.pos;
             distX = centroid.x - threeDegVertex.x
             distY = centroid.y - threeDegVertex.y
-            dist = math.sqrt(distX**2 + distY**2)
-            idealDis = self.centroidRadiusDict.get(centroid.identifier)
+            dist = math.sqrt(distX**2 + distY**2) # real distance
+            idealDis = self.centroidRadiusDict.get(centroid.identifier) # ideal distance
             # v.disp := v.disp + ( D /| D |) * fr (| D |)
-            xDisDit = xDisDit - distX / abs(distX) * self.repulsiveForce(idealDis, dist) * abs(distX) / abs(dist)
-            yDisDit = yDisDit - distY / abs(distY) * self.repulsiveForce(idealDis, dist) * abs(distY) / abs(dist)      
+            xDisDit = xDisDit + distX / abs(distX) * self.repulsiveForce(idealDis, dist) * abs(distX) / abs(dist)
+            yDisDit = yDisDit + distY / abs(distY) * self.repulsiveForce(idealDis, dist) * abs(distY) / abs(dist)      
         
         return xDisDit, yDisDit
 
@@ -182,8 +183,8 @@ class force_directed(object):
             dist = math.sqrt(distX**2 + distY**2)
             idealDis = self.centroidRadiusDict.get(centroid.identifier)
             # v.disp := v.disp + ( D /| D |) * fr (| D |)
-            xDisDit = xDisDit - distX / abs(distX) * self.attractiveForce(idealDis, dist) * abs(distX) / abs(dist)
-            yDisDit = yDisDit - distY / abs(distY) * self.attractiveForce(idealDis, dist) * abs(distY) / abs(dist)
+            xDisDit = xDisDit + distX / abs(distX) * self.attractiveForce(idealDis, dist) * abs(distX) / abs(dist)
+            yDisDit = yDisDit + distY / abs(distY) * self.attractiveForce(idealDis, dist) * abs(distY) / abs(dist)
 
         return xDisDit, yDisDit
 
