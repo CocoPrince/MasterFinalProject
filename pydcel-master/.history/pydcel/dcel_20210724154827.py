@@ -522,7 +522,7 @@ class DCEL(object):
             centroid, radius = self.getCentroidAndRadius(face, face_vertices)
          
             # Find adjacent faces and construct the graph for centroids
-            # for vertex in face_vertices:
+            for vertex in face_vertices:
                 # for neighbour_face_id in vertex.incidentFaces:
                 #     neighbour_face = face_dict[neighbour_face_id]
                 #     # The following two filters
