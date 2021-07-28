@@ -6,7 +6,6 @@ import math
 import pydcel
 from .force_directed_draw import *
 import queue
-from .chain import *
 
 
 class vertex(object):   
@@ -420,25 +419,9 @@ class DCEL(object):
                 # TODO
                 if isTraveledChain is True:
                     continue
-                wrapperChain = WrapperChain(chain) # class Wrapperchain
-                chainList.append(wrapperChain)
-                print(chain) 
+                chainList.append(chain)
+                print(chain)
         return chainList
-
-   
-
-    # build the dictionary of the chains, used to calculate the optimal distance between two deg3+ vertices
-    # the optimal distance is proportional to the number of deg2 vertices on the chain
-    # the optimal distance is used to determine the radius of positioning-circle for deg3+ vertices with infinit face
-    # key: deg3 vertex, value: all chains incident with this vertex
-    def buildDeg3ChainsDict(self, WrapperChain):
-        for
-
-    
-    
-    
-    
-    def handleDeg3Vertex_outside(self, incidentChains):
 
 
 
@@ -577,7 +560,14 @@ class DCEL(object):
 
 
     
-
+    
+    def buildDeg3ChainsDict(self, chainList):
+        
+    
+    
+    
+    
+    def handleDeg3Vertex_outside(self, incidentChains):
 
 
 

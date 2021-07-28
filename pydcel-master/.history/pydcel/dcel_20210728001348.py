@@ -6,7 +6,6 @@ import math
 import pydcel
 from .force_directed_draw import *
 import queue
-from .chain import *
 
 
 class vertex(object):   
@@ -420,25 +419,19 @@ class DCEL(object):
                 # TODO
                 if isTraveledChain is True:
                     continue
-                wrapperChain = WrapperChain(chain) # class Wrapperchain
-                chainList.append(wrapperChain)
-                print(chain) 
+                chainList.append(chain)
+                print(chain)
         return chainList
 
-   
-
-    # build the dictionary of the chains, used to calculate the optimal distance between two deg3+ vertices
-    # the optimal distance is proportional to the number of deg2 vertices on the chain
-    # the optimal distance is used to determine the radius of positioning-circle for deg3+ vertices with infinit face
-    # key: deg3 vertex, value: all chains incident with this vertex
-    def buildDeg3ChainsDict(self, WrapperChain):
-        for
 
     
     
-    
-    
-    def handleDeg3Vertex_outside(self, incidentChains):
+    def moveDeg3Vertex():
+        pass
+
+    def moveDeg2VertexInside():
+        pass
+
 
 
 
@@ -576,11 +569,6 @@ class DCEL(object):
                 distinct_edge.add(distinct_key)
 
 
-    
-
-
-
-
     '''------------------------------------------------------------------------------------
     Main function: handle face one by one
     ---------------------------------------------------------------------------------------'''
@@ -642,18 +630,15 @@ class DCEL(object):
                     centroid = self.faceCentroidDict.get(faceIdentifier)
                     centroidsOfIncidentFace.append(centroid)
 
-                
-                # ----------deg3+ inside
                 # move the deg3+ vertex into the ploygon formed by centroids of the around circle
                 if len(centroidsOfIncidentFace) < 3:
                     continue
                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
                 vertex.x = centroid_of_centroids.x
                 vertex.y = centroid_of_centroids.y
-                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
-                force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
-
-                # ----------deg3+ outside
+                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
+                
+                force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
                 
 
 

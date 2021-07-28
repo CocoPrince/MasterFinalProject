@@ -12,13 +12,13 @@ class arc(object):
     
     def __init__(self, deg3_start, deg3_end):
         self.appoloCircle = None
-        self.deg3StartCircle = None
-        self.deg3EndCircle = None
-        self.deg3Start = deg3Start
-        self.deg3End = deg3End
+        self.deg3_start_circle = None
+        self.deg3_end_circle = None
+        self.deg3_start = deg3_start
+        self.deg3_end = deg3_end
         self.radian = self.calRadian()
-        self.startCircleTangency = None  
-        self.endCircleTangency = None
+        self.start_circle_tangency = None  
+        self.end_circle_tangency = None
 
 
     # calculate the arc, that:
@@ -31,15 +31,7 @@ class arc(object):
         self.appoloCircle.center.y = (face_1_centroid.y - ratio ** 2 * face_2_centroid.y) / (1 - ratio ** 2)
         # return radius, centerPoint.x, centerPoint.y
 
-
-    # parameters: deg3, apollo(radius, centerPoint.x, centerPoint.y)
-    def calDeg3Circle(self):
-
-    # Deg3Circle's radius
-    def calTangencyCircle():
-
-
-
+    def calJoinArc(self, )
 
 
 

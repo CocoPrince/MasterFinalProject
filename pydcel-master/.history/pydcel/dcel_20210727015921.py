@@ -6,7 +6,6 @@ import math
 import pydcel
 from .force_directed_draw import *
 import queue
-from .chain import *
 
 
 class vertex(object):   
@@ -280,7 +279,7 @@ class DCEL(object):
     # Calculate the area of the standard equilateral polygon with the same vertex number as the face(edge length = 1)
     def calEqualiteral(self, face_vertices):
         vertex_num = len(face_vertices) # The number of vertices in a face, determine the optimal area of the face
-        edge_length = 10 # Default length of each edge is 1
+        edge_length = 15 # Default length of each edge is 1
         area = edge_length**2 * vertex_num / (4 * math.tan(math.pi/vertex_num)) #formula
         print('Equaliteral:', area)
         return area
@@ -290,10 +289,13 @@ class DCEL(object):
         centroid, real_area = self.calCentroid(face_vertices) # centroid of the circle is the same as the face 
         optimal_area = self.calEqualiteral(face_vertices) # real_area: current area of the face, optimal_area: area of the equilateral polygon
         stand_radius = math.pow(optimal_area/math.pi, 1/2) * 1 # The radius of a circle that is as large as the area of the equilateral polygon
-        radius = math.sqrt(real_area/optimal_area) * stand_radius # radius of this face's circle
-        # radius = 1.2*stand_radius
+        # radius = math.sqrt(real_area/optimal_area) * stand_radius # radius of this face's circle
+        radius = stand_radius
         self.radiusList.append(radius)
         return centroid, radius
+        # 三个点： 最优6 -> r =
+        # 面1： 18  3r
+        # 面2： 3    1/2r
 
 
     # Record all the incident edges of a vertex
@@ -420,25 +422,19 @@ class DCEL(object):
                 # TODO
                 if isTraveledChain is True:
                     continue
-                wrapperChain = WrapperChain(chain) # class Wrapperchain
-                chainList.append(wrapperChain)
-                print(chain) 
+                chainList.append(chain)
+                print(chain)
         return chainList
 
-   
-
-    # build the dictionary of the chains, used to calculate the optimal distance between two deg3+ vertices
-    # the optimal distance is proportional to the number of deg2 vertices on the chain
-    # the optimal distance is used to determine the radius of positioning-circle for deg3+ vertices with infinit face
-    # key: deg3 vertex, value: all chains incident with this vertex
-    def buildDeg3ChainsDict(self, WrapperChain):
-        for
 
     
     
-    
-    
-    def handleDeg3Vertex_outside(self, incidentChains):
+    def moveDeg3Vertex():
+        pass
+
+    def moveDeg2VertexInside():
+        pass
+
 
 
 
@@ -531,23 +527,23 @@ class DCEL(object):
         
             # Find adjacent faces and construct the graph for centroids
             # for vertex in face_vertices:
-            #     for neighbour_face_id in vertex.incidentFaces:
-            #         neighbour_face = face_dict[neighbour_face_id]
-            #         # The following two filters
-            #         if neighbour_face.identifier == face.identifier: # remove the face itself
-            #             continue
-            #         distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
-            #         distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
-            #         if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
-            #             continue
+                # for neighbour_face_id in vertex.incidentFaces:
+                #     neighbour_face = face_dict[neighbour_face_id]
+                #     # The following two filters
+                #     if neighbour_face.identifier == face.identifier: # remove the face itself
+                #         continue
+                #     distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
+                #     distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
+                #     if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
+                #         continue
 
-            #         neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
-            #         neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
-            #         self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
-            #         self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
-            #         centroid_edge = edge(centroid, neighbour_centroid)
-            #         edges.append(centroid_edge)
-            #         distinct_edge.add(distinct_key)
+                #     neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
+                #     neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
+                #     self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
+                #     self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
+                #     centroid_edge = edge(centroid, neighbour_centroid)
+                #     edges.append(centroid_edge)
+                #     distinct_edge.add(distinct_key)
             face_vertices = [v for v in face.loopOuterVertices()] 
             face_hedges = [e for e in face.loopOuterEdges()] 
             centroid, radius = self.getCentroidAndRadius(face, face_vertices)
@@ -574,11 +570,6 @@ class DCEL(object):
                 centroid_edge = edge(centroid, neighbour_centroid)
                 edges.append(centroid_edge)
                 distinct_edge.add(distinct_key)
-
-
-    
-
-
 
 
     '''------------------------------------------------------------------------------------
@@ -642,18 +633,14 @@ class DCEL(object):
                     centroid = self.faceCentroidDict.get(faceIdentifier)
                     centroidsOfIncidentFace.append(centroid)
 
-                
-                # ----------deg3+ inside
                 # move the deg3+ vertex into the ploygon formed by centroids of the around circle
                 if len(centroidsOfIncidentFace) < 3:
                     continue
                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
                 vertex.x = centroid_of_centroids.x
                 vertex.y = centroid_of_centroids.y
-                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
-                force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
-
-                # ----------deg3+ outside
+                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
+                force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
                 
 
 

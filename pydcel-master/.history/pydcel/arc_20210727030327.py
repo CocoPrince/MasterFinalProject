@@ -2,47 +2,33 @@ import math
 
 class circle(object):
 
-    def __init__(self, center, radius, arcLength):
+    def __init__(self, center, radius):
         self.center = center
-        self.radius = radius   
-        self.arcLength = arcLength 
+        self.radius = radius    
 
 
 class arc(object):
     
     def __init__(self, deg3_start, deg3_end):
         self.appoloCircle = None
-        self.deg3StartCircle = None
-        self.deg3EndCircle = None
-        self.deg3Start = deg3Start
-        self.deg3End = deg3End
+        self.deg3_start_circle = None
+        self.deg3_end_circle = None
+        self.deg3_start = deg3_start
+        self.deg3_end = deg3_end
         self.radian = self.calRadian()
-        self.startCircleTangency = None  
-        self.endCircleTangency = None
+        self.start_circle_tangency = None  
+        self.end_circle_tangency = None
 
 
     # calculate the arc, that:
     # the ratio of the points on the circle to the centroid = the ratio of the radius
-    def calApollonisCircle(self, face_1_centroid, face_2_centroid, radius_1, radius_2):
+    def calApollonisCircle(self, circle_1_centroid, circle_2_centroid, radius_1, radius_2):
         ratio = radius_1 / radius_2
-        centroidDis = math.sqrt((face_1_centroid.x - face_2_centroid.x) ** 2 + (face_1_centroid.y - face_2_centroid.y) ** 2)
+        centroidDis = math.sqrt((circle_1_centroid.x - circle_2_centroid.x) ** 2 + (circle_1_centroid.y - circle_2_centroid.y) ** 2)
         self.appoloCircle.radius = abs(ratio / (1 - ratio ** 2)) * centroidDis
-        self.appoloCircle.center.x = (face_1_centroid.x - ratio ** 2 * face_2_centroid.x) / (1 - ratio ** 2)
-        self.appoloCircle.center.y = (face_1_centroid.y - ratio ** 2 * face_2_centroid.y) / (1 - ratio ** 2)
+        self.appoloCircle.center.x = (circle_1_centroid.x - ratio ** 2 * circle_2_centroid.x) / (1 - ratio ** 2)
+        self.appoloCircle.center.y = (circle_1_centroid.y - ratio ** 2 * circle_2_centroid.y) / (1 - ratio ** 2)
         # return radius, centerPoint.x, centerPoint.y
-
-
-    # parameters: deg3, apollo(radius, centerPoint.x, centerPoint.y)
-    def calDeg3Circle(self):
-
-    # Deg3Circle's radius
-    def calTangencyCircle():
-
-
-
-
-
-
 
 
     # # We have already know the position for the two deg3+ vertices (use force-directed)

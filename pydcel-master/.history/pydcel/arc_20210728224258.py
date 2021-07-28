@@ -44,7 +44,6 @@ class arc(object):
 
 
 
-
     # # We have already know the position for the two deg3+ vertices (use force-directed)
     # # move the ApollonisCircle that make the circle pass the two deg3+ vertices
     # # we know the radius and the two points of the arc, want to know the center and the radian

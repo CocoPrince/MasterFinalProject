@@ -420,8 +420,9 @@ class DCEL(object):
                 # TODO
                 if isTraveledChain is True:
                     continue
-                wrapperChain = WrapperChain(chain) # class Wrapperchain
-                chainList.append(wrapperChain)
+
+                uglyChain = UglyChain(chain) # class uglychain
+                chainList.append(chain)
                 print(chain) 
         return chainList
 
@@ -431,7 +432,7 @@ class DCEL(object):
     # the optimal distance is proportional to the number of deg2 vertices on the chain
     # the optimal distance is used to determine the radius of positioning-circle for deg3+ vertices with infinit face
     # key: deg3 vertex, value: all chains incident with this vertex
-    def buildDeg3ChainsDict(self, WrapperChain):
+    def buildDeg3ChainsDict(self, UglyChain):
         for
 
     
