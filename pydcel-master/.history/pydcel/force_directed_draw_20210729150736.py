@@ -54,7 +54,6 @@ class force_directed(object):
                 dist = math.sqrt(distX**2 + distY**2)
                 idealDis = self.centroidRadiusDict.get(centroid1.identifier) + self.centroidRadiusDict.get(centroid2.identifier)
                 total = total + (abs(dist) - idealDis) * (abs(dist) - idealDis)
-                # total = total + (abs(dist) - idealDis)
         return total
 
     def calIdealDis(self, startcentroid, endcentroid):
@@ -201,7 +200,7 @@ class force_directed(object):
             threeDegVertex.y = threeDegVertex.y + yDisAttractive + yDisRepulsive
             # store last time total energy
             last_time_total_energy = total
-            total = 0
+            # total = 0
             # calculate current total energy
             for centroid in centroidsOfIncidentFace:
                 distX = centroid.x - threeDegVertex.x
@@ -209,7 +208,6 @@ class force_directed(object):
                 dist = math.sqrt(distX**2 + distY**2)
                 idealDis = self.centroidRadiusDict.get(centroid.identifier)
                 total = total + (abs(dist) - idealDis) * (abs(dist) - idealDis)
-                # total = total + (abs(dist) - idealDis)
                 print(total)                               
             # check if the total energy is the minimum
             if last_time_total_energy != 0.0 and last_time_total_energy <= total:

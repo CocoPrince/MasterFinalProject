@@ -29,7 +29,7 @@ class WrapperChain(object):
     def calChainType(self):
         if len(self.chain) == 2:
             chainType = 0
-        elif len(self.chain[1].incidentFaces) > 1:
+        elif len(self.hain[1].incidentFaces) > 1:
             chainType = 1
         else:
             chainType = 2

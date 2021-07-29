@@ -531,50 +531,50 @@ class DCEL(object):
             centroid, radius = self.getCentroidAndRadius(face, face_vertices)
         
             # Find adjacent faces and construct the graph for centroids
-            # for vertex in face_vertices:
-            #     for neighbour_face_id in vertex.incidentFaces:
-            #         neighbour_face = face_dict[neighbour_face_id]
-            #         # The following two filters
-            #         if neighbour_face.identifier == face.identifier: # remove the face itself
-            #             continue
-            #         distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
-            #         distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
-            #         if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
-            #             continue
+            for vertex in face_vertices:
+                for neighbour_face_id in vertex.incidentFaces:
+                    neighbour_face = face_dict[neighbour_face_id]
+                    # The following two filters
+                    if neighbour_face.identifier == face.identifier: # remove the face itself
+                        continue
+                    distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
+                    distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
+                    if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
+                        continue
 
-            #         neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
-            #         neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
-            #         self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
-            #         self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
-            #         centroid_edge = edge(centroid, neighbour_centroid)
-            #         edges.append(centroid_edge)
-            #         distinct_edge.add(distinct_key)
+                    neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
+                    neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
+                    self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
+                    self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
+                    centroid_edge = edge(centroid, neighbour_centroid)
+                    edges.append(centroid_edge)
+                    distinct_edge.add(distinct_key)
             face_vertices = [v for v in face.loopOuterVertices()] 
             face_hedges = [e for e in face.loopOuterEdges()] 
             centroid, radius = self.getCentroidAndRadius(face, face_vertices)
          
             # Find adjacent faces and construct the graph for centroids
-            for hedge in face_hedges:
-                neighbour_face = hedge.twin.incidentFace
-                if "i" == neighbour_face.identifier:
-                    continue
+            # for hedge in face_hedges:
+            #     neighbour_face = hedge.twin.incidentFace
+            #     if "i" == neighbour_face.identifier:
+            #         continue
                 
-                # The following two filters
-                if neighbour_face.identifier == face.identifier: # remove the face itself
-                    continue
+            #     # The following two filters
+            #     if neighbour_face.identifier == face.identifier: # remove the face itself
+            #         continue
                 
-                distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
-                distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
-                if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
-                    continue
+            #     distinct_key = "%d-%d" % (face.identifier, neighbour_face.identifier)
+            #     distinct_key_reverse = "%d-%d" % (neighbour_face.identifier, face.identifier)
+            #     if distinct_key in distinct_edge or distinct_key_reverse in distinct_edge: # remove ba for ab
+            #         continue
 
-                neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
-                neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
-                self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
-                self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
-                centroid_edge = edge(centroid, neighbour_centroid)
-                edges.append(centroid_edge)
-                distinct_edge.add(distinct_key)
+            #     neighbour_face_vertices = [v for v in neighbour_face.loopOuterVertices()]
+            #     neighbour_centroid, neighbour_radius = self.getCentroidAndRadius(neighbour_face, neighbour_face_vertices)
+            #     self.faceCentroidDict[neighbour_face.identifier] = neighbour_centroid
+            #     self.centroidRadiusDict[neighbour_centroid.identifier] = neighbour_radius
+            #     centroid_edge = edge(centroid, neighbour_centroid)
+            #     edges.append(centroid_edge)
+            #     distinct_edge.add(distinct_key)
 
 
     
@@ -682,43 +682,43 @@ class DCEL(object):
             ####################-----------------------------##########################
             # after the force-directed method, if there existes very short chains, do the next rotate part
             ########## rotate the circle to make  short chain longer
-            for vertex in self.vertexList:
-                if len(vertex.incidentEdges) < 3:
-                    continue
-                centroidsOfIncidentFace = []
-                # Find the centroids of the circle around the current deg3+ point
-                for faceIdentifier in vertex.incidentFaces:
-                    centroid = self.faceCentroidDict.get(faceIdentifier)
-                    centroidsOfIncidentFace.append(centroid)
-                if len(centroidsOfIncidentFace) < 3:
-                    continue
+            # for vertex in self.vertexList:
+            #     if len(vertex.incidentEdges) < 3:
+            #         continue
+            #     centroidsOfIncidentFace = []
+            #     # Find the centroids of the circle around the current deg3+ point
+            #     for faceIdentifier in vertex.incidentFaces:
+            #         centroid = self.faceCentroidDict.get(faceIdentifier)
+            #         centroidsOfIncidentFace.append(centroid)
+            #     if len(centroidsOfIncidentFace) < 3:
+            #         continue
 
-                # rotate
-                for wrapperChain in chainList:
-                    chain = wrapperChain.chain
-                    start3Deg = chain[0]
-                    end3Deg = chain[-1]
-                    if start3Deg.identifier == vertex.identifier or end3Deg.identifier == vertex.identifier:
-                        disBetween3Deg = math.sqrt((start3Deg.x - end3Deg.x) ** 2 + (start3Deg.y - end3Deg.y) ** 2) # real length of the chain
+            #     # rotate
+            #     for wrapperChain in chainList:
+            #         chain = wrapperChain.chain
+            #         start3Deg = chain[0]
+            #         end3Deg = chain[-1]
+            #         if start3Deg.identifier == vertex.identifier or end3Deg.identifier == vertex.identifier:
+            #             disBetween3Deg = math.sqrt((start3Deg.x - end3Deg.x) ** 2 + (start3Deg.y - end3Deg.y) ** 2) # real length of the chain
 
-                        # If chain length less than threshold (fractional times optimal distance), rotate
-                        if (len(chain) - 1) * 5 > disBetween3Deg:
-                            faceId1 = list(chain[1].incidentFaces)[0] # two incident faces of the chain
-                            faceId2 = list(chain[1].incidentFaces)[1]
-                            centroid1 = self.faceCentroidDict.get(faceId1) # two centroids of the two incident faces
-                            centroid2 = self.faceCentroidDict.get(faceId2)
-                            # rotation angle, can be adjusted
-                            angle = math.radians(30)
-                            # formula of rotation
-                            # take theh cetroid1 as center, rotate the centroid2
-                            centroid2.x = (centroid2.x-centroid1.x)*math.cos(angle) - (centroid2.y-centroid1.y)*math.sin(angle)+centroid1.x
-                            centroid2.y = (centroid2.y-centroid1.y)*math.cos(angle) + (centroid2.x-centroid1.x)*math.sin(angle)+centroid1.y
-                            # put the deg3+ vertex at the centroid of the centroids of the rotated circles(same as before) 
-                            centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
-                            vertex.x = centroid_of_centroids.x
-                            vertex.y = centroid_of_centroids.y
-                            # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
-                            force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
+            #             # If chain length less than threshold (fractional times optimal distance), rotate
+            #             if (len(chain) - 1) * 5 > disBetween3Deg:
+            #                 faceId1 = list(chain[1].incidentFaces)[0] # two incident faces of the chain
+            #                 faceId2 = list(chain[1].incidentFaces)[1]
+            #                 centroid1 = self.faceCentroidDict.get(faceId1) # two centroids of the two incident faces
+            #                 centroid2 = self.faceCentroidDict.get(faceId2)
+            #                 # rotation angle, can be adjusted
+            #                 angle = math.radians(30)
+            #                 # formula of rotation
+            #                 # take theh cetroid1 as center, rotate the centroid2
+            #                 centroid2.x = (centroid2.x-centroid1.x)*math.cos(angle) - (centroid2.y-centroid1.y)*math.sin(angle)+centroid1.x
+            #                 centroid2.y = (centroid2.y-centroid1.y)*math.cos(angle) + (centroid2.x-centroid1.x)*math.sin(angle)+centroid1.y
+            #                 # put the deg3+ vertex at the centroid of the centroids of the rotated circles(same as before) 
+            #                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
+            #                 vertex.x = centroid_of_centroids.x
+            #                 vertex.y = centroid_of_centroids.y
+            #                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
+            #                 force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
                            
 
                 # ----------deg3+ outside

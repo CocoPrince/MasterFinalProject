@@ -280,7 +280,7 @@ class DCEL(object):
     # Calculate the area of the standard equilateral polygon with the same vertex number as the face(edge length = 1)
     def calEqualiteral(self, face_vertices):
         vertex_num = len(face_vertices) # The number of vertices in a face, determine the optimal area of the face
-        edge_length = 1 # Default length of each edge is 1
+        edge_length = 10 # Default length of each edge is 1
         area = edge_length**2 * vertex_num / (4 * math.tan(math.pi/vertex_num)) #formula
         print('Equaliteral:', area)
         return area
@@ -657,69 +657,32 @@ class DCEL(object):
                 chainList = self.findChain(self.vertexList, edge_dict)
                 print(chainList)
                 
-            # before rotate           
-            # just use straight line to show the results
-            for wrapperchain in chainList:
-                first_deg2 = wrapperchain.chain[1]
-                if len(first_deg2.incidentEdges) > 2:
-                    continue
-                face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
-
-                xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
-                ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
-                xUnitDis = xdis / (len(wrapperchain.chain) - 1)
-                yUnitDis = ydis / (len(wrapperchain.chain) - 1)
-
-                multi = 1
-                for deg2 in wrapperchain.chain[1:-1]:                    
-                    deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
-                    deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
-                    multi += 1
-            gui = pydcel.dcelVis(self)
-
-            ####################-----------------------------##########################
-            # after the force-directed method, if there existes very short chains, do the next rotate part
-            ########## rotate the circle to make  short chain longer
-            for vertex in self.vertexList:
-                if len(vertex.incidentEdges) < 3:
-                    continue
-                centroidsOfIncidentFace = []
-                # Find the centroids of the circle around the current deg3+ point
-                for faceIdentifier in vertex.incidentFaces:
-                    centroid = self.faceCentroidDict.get(faceIdentifier)
-                    centroidsOfIncidentFace.append(centroid)
-                if len(centroidsOfIncidentFace) < 3:
-                    continue
-
-                # rotate
+                ####################-----------------------------##########################
+                # after the force-directed method, if there existes very short chains, do the next rotate part
+                ########## rotate the circle to make  short chain longer
                 for wrapperChain in chainList:
                     chain = wrapperChain.chain
                     start3Deg = chain[0]
                     end3Deg = chain[-1]
                     if start3Deg.identifier == vertex.identifier or end3Deg.identifier == vertex.identifier:
-                        disBetween3Deg = math.sqrt((start3Deg.x - end3Deg.x) ** 2 + (start3Deg.y - end3Deg.y) ** 2) # real length of the chain
+                        disBetween3Deg = math.sqrt((start3Deg.x - end3Deg.x) ** 2 + (start3Deg.y - end3Deg.y) ** 2)
 
                         # If chain length less than threshold (fractional times optimal distance), rotate
-                        if (len(chain) - 1) * 5 > disBetween3Deg:
-                            faceId1 = list(chain[1].incidentFaces)[0] # two incident faces of the chain
+                        if (len(chain) - 1) / 2 > disBetween3Deg:
+                            faceId1 = list(chain[1].incidentFaces)[0]
                             faceId2 = list(chain[1].incidentFaces)[1]
-                            centroid1 = self.faceCentroidDict.get(faceId1) # two centroids of the two incident faces
+                            centroid1 = self.faceCentroidDict.get(faceId1)
                             centroid2 = self.faceCentroidDict.get(faceId2)
-                            # rotation angle, can be adjusted
-                            angle = math.radians(30)
-                            # formula of rotation
-                            # take theh cetroid1 as center, rotate the centroid2
-                            centroid2.x = (centroid2.x-centroid1.x)*math.cos(angle) - (centroid2.y-centroid1.y)*math.sin(angle)+centroid1.x
-                            centroid2.y = (centroid2.y-centroid1.y)*math.cos(angle) + (centroid2.x-centroid1.x)*math.sin(angle)+centroid1.y
-                            # put the deg3+ vertex at the centroid of the centroids of the rotated circles(same as before) 
+                            # 旋转角度，可以调整
+                            angle = math.radians(50)
+                            #旋转公式
+                            centroid2.x = (centroid2.x-centroid1.x)*math.cos(angle) + (centroid2.y-centroid1.y)*math.sin(angle)+centroid1.x
+                            centroid2.y = (centroid2.y-centroid1.y)*math.cos(angle) - (centroid2.x-centroid1.x)*math.sin(angle)+centroid1.y
                             centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
                             vertex.x = centroid_of_centroids.x
                             vertex.y = centroid_of_centroids.y
                             # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
                             force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
-                           
 
                 # ----------deg3+ outside
                 

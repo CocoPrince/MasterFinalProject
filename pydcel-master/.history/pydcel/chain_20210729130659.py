@@ -9,7 +9,7 @@ class WrapperChain(object):
         self.threeSectionArc = None # record the correspond relationship between the three arcs and the chain
         self.locateCircleRadius = None # record the correspond relationship between the locatecircle and the chain
         self.locateCircleCenter = []
-        self.deg3Type = self.calDeg3Type()
+        self.deg3Type
 
     def calOptimalLength(self):
         optimalLength = len(self.chain) - 1
@@ -27,15 +27,12 @@ class WrapperChain(object):
 
 
     def calChainType(self):
-        if len(self.chain) == 2:
+        if len(chain) == 2:
             chainType = 0
-        elif len(self.chain[1].incidentFaces) > 1:
+        elif len(chain[1].incidentFaces) > 1:
             chainType = 1
         else:
             chainType = 2
-
-    def calDeg3Type(self):
-        pass
 
 
     # calculate the intersection of locateCircle and appoloCircle

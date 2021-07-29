@@ -705,8 +705,8 @@ class DCEL(object):
                         if (len(chain) - 1) * 5 > disBetween3Deg:
                             faceId1 = list(chain[1].incidentFaces)[0] # two incident faces of the chain
                             faceId2 = list(chain[1].incidentFaces)[1]
-                            centroid1 = self.faceCentroidDict.get(faceId1) # two centroids of the two incident faces
-                            centroid2 = self.faceCentroidDict.get(faceId2)
+                            centroid2 = self.faceCentroidDict.get(faceId1) # two centroids of the two incident faces
+                            centroid1 = self.faceCentroidDict.get(faceId2)
                             # rotation angle, can be adjusted
                             angle = math.radians(30)
                             # formula of rotation

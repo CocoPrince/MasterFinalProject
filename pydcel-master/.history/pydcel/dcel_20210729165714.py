@@ -657,26 +657,6 @@ class DCEL(object):
                 chainList = self.findChain(self.vertexList, edge_dict)
                 print(chainList)
                 
-            # before rotate           
-            # just use straight line to show the results
-            for wrapperchain in chainList:
-                first_deg2 = wrapperchain.chain[1]
-                if len(first_deg2.incidentEdges) > 2:
-                    continue
-                face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
-
-                xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
-                ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
-                xUnitDis = xdis / (len(wrapperchain.chain) - 1)
-                yUnitDis = ydis / (len(wrapperchain.chain) - 1)
-
-                multi = 1
-                for deg2 in wrapperchain.chain[1:-1]:                    
-                    deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
-                    deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
-                    multi += 1
             gui = pydcel.dcelVis(self)
 
             ####################-----------------------------##########################
@@ -685,21 +665,12 @@ class DCEL(object):
             for vertex in self.vertexList:
                 if len(vertex.incidentEdges) < 3:
                     continue
-                centroidsOfIncidentFace = []
-                # Find the centroids of the circle around the current deg3+ point
-                for faceIdentifier in vertex.incidentFaces:
-                    centroid = self.faceCentroidDict.get(faceIdentifier)
-                    centroidsOfIncidentFace.append(centroid)
-                if len(centroidsOfIncidentFace) < 3:
-                    continue
-
-                # rotate
                 for wrapperChain in chainList:
                     chain = wrapperChain.chain
                     start3Deg = chain[0]
                     end3Deg = chain[-1]
                     if start3Deg.identifier == vertex.identifier or end3Deg.identifier == vertex.identifier:
-                        disBetween3Deg = math.sqrt((start3Deg.x - end3Deg.x) ** 2 + (start3Deg.y - end3Deg.y) ** 2) # real length of the chain
+                        disBetween3Deg = math.sqrt((start3Deg.x - end3Deg.x) ** 2 + (start3Deg.y - end3Deg.y) ** 2)
 
                         # If chain length less than threshold (fractional times optimal distance), rotate
                         if (len(chain) - 1) * 5 > disBetween3Deg:
@@ -710,10 +681,8 @@ class DCEL(object):
                             # rotation angle, can be adjusted
                             angle = math.radians(30)
                             # formula of rotation
-                            # take theh cetroid1 as center, rotate the centroid2
-                            centroid2.x = (centroid2.x-centroid1.x)*math.cos(angle) - (centroid2.y-centroid1.y)*math.sin(angle)+centroid1.x
-                            centroid2.y = (centroid2.y-centroid1.y)*math.cos(angle) + (centroid2.x-centroid1.x)*math.sin(angle)+centroid1.y
-                            # put the deg3+ vertex at the centroid of the centroids of the rotated circles(same as before) 
+                            centroid2.x = (centroid2.x-centroid1.x)*math.cos(angle) + (centroid2.y-centroid1.y)*math.sin(angle)+centroid1.x
+                            centroid2.y = (centroid2.y-centroid1.y)*math.cos(angle) - (centroid2.x-centroid1.x)*math.sin(angle)+centroid1.y
                             centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
                             vertex.x = centroid_of_centroids.x
                             vertex.y = centroid_of_centroids.y

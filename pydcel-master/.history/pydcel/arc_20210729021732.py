@@ -2,7 +2,7 @@ import math
 
 class circle(object):
 
-    def __init__(self, center_x, center_y, radius, arcLength):
+    def __init__(self, center, radius, arcLength):
         self.center_x = center_x
         self.center_y = center_y
         self.radius = radius   
@@ -27,12 +27,10 @@ class arc(object):
     def calApollonisCircle(self, face_1_centroid, face_2_centroid, radius_1, radius_2):
         ratio = radius_1 / radius_2
         centroidDis = math.sqrt((face_1_centroid.x - face_2_centroid.x) ** 2 + (face_1_centroid.y - face_2_centroid.y) ** 2)
+        self.appoloCircle.radius = abs(ratio / (1 - ratio ** 2)) * centroidDis
+        self.appoloCircle.center.x = (face_1_centroid.x - ratio ** 2 * face_2_centroid.x) / (1 - ratio ** 2)
+        self.appoloCircle.center.y = (face_1_centroid.y - ratio ** 2 * face_2_centroid.y) / (1 - ratio ** 2)
         
-        radius = abs(ratio / (1 - ratio ** 2)) * centroidDis
-        center_x = (face_1_centroid.x - ratio ** 2 * face_2_centroid.x) / (1 - ratio ** 2)
-        center_y = (face_1_centroid.y - ratio ** 2 * face_2_centroid.y) / (1 - ratio ** 2)
-        # TODO
-        self.appoloCircle = circle(center_x, center_y, radius, 0)
         # return radius, centerPoint.x, centerPoint.y
 
 
@@ -41,7 +39,6 @@ class arc(object):
 
     # Deg3Circle's radius
     def calTangencyCircle():
-        pass
 
 
 

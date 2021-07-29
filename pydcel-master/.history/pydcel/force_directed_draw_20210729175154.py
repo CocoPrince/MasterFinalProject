@@ -54,7 +54,6 @@ class force_directed(object):
                 dist = math.sqrt(distX**2 + distY**2)
                 idealDis = self.centroidRadiusDict.get(centroid1.identifier) + self.centroidRadiusDict.get(centroid2.identifier)
                 total = total + (abs(dist) - idealDis) * (abs(dist) - idealDis)
-                # total = total + (abs(dist) - idealDis)
         return total
 
     def calIdealDis(self, startcentroid, endcentroid):
@@ -165,7 +164,7 @@ class force_directed(object):
             # D := v.pos - u.pos;
             distX = centroid.x - threeDegVertex.x
             distY = centroid.y - threeDegVertex.y
-            dist = math.sqrt(distX**2 + distY**2) # real distance
+            dist = math.sqrt(distX**1 + distY**1) # real distance
             idealDis = self.centroidRadiusDict.get(centroid.identifier) # ideal distance
             # v.disp := v.disp + ( D /| D |) * fr (| D |)
             xDisDit = xDisDit + distX / abs(distX) * self.repulsiveForce(idealDis, dist) * abs(distX) / abs(dist)
@@ -206,10 +205,9 @@ class force_directed(object):
             for centroid in centroidsOfIncidentFace:
                 distX = centroid.x - threeDegVertex.x
                 distY = centroid.y - threeDegVertex.y
-                dist = math.sqrt(distX**2 + distY**2)
+                dist = math.sqrt(distX**1 + distY**1)
                 idealDis = self.centroidRadiusDict.get(centroid.identifier)
                 total = total + (abs(dist) - idealDis) * (abs(dist) - idealDis)
-                # total = total + (abs(dist) - idealDis)
                 print(total)                               
             # check if the total energy is the minimum
             if last_time_total_energy != 0.0 and last_time_total_energy <= total:
