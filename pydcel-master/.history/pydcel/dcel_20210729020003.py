@@ -617,9 +617,6 @@ class DCEL(object):
                 vertices_in_circle = self.splitCircle(centroid, radius, len(face_vertices))
                 self.faceVerticesDict[face.identifier] = {"cur_vertices":face_vertices_dict, "circle_vertices":vertices_in_circle}
                
-            chainList = self.findChain(self.vertexList, edge_dict)
-            print(chainList)
-
             # Move point to target position
             for vertex in self.vertexList:
                 if len(vertex.incidentEdges) < 3:
@@ -635,35 +632,11 @@ class DCEL(object):
                 # move the deg3+ vertex into the ploygon formed by centroids of the around circle
                 if len(centroidsOfIncidentFace) < 3:
                     continue
-
-
                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
                 vertex.x = centroid_of_centroids.x
                 vertex.y = centroid_of_centroids.y
                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
                 force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
-                for wrapperChain in chainList:
-                    start3Deg = wrapperChain[0]
-                    end3Deg = wrapperChain[-1]
-                    if start3Deg.identifier == vertex.identifier or end3Deg.identifier == vertex.identifier:
-                        disBetween3Deg = math.sqrt((start3Deg.x - end3Deg.x) ** 2 + (start3Deg.y - end3Deg.y) ** 2)
-
-                        if (len(wrapperChain) - 1) * 5 > disBetween3Deg:
-                            faceId1 = list(wrapperChain[1].incidentFaces)[0]
-                            faceId2 = list(wrapperChain[1].incidentFaces)[1]
-                            centroid2 = self.faceCentroidDict.get(faceId1)
-                            centroid1 = self.faceCentroidDict.get(faceId2)
-                            angle = math.radians(50)
-                            centroid2.x = (centroid2.x-centroid1.x)*math.cos(angle) + (centroid2.y-centroid1.y)*math.sin(angle)+centroid1.x
-                            centroid2.y = (centroid2.y-centroid1.y)*math.cos(angle) - (centroid2.x-centroid1.x)*math.sin(angle)+centroid1.y
-                            centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
-                            vertex.x = centroid_of_centroids.x
-                            vertex.y = centroid_of_centroids.y
-                            # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
-                            force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
-                
-
-
                 
                 
 
@@ -686,6 +659,9 @@ class DCEL(object):
                 # vertex.x = x_distance + vertex.x
                 # vertex.y = y_distance + vertex.y
 
+
+            chainList = self.findChain(self.vertexList, edge_dict)
+            print(chainList)
 
             # just use straight line to show the results
             for chain in chainList:

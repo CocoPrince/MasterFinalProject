@@ -662,6 +662,11 @@ class DCEL(object):
                             # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
                             force_directed_draw.handle3DegVertex(vertex, centroidsOfIncidentFace)
                 
+            isHandle = True
+            for i in range(10):
+                if switch == 'on' and isHandle:
+                    # Rearrange the centroid
+                    isHandle = force_directed_draw.handler()
 
 
                 
