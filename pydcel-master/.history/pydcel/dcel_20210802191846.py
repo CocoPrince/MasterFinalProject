@@ -432,21 +432,8 @@ class DCEL(object):
     # the optimal distance is proportional to the number of deg2 vertices on the chain
     # the optimal distance is used to determine the radius of positioning-circle for deg3+ vertices with infinit face
     # key: deg3 vertex, value: all chains incident with this vertex
-    def buildDeg3ChainsDict(self, chainList):
-        deg3ChainDict = {} # a dict for deg3+ vertices
-        for wrapperchain in chainList:
-            keyStart = wrapperchain.chain[0] # start deg3+ vertex
-            keyEnd = wrapperchain.chain[-1]  # end deg3+ vertex
-            
-            if keyStart not in deg3ChainDict:
-                deg3ChainDict[keyStart] = [] # value(a list of all incident chains)
-            deg3ChainDict[keyStart].append(wrapperchain)
-
-            if keyEnd not in deg3ChainDict:
-                deg3ChainDict[keyEnd] = []
-            deg3ChainDict[keyEnd].append(wrapperchain)
-                
-
+    def buildDeg3ChainsDict(self, WrapperChain):
+        pass
 
     
     
