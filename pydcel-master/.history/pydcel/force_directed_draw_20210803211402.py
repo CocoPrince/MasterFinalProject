@@ -252,7 +252,7 @@ class force_directed(object):
         angle2 = int(angle2 * 180/math.pi)
         # print(angle2)
         included_angle = 0
-        # From the x-positive half axis, the centroid(line) at the front 
+        #从x正半轴出发，位于更前面的质心（线）
         preCentroid = centroid1 if angle1 > angle2 else centroid2
         postCentroid = centroid1 if angle1 <= angle2 else centroid2
         if angle1*angle2 >= 0:
