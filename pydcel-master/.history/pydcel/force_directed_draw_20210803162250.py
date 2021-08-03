@@ -176,7 +176,6 @@ class force_directed(object):
     --------------------------------------------------------------------------------------------------------'''
 
     # A dictionary, find all the adjacent edges(orange lines between centroids) for every centroid
-    # key: a centroid, value: all incident edges of this centroid
     def buildCentroidEdgeDict(self):
         dict = {}
         for edge in self.edges:
@@ -194,30 +193,29 @@ class force_directed(object):
     def handleRotateRepusive(self):
         for kCentroid, vEdgeList in self.centroidEdgeDict.items():
             index = 0
-            # TODO each pair of neighbour orange edge 
+            # TODO 暂时两两之间都计算切向排斥力力 
             while index < len(vEdgeList):
                 startEdge = vEdgeList[index]
                 endEdge = vEdgeList[(index+1) % len(vEdgeList)] # 最后一组是下标n-1 到 0，完成循环
-                index += 1
 
-                # Find the two centroids to rotate
+                # 找到要旋转的两个质心
                 centroid1 = startEdge.start if startEdge.start.identifier != kCentroid.identifier else startEdge.end
                 centroid2 = endEdge.start if endEdge.start.identifier != kCentroid.identifier else endEdge.end
-                
-                # TODO done 这里要算出一个需要旋转的角度
-                # The radian is based on the ratio of the points on this arc to the entire face.                
-                vertexListOfKCentroid = [v for v in self.centroidFaceDict[kCentroid.identifier].loopOuterVertices()]
-                radian, preCentroid, postCentroid = self.rotateRepulsive(kCentroid, centroid1, centroid2, vertexListOfKCentroid)
+                # TODO 这里要算出一个需要旋转的角度
+                vertexListOfKCentroid = self.centroidFaceDict[kCentroid.identifier].vertexList
+                radian = self.rotateRepulsive(kCentroid, centroid1, centroid2, vertexListOfKCentroid)
                 angle = math.radians(radian)
                 
 
-                # TODO done 移动centroid1， centroid2，逆时针方向上更靠前的逆时针旋转，靠后的顺时针旋转 
+                # TODO 移动centroid1， centroid2，一个顺时针，一个逆时针,具体怎么判断还没写
 
-                preCentroid.x = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                preCentroid.y = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
+                centroid1.x = (centroid1.x-kCentroid.x)*math.cos(angle) - (centroid1.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+                centroid1.y = (centroid1.y-kCentroid.y)*math.cos(angle) + (centroid1.x-kCentroid.x)*math.sin(angle)+kCentroid.y
 
-                postCentroid.x = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                postCentroid.y = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
+                centroid2.x = (centroid2.x-kCentroid.x)*math.cos(angle) - (centroid2.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+                centroid2.y = (centroid2.y-kCentroid.y)*math.cos(angle) + (centroid2.x-kCentroid.x)*math.sin(angle)+kCentroid.y
+            #                 
+
 
     
 
@@ -228,39 +226,15 @@ class force_directed(object):
             if 1==1:
                 count += 1
 
-        idealRadian = count / len(vertexListOfKCentroid) * 360
+        dealRadian = count / len(vertexListOfKCentroid) * 360
 
-        # TODO  done 求实际夹角 kCentroid——centroid1与kCentroid——centroid2，以及判断哪条边逆时针上看更靠前，哪条更靠后，选逆时针是为了方便三角函数的运算
-        realRadian, preCentroid, postCentroid = self.calRandianBetween2Vector(kCentroid, centroid1, centroid2)
+        # TODO 求实际夹角 kCentroid——centroid1与kCentroid——centroid2
+        realRadian = 0
 
         # 要移动的角度应该是实际夹角与理想夹角之差的一半，因为两个centroid都要移动，或者只移动一个，那就不用除2了
-        return abs(realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done 这里不知道需不需要带正负号
+        return realRadian - dealRadian # TODO 这里不知道需不需要带正负号
 
-    # 新方法
-    def calRandianBetween2Vector(self, kCentroid, centroid1, centroid2):
-        dx1 = centroid1.x - kCentroid.x
-        dy1 = centroid1.y - kCentroid.y
-        dx2 = centroid2.x - kCentroid.x
-        dy2 = centroid2.y - kCentroid.y
-        angle1 = math.atan2(dy1, dx1)
-        angle1 = int(angle1 * 180/math.pi)
-        # print(angle1)
-        angle2 = math.atan2(dy2, dx2)
-        angle2 = int(angle2 * 180/math.pi)
-        # print(angle2)
-        included_angle = 0
-        #从x正半轴出发，位于更前面的质心（线）
-        preCentroid = centroid1 if angle1 > angle2 else centroid2
-        postCentroid = centroid1 if angle1 <= angle2 else centroid2
-        if angle1*angle2 >= 0:
-            included_angle = abs(angle1-angle2)
-        else:
-            included_angle = abs(angle1) + abs(angle2)
-            if included_angle > 180:
-                preCentroid = centroid1 if angle1 < angle2 else centroid2
-                postCentroid = centroid1 if angle1 >= angle2 else centroid2
-                included_angle = 360 - included_angle
-        return included_angle, preCentroid, postCentroid
+
 
 
 

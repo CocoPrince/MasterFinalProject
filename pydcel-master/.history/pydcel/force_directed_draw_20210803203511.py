@@ -198,7 +198,6 @@ class force_directed(object):
             while index < len(vEdgeList):
                 startEdge = vEdgeList[index]
                 endEdge = vEdgeList[(index+1) % len(vEdgeList)] # 最后一组是下标n-1 到 0，完成循环
-                index += 1
 
                 # Find the two centroids to rotate
                 centroid1 = startEdge.start if startEdge.start.identifier != kCentroid.identifier else startEdge.end

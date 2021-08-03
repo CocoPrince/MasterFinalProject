@@ -63,7 +63,7 @@ class WrapperChain(object):
         S = self.threeSectionArc.appoloCircle.radius      # radius of appoloCircle
         d = math.sqrt((abs(a - x)) ** 2 + (abs(b - y)) ** 2)    
         A = (R ** 2 - S ** 2 + d ** 2) / (2 * d)
-        h = math.sqrt(R ** 2 - A ** 2)
+        h = math.sqrt(abs(R ** 2 - A ** 2))
         x2 = x + A * (a - x) / d
         y2 = y + A * (b - y) / d
         x3 = round(x2 - h * (b - y) / d, 2)

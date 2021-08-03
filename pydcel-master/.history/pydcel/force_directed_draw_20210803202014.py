@@ -194,11 +194,10 @@ class force_directed(object):
     def handleRotateRepusive(self):
         for kCentroid, vEdgeList in self.centroidEdgeDict.items():
             index = 0
-            # TODO each pair of neighbour orange edge 
+            # TODO 暂时两两之间都计算切向排斥力力 
             while index < len(vEdgeList):
                 startEdge = vEdgeList[index]
                 endEdge = vEdgeList[(index+1) % len(vEdgeList)] # 最后一组是下标n-1 到 0，完成循环
-                index += 1
 
                 # Find the two centroids to rotate
                 centroid1 = startEdge.start if startEdge.start.identifier != kCentroid.identifier else startEdge.end
@@ -228,13 +227,13 @@ class force_directed(object):
             if 1==1:
                 count += 1
 
-        idealRadian = count / len(vertexListOfKCentroid) * 360
+        dealRadian = count / len(vertexListOfKCentroid) * 360
 
         # TODO  done 求实际夹角 kCentroid——centroid1与kCentroid——centroid2，以及判断哪条边逆时针上看更靠前，哪条更靠后，选逆时针是为了方便三角函数的运算
         realRadian, preCentroid, postCentroid = self.calRandianBetween2Vector(kCentroid, centroid1, centroid2)
 
         # 要移动的角度应该是实际夹角与理想夹角之差的一半，因为两个centroid都要移动，或者只移动一个，那就不用除2了
-        return abs(realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done 这里不知道需不需要带正负号
+        return abs(realRadian - dealRadian) / 2, preCentroid, postCentroid # TODO done 这里不知道需不需要带正负号
 
     # 新方法
     def calRandianBetween2Vector(self, kCentroid, centroid1, centroid2):

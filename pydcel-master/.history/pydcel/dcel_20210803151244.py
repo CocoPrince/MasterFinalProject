@@ -104,7 +104,6 @@ class DCEL(object):
         self.faceVerticesDict = {}  # Dictionary: the correspondence between the face and its vertices 
         self.faceCentroidDict = {}    # Dictionary: the correspondence between the face and its centroid 
         self.centroidRadiusDict = {}  # Dictionary: the correspondence between the centroid and the radius
-        self.centroidFaceDict = {}
         self.radiusList = []    # all the radius of the circle
         self.infiniteFace = None
         self.centroidEdges = [] # all the edges of the centroid graph
@@ -587,7 +586,6 @@ class DCEL(object):
         else:
             centroid, radius = self.calCentroidAndRadius(face_vertices)
             self.faceCentroidDict[face.identifier] = centroid
-            self.centroidFaceDict[centroid.identifier] = face
             self.centroidRadiusDict[centroid.identifier] = radius
         return centroid, radius
 
@@ -649,7 +647,7 @@ class DCEL(object):
             
             # use force_directed approach to rearrange the centroid.  
             # note:Initialize the centroid to arrange the processor
-            force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges, self.centroidFaceDict)
+            force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges)
             isHandle = True
             for i in range(1000):
                 if switch == 'on' and isHandle:

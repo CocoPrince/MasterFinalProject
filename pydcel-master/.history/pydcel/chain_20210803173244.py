@@ -13,7 +13,7 @@ class WrapperChain(object):
         self.deg3Type = self.calDeg3Type() # two types: 1-inside(except cases of outside type), 2-outside(as long as one of the deg3 vertex is adjacent to the infinate face)
 
     def calOptimalLength(self):
-        optimalLength = (len(self.chain) - 1) * 1
+        optimalLength = (len(self.chain) - 1) * 20
         return optimalLength
 
     def calLocateCircleOfInsideChain(self, circle_1_centroid, circle_2_centroid, radius_1, radius_2):
