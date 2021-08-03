@@ -18,7 +18,7 @@ class Arc(object):
         self.deg3EndCircle = None
         self.deg3Start = deg3Start
         self.deg3End = deg3End
-        # self.radian = self.calRadian()
+        self.radian = self.calRadian()
         self.startCircleTangency = None  
         self.endCircleTangency = None
 

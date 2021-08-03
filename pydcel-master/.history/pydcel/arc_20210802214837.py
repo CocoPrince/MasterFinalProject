@@ -10,15 +10,15 @@ class circle(object):
         self.arcLength = arcLength 
 
 
-class Arc(object):
+class arc(object):
     
-    def __init__(self, deg3Start, deg3End):
+    def __init__(self, deg3_start, deg3_end):
         self.appoloCircle = None
         self.deg3StartCircle = None
         self.deg3EndCircle = None
         self.deg3Start = deg3Start
         self.deg3End = deg3End
-        # self.radian = self.calRadian()
+        self.radian = self.calRadian()
         self.startCircleTangency = None  
         self.endCircleTangency = None
 
@@ -40,7 +40,7 @@ class Arc(object):
     # parameters: deg3, apollo(radius, centerPoint.x, centerPoint.y)
     def calDeg3Circle(self):
         pass
-
+    
     # Deg3Circle's radius
     def calTangencyCircle():
         pass

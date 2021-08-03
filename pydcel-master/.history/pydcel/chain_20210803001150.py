@@ -44,9 +44,7 @@ class WrapperChain(object):
 
     def calDeg3Type(self):
         deg3Start = self.chain[0]
-        deg3End = self.chain[-1]
-        if deg3End.identifier == 79 or deg3Start.identifier == 79:
-            print()
+        deg3End = self.chain[1]
         if len(deg3Start.incidentEdges) > len(deg3Start.incidentFaces) or len(deg3End.incidentEdges) > len(deg3End.incidentFaces):
             return 2
         else:
@@ -58,9 +56,9 @@ class WrapperChain(object):
         x = self.locateCircleCenter[0]   # center of locateCircle
         y = self.locateCircleCenter[1]   
         R = self.locateCircleRadius      # radius of locateCircle
-        a = self.threeSectionArc.appoloCircle.center_x   # center of appoloCircle
-        b = self.threeSectionArc.appoloCircle.center_y
-        S = self.threeSectionArc.appoloCircle.radius      # radius of appoloCircle
+        a = self.arc.appoloCircle.center_x   # center of appoloCircle
+        b = self.arc.appoloCircle.center_y
+        S = self.arc.appoloCircle.radius      # radius of appoloCircle
         d = math.sqrt((abs(a - x)) ** 2 + (abs(b - y)) ** 2)    
         A = (R ** 2 - S ** 2 + d ** 2) / (2 * d)
         h = math.sqrt(R ** 2 - A ** 2)

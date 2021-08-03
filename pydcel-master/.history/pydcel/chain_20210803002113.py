@@ -44,7 +44,7 @@ class WrapperChain(object):
 
     def calDeg3Type(self):
         deg3Start = self.chain[0]
-        deg3End = self.chain[-1]
+        deg3End = self.chain[1]
         if deg3End.identifier == 79 or deg3Start.identifier == 79:
             print()
         if len(deg3Start.incidentEdges) > len(deg3Start.incidentFaces) or len(deg3End.incidentEdges) > len(deg3End.incidentFaces):

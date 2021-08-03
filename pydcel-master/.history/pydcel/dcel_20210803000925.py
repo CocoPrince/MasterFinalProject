@@ -706,8 +706,8 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
+                # if len(face) < 2:
+                #     continue
 
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
@@ -800,8 +800,8 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
+                # if len(face) < 2:
+                #     continue
 
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y

@@ -443,10 +443,10 @@ class DCEL(object):
 
             # calculate location circle of inside chain for outside deg3+
             if 1 == wrapperchain.chainType:
-                incidentFace1 = wrapperchain.incidentFacesOfChain[0]
-                incidentFace2 = wrapperchain.incidentFacesOfChain[1]
-                centroid1 = self.faceCentroidDict[incidentFace1.identifier]
-                centroid2 = self.faceCentroidDict[incidentFace2.identifier]
+                incidentFace1Id = wrapperchain.incidentFacesOfChain[0]
+                incidentFace2Id = wrapperchain.incidentFacesOfChain[1]
+                centroid1 = self.faceCentroidDict[incidentFace1Id]
+                centroid2 = self.faceCentroidDict[incidentFace2Id]
                 radius1 = self.centroidRadiusDict[centroid1.identifier]
                 radius2 = self.centroidRadiusDict[centroid2.identifier]
                 arc = Arc(keyDeg3Start, keyDeg3End)
@@ -455,7 +455,7 @@ class DCEL(object):
                 # TODO other properties of three section arc
                 wrapperchain.setThreeSectionArc(arc)
                 # calculate location circle of inside chain for outside deg3+
-                if wrapperchain.deg3Type == 2:
+                if len(keyDeg3Start.incidentEdges) > len(keyDeg3Start.incidentFaces) or len(keyDeg3End.incidentEdges) > len(keyDeg3End.incidentFaces):
                     wrapperchain.calLocateCircleOfInsideChain(centroid1, centroid2, radius1, radius2)
 
         
@@ -492,8 +492,6 @@ class DCEL(object):
             for wrapperChain in vChainList:
                 # TODO whether empty chain should be deal with
                 if wrapperChain.chainType == 2:
-                    continue
-                if wrapperChain.deg3Type == 1:
                     continue
                 intersection1, intersection2 = wrapperChain.calLocateIntersection()
                 intersection = self.relateDeg3WithIntersection(kDeg3, intersection1, intersection2)
@@ -706,8 +704,8 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
+                # if len(face) < 2:
+                #     continue
 
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
@@ -800,8 +798,8 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
+                # if len(face) < 2:
+                #     continue
 
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y

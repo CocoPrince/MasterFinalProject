@@ -109,8 +109,6 @@ class DCEL(object):
         self.centroidEdges = [] # all the edges of the centroid graph
         self.apolloCenterList = []
         self.apolloRadiusList = []
-        self.face_dict = {} # dictionary that finds faces by id
-        self.edge_dict = {} # dictionary that finds hedges by id
 
     def getNewId(self, L):
         if len(L) == 0:
@@ -424,7 +422,7 @@ class DCEL(object):
                 # TODO
                 if isTraveledChain is True:
                     continue
-                wrapperChain = WrapperChain(chain, self.edge_dict) # class Wrapperchain
+                wrapperChain = WrapperChain(chain) # class Wrapperchain
                 chainList.append(wrapperChain)
                 print(chain) 
         return chainList
@@ -455,7 +453,7 @@ class DCEL(object):
                 # TODO other properties of three section arc
                 wrapperchain.setThreeSectionArc(arc)
                 # calculate location circle of inside chain for outside deg3+
-                if wrapperchain.deg3Type == 2:
+                if len(keyDeg3Start.incidentEdges) > len(keyDeg3Start.incidentFaces) or len(keyDeg3End.incidentEdges) > len(keyDeg3End.incidentFaces):
                     wrapperchain.calLocateCircleOfInsideChain(centroid1, centroid2, radius1, radius2)
 
         
@@ -480,7 +478,7 @@ class DCEL(object):
 
     
     def handleDeg3Vertex_outside(self, deg3ChainDict):
-        for kDeg3, vChainList in deg3ChainDict.items():
+        for kDeg3, vChainList in deg3ChainDict:
             # only handle the outside deg3+ vertex
             if len(kDeg3.incidentFaces) == len(kDeg3.incidentEdges):
                 continue
@@ -492,8 +490,6 @@ class DCEL(object):
             for wrapperChain in vChainList:
                 # TODO whether empty chain should be deal with
                 if wrapperChain.chainType == 2:
-                    continue
-                if wrapperChain.deg3Type == 1:
                     continue
                 intersection1, intersection2 = wrapperChain.calLocateIntersection()
                 intersection = self.relateDeg3WithIntersection(kDeg3, intersection1, intersection2)
@@ -630,16 +626,17 @@ class DCEL(object):
             edges = []
             distinct_edge = set()
 
-            
+            face_dict = {} # dictionary that finds faces by id
             for face in self.faceList:
-                self.face_dict[face.identifier] = face
+                face_dict[face.identifier] = face
+            edge_dict = {} # dictionary that finds hedges by id
             for hedge in self.hedgeList:
-                self.edge_dict[hedge.identifier] = hedge
+                edge_dict[hedge.identifier] = hedge
 
             #-------------------------------------------------------------------    
             # Traversal faces 1st time: calculate the centroids and radius of all faces
             # and calculate all the adjacent faces of this face(centroid graph)
-            self.calEdgesOfCentroid(self.face_dict, distinct_edge, edges)
+            self.calEdgesOfCentroid(face_dict, distinct_edge, edges)
 
             # draw original map  
             self.centroidEdges = edges          
@@ -668,7 +665,7 @@ class DCEL(object):
                 vertices_in_circle = self.splitCircle(centroid, radius, len(face_vertices))
                 self.faceVerticesDict[face.identifier] = {"cur_vertices":face_vertices_dict, "circle_vertices":vertices_in_circle}
                
-            chainList = self.findChain(self.vertexList, self.edge_dict)
+            chainList = self.findChain(self.vertexList, edge_dict)
             print(chainList)
 
             # Move point to target position
@@ -696,7 +693,7 @@ class DCEL(object):
                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
                 force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
                 
-                chainList = self.findChain(self.vertexList, self.edge_dict)
+                chainList = self.findChain(self.vertexList, edge_dict)
                 print(chainList)
                 
             # before rotate           
@@ -706,8 +703,8 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
+                # if len(face) < 2:
+                #     continue
 
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
@@ -800,8 +797,8 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                if len(face) < 2:
-                    continue
+                # if len(face) < 2:
+                #     continue
 
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y

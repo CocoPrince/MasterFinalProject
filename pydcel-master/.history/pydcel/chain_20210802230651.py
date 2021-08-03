@@ -2,21 +2,22 @@ import math
 
 class WrapperChain(object):
     
-    def __init__(self, chain, edgeDict):
+    def __init__(self, chain):
         self.chain = chain
-        self.incidentFacesOfChain = []
-        self.chainType = self.calChainType(edgeDict) # two types: 1-inside, 2-outside
+        self.chainType = self.calChainType() # two types: 1-inside, 2-outside
         self.optimalLength = self.calOptimalLength()
         self.threeSectionArc = None # record the correspond relationship between the three arcs and the chain
         self.locateCircleRadius = None # record the correspond relationship between the locatecircle and the chain
         self.locateCircleCenter = []
-        self.deg3Type = self.calDeg3Type() # two types: 1-inside(except cases of outside type), 2-outside(as long as one of the deg3 vertex is adjacent to the infinate face)
+        
+        self.incidentFacesOfChain = []
+        # self.deg3Type = self.calDeg3Type()
 
     def calOptimalLength(self):
         optimalLength = len(self.chain) - 1
         return optimalLength
 
-    def calLocateCircleOfInsideChain(self, circle_1_centroid, circle_2_centroid, radius_1, radius_2):
+    def calLocateCircle(self, circle_1_centroid, circle_2_centroid, radius_1, radius_2):
         locateCircleCenter_x = abs((circle_2_centroid.x - circle_1_centroid.x) * radius_1 / (radius_1 + radius_2) + circle_1_centroid.x)
         locateCircleCenter_y = abs((circle_2_centroid.y - circle_1_centroid.y) * radius_1 / (radius_1 + radius_2) + circle_1_centroid.y)        
         self.locateCircleRadius = 1/2 * self.optimalLength
@@ -27,40 +28,37 @@ class WrapperChain(object):
         self.threeSectionArc = arc
 
 
-    def calChainType(self, edgeDict):
-        for hedgeIdOfFirstPoint in self.chain[0].incidentEdges:
-            hedgeOfFirstPoint = edgeDict[hedgeIdOfFirstPoint]
-            for hedgeIdOfSecondPoint in self.chain[1].incidentEdges:
-                hedgeOfSecondPoint = edgeDict[hedgeIdOfSecondPoint]
+    def calChainType(self):
+        iteratorFlag = True
+        for hedgeOfFirstPoint in self.chain[0].incidentEdges:
+            if not iteratorFlag:
+                break
+            for hedgeOfSecondPoint in self.chain[1].incidentEdges:
+                iteratorFlag = True
                 if hedgeOfFirstPoint.twin.identifier == hedgeOfSecondPoint.identifier:
                     # calculate outside chain type
                     if hedgeOfFirstPoint.incidentFace.identifier == 'i' or hedgeOfSecondPoint.incidentFace.identifier == 'i':
-                        return 2 
+                        self.chainType = 2 
                     else:
+                        self.chainType = 1
                         self.incidentFacesOfChain.append(hedgeOfFirstPoint.incidentFace)
                         self.incidentFacesOfChain.append(hedgeOfSecondPoint.incidentFace)
-                        return 1
+                    iteratorFlag = False
+                    break
 
 
     def calDeg3Type(self):
-        deg3Start = self.chain[0]
-        deg3End = self.chain[-1]
-        if deg3End.identifier == 79 or deg3Start.identifier == 79:
-            print()
-        if len(deg3Start.incidentEdges) > len(deg3Start.incidentFaces) or len(deg3End.incidentEdges) > len(deg3End.incidentFaces):
-            return 2
-        else:
-            return 1
+        pass
 
 
     # calculate the intersection of locateCircle and appoloCircle
-    def calLocateIntersection(self):
+    def calLocateIntersection(self, deg3vertex):
         x = self.locateCircleCenter[0]   # center of locateCircle
         y = self.locateCircleCenter[1]   
         R = self.locateCircleRadius      # radius of locateCircle
-        a = self.threeSectionArc.appoloCircle.center_x   # center of appoloCircle
-        b = self.threeSectionArc.appoloCircle.center_y
-        S = self.threeSectionArc.appoloCircle.radius      # radius of appoloCircle
+        a = self.arc.appoloCircle.center_x   # center of appoloCircle
+        b = self.arc.appoloCircle.center_y
+        S = self.arc.appoloCircle.radius      # radius of appoloCircle
         d = math.sqrt((abs(a - x)) ** 2 + (abs(b - y)) ** 2)    
         A = (R ** 2 - S ** 2 + d ** 2) / (2 * d)
         h = math.sqrt(R ** 2 - A ** 2)

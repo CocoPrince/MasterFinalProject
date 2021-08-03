@@ -16,7 +16,7 @@ class WrapperChain(object):
         optimalLength = len(self.chain) - 1
         return optimalLength
 
-    def calLocateCircleOfInsideChain(self, circle_1_centroid, circle_2_centroid, radius_1, radius_2):
+    def calLocateCircle(self, circle_1_centroid, circle_2_centroid, radius_1, radius_2):
         locateCircleCenter_x = abs((circle_2_centroid.x - circle_1_centroid.x) * radius_1 / (radius_1 + radius_2) + circle_1_centroid.x)
         locateCircleCenter_y = abs((circle_2_centroid.y - circle_1_centroid.y) * radius_1 / (radius_1 + radius_2) + circle_1_centroid.y)        
         self.locateCircleRadius = 1/2 * self.optimalLength
@@ -28,29 +28,28 @@ class WrapperChain(object):
 
 
     def calChainType(self, edgeDict):
+        iteratorFlag = True
         for hedgeIdOfFirstPoint in self.chain[0].incidentEdges:
             hedgeOfFirstPoint = edgeDict[hedgeIdOfFirstPoint]
+            if not iteratorFlag:
+                break
             for hedgeIdOfSecondPoint in self.chain[1].incidentEdges:
                 hedgeOfSecondPoint = edgeDict[hedgeIdOfSecondPoint]
+                iteratorFlag = True
                 if hedgeOfFirstPoint.twin.identifier == hedgeOfSecondPoint.identifier:
                     # calculate outside chain type
                     if hedgeOfFirstPoint.incidentFace.identifier == 'i' or hedgeOfSecondPoint.incidentFace.identifier == 'i':
-                        return 2 
+                        self.chainType = 2 
                     else:
+                        self.chainType = 1
                         self.incidentFacesOfChain.append(hedgeOfFirstPoint.incidentFace)
                         self.incidentFacesOfChain.append(hedgeOfSecondPoint.incidentFace)
-                        return 1
+                    iteratorFlag = False
+                    break
 
 
     def calDeg3Type(self):
-        deg3Start = self.chain[0]
-        deg3End = self.chain[-1]
-        if deg3End.identifier == 79 or deg3Start.identifier == 79:
-            print()
-        if len(deg3Start.incidentEdges) > len(deg3Start.incidentFaces) or len(deg3End.incidentEdges) > len(deg3End.incidentFaces):
-            return 2
-        else:
-            return 1
+        pass
 
 
     # calculate the intersection of locateCircle and appoloCircle
@@ -58,9 +57,9 @@ class WrapperChain(object):
         x = self.locateCircleCenter[0]   # center of locateCircle
         y = self.locateCircleCenter[1]   
         R = self.locateCircleRadius      # radius of locateCircle
-        a = self.threeSectionArc.appoloCircle.center_x   # center of appoloCircle
-        b = self.threeSectionArc.appoloCircle.center_y
-        S = self.threeSectionArc.appoloCircle.radius      # radius of appoloCircle
+        a = self.arc.appoloCircle.center_x   # center of appoloCircle
+        b = self.arc.appoloCircle.center_y
+        S = self.arc.appoloCircle.radius      # radius of appoloCircle
         d = math.sqrt((abs(a - x)) ** 2 + (abs(b - y)) ** 2)    
         A = (R ** 2 - S ** 2 + d ** 2) / (2 * d)
         h = math.sqrt(R ** 2 - A ** 2)
