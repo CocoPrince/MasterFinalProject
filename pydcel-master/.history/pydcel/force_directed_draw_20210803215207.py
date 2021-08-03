@@ -195,8 +195,7 @@ class force_directed(object):
         for kCentroid, vEdgeList in self.centroidEdgeDict.items():
             index = 0
             # TODO each pair of neighbour orange edge 
-            while index < 1:
-            # while index < len(vEdgeList):
+            while index < len(vEdgeList):
                 startEdge = vEdgeList[index]
                 endEdge = vEdgeList[(index+1) % len(vEdgeList)] # 最后一组是下标n-1 到 0，完成循环
                 index += 1
@@ -214,8 +213,8 @@ class force_directed(object):
 
                 # TODO done move centroid1 and centroid2
                 # The ones farther forward in the counterclockwise direction rotate counterclockwise, and the ones farther back rotate clockwise 
-                # preCentroid.x = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                # preCentroid.y = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
+                preCentroid.x = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+                preCentroid.y = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
 
                 postCentroid.x = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
                 postCentroid.y = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
@@ -242,7 +241,7 @@ class force_directed(object):
 
 
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(realRadian - idealRadian) / 50, preCentroid, postCentroid # TODO done. positive or negative sign
+        return abs(realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done. positive or negative sign
 
 
     '''--------------calculate the real radian and two neighbour centroids-------------------''' 

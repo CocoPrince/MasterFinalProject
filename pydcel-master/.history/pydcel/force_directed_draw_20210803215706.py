@@ -242,7 +242,7 @@ class force_directed(object):
 
 
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(realRadian - idealRadian) / 50, preCentroid, postCentroid # TODO done. positive or negative sign
+        return abs(realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done. positive or negative sign
 
 
     '''--------------calculate the real radian and two neighbour centroids-------------------''' 
