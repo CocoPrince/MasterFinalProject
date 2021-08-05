@@ -239,15 +239,12 @@ class force_directed(object):
         chainBetweenKCentroidAndPost = self.getChainBetweenCentroids(kCentroid, postCentroid)
         countPre = len(chainBetweenKCentroidAndPre.chain) if chainBetweenKCentroidAndPre is not None else 0
         countPost = len(chainBetweenKCentroidAndPost.chain) if chainBetweenKCentroidAndPost is not None else 0
-        count = (countPre + countPost) / 2
-        print("countPre: " + str(countPre))
-        print("countPost: " + str(countPost))
-        print("count: " + str(count))
+        count = (countPre + countPost) / 2 - 1
         # ideal radian for this arc with this number of vertices
         idealRadian = count / len(vertexListOfKCentroid) * 360
-        print("idealRadian: " + str(idealRadian))
+        print("idealRadian" + str(idealRadian))
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return (realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done. positive or negative sign
+        return idealRadian / 200, preCentroid, postCentroid # TODO done. positive or negative sign
 
 
     def getChainBetweenCentroids(self, kCentroid, vCentroid):

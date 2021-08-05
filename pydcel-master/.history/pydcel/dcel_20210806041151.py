@@ -667,12 +667,12 @@ class DCEL(object):
             force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges, self.centroidFaceDict)
             force_directed_draw.setCentroidChainDict(self.buildCentroidChainDict(chainList))
             isHandle = True
-            # force_directed_draw.handleRotateRepusive()
-            # for i in range(1):
-            #     while switch == 'on' and isHandle:
+            force_directed_draw.handleRotateRepusive()
+            for i in range(1):
+                while switch == 'on' and isHandle:
                     
-            #         # Rearrange the centroid
-            #         isHandle = force_directed_draw.handler()
+                    # Rearrange the centroid
+                    isHandle = force_directed_draw.handler()
                     # gui = pydcel.dcelVis(self)
 
 

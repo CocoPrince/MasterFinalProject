@@ -273,15 +273,9 @@ class dcelVis(Tk):
         offset = .02
         sx,sy = e.origin.x, e.origin.y
         ex,ey = e.twin.origin.x, e.twin.origin.y
-        s = e.origin
-        t = e.twin.origin
         vx,vy = ex - sx, ey - sy
         v = vec2(vx, vy)
-        v_ = None
-        try:
-            v_ = v.orthogonal_l()*offset
-        except Exception as e:
-            print()
+        v_ = v.orthogonal_l()*offset
 
         v = v - v.normalized()*.25
         ex, ey = sx+v.x, sy+v.y

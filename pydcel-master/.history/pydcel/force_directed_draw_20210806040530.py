@@ -247,7 +247,7 @@ class force_directed(object):
         idealRadian = count / len(vertexListOfKCentroid) * 360
         print("idealRadian: " + str(idealRadian))
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return (realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done. positive or negative sign
+        return idealRadian / 200, preCentroid, postCentroid # TODO done. positive or negative sign
 
 
     def getChainBetweenCentroids(self, kCentroid, vCentroid):

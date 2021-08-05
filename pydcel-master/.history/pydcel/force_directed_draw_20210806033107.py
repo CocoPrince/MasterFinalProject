@@ -197,7 +197,7 @@ class force_directed(object):
         for kCentroid, vEdgeList in self.centroidEdgeDict.items():
             index = 0
             # TODO each pair of neighbour orange edge 
-            while index < len(vEdgeList):
+            while index < 1:
                 startEdge = vEdgeList[index]
                 endEdge = vEdgeList[(index+1) % len(vEdgeList)] # 最后一组是下标n-1 到 0，完成循环
                 index += 1
@@ -221,7 +221,6 @@ class force_directed(object):
 
                 postCentroid.x = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
                 postCentroid.y = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
-                
 
     
     '''--------------calculate the rotation angle-------------------'''
@@ -239,15 +238,12 @@ class force_directed(object):
         chainBetweenKCentroidAndPost = self.getChainBetweenCentroids(kCentroid, postCentroid)
         countPre = len(chainBetweenKCentroidAndPre.chain) if chainBetweenKCentroidAndPre is not None else 0
         countPost = len(chainBetweenKCentroidAndPost.chain) if chainBetweenKCentroidAndPost is not None else 0
-        count = (countPre + countPost) / 2
-        print("countPre: " + str(countPre))
-        print("countPost: " + str(countPost))
-        print("count: " + str(count))
+        count = (countPre + countPost) / 2 - 1
         # ideal radian for this arc with this number of vertices
         idealRadian = count / len(vertexListOfKCentroid) * 360
-        print("idealRadian: " + str(idealRadian))
+
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return (realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done. positive or negative sign
+        return idealRadian / 300, preCentroid, postCentroid # TODO done. positive or negative sign
 
 
     def getChainBetweenCentroids(self, kCentroid, vCentroid):
@@ -296,11 +292,10 @@ class force_directed(object):
         currentEnergy = self.checkTotalEnergy()
         if currentEnergy > self.lastTimeEnergy and 0 != self.lastTimeEnergy:
             return False
-        
-        # self.handleRotateRepusive()
         self.calRepulsiveForce()
         self.calAttractiveForce()
         self.updateCoordinates()
+        self.handleRotateRepusive()
         print("total energy: ", currentEnergy)
         self.lastTimeEnergy = currentEnergy
         return True
