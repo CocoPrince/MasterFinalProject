@@ -667,12 +667,12 @@ class DCEL(object):
             force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges, self.centroidFaceDict)
             force_directed_draw.setCentroidChainDict(self.buildCentroidChainDict(chainList))
             isHandle = True
-            # force_directed_draw.handleRotateRepusive()
-            # for i in range(1):
-            #     while switch == 'on' and isHandle:
+            force_directed_draw.handleRotateRepusive()
+            for i in range(1):
+                while switch == 'on' and isHandle:
                     
-            #         # Rearrange the centroid
-            #         isHandle = force_directed_draw.handler()
+                    # Rearrange the centroid
+                    isHandle = force_directed_draw.handler()
                     # gui = pydcel.dcelVis(self)
 
 
@@ -714,7 +714,7 @@ class DCEL(object):
                 # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
                 vertex.x = centroid_of_centroids.x
                 vertex.y = centroid_of_centroids.y
-                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
+                Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
                 force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
                 
                 # chainList = self.findChain(self.vertexList, self.edge_dict)

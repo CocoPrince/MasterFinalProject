@@ -197,8 +197,7 @@ class force_directed(object):
         for kCentroid, vEdgeList in self.centroidEdgeDict.items():
             index = 0
             # TODO each pair of neighbour orange edge 
-            # while index < 1:
-            while index < len(vEdgeList):
+            while index < 1:
                 startEdge = vEdgeList[index]
                 endEdge = vEdgeList[(index+1) % len(vEdgeList)] # 最后一组是下标n-1 到 0，完成循环
                 index += 1
@@ -212,21 +211,20 @@ class force_directed(object):
                 vertexListOfKCentroid = [v for v in self.centroidFaceDict[kCentroid.identifier].loopOuterVertices()]
                 radian, preCentroid, postCentroid = self.rotateRepulsive(kCentroid, centroid1, centroid2, vertexListOfKCentroid)
                 angle = math.radians(radian)
-                print("angle:" + str(angle))
+                
 
                 # TODO done move centroid1 and centroid2
                 # The ones farther forward in the counterclockwise direction rotate counterclockwise, and the ones farther back rotate clockwise 
-                preCentroid.x = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                preCentroid.y = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
+
+                # preCentroid.x = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+                # preCentroid.y = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
 
                 postCentroid.x = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
                 postCentroid.y = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
-                
 
     
     '''--------------calculate the rotation angle-------------------'''
     def rotateRepulsive(self, kCentroid, centroid1, centroid2, vertexListOfKCentroid):
-<<<<<<< HEAD
 
          # TODO  done 求实际夹角 kCentroid——centroid1与kCentroid——centroid2，以及判断哪条边逆时针上看更靠前，哪条更靠后，选逆时针是为了方便三角函数的运算
         realRadian, preCentroid, postCentroid = self.calRandianBetween2Vector(kCentroid, centroid1, centroid2)
@@ -240,15 +238,12 @@ class force_directed(object):
         chainBetweenKCentroidAndPost = self.getChainBetweenCentroids(kCentroid, postCentroid)
         countPre = len(chainBetweenKCentroidAndPre.chain) if chainBetweenKCentroidAndPre is not None else 0
         countPost = len(chainBetweenKCentroidAndPost.chain) if chainBetweenKCentroidAndPost is not None else 0
-        count = (countPre + countPost) / 2
-        print("countPre: " + str(countPre))
-        print("countPost: " + str(countPost))
-        print("count: " + str(count))
+        count = (countPre + countPost) / 2 - 1
         # ideal radian for this arc with this number of vertices
         idealRadian = count / len(vertexListOfKCentroid) * 360
-        print("idealRadian: " + str(idealRadian))
+
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return (realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done. positive or negative sign
+        return abs(realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done. positive or negative sign
 
 
     def getChainBetweenCentroids(self, kCentroid, vCentroid):
@@ -259,31 +254,6 @@ class force_directed(object):
 
 
     # 新方法
-=======
-        
-        # TODO  done real angle: kCentroid——centroid1 and kCentroid——centroid2
-        # And to figure out which side is more in the front and which side is more in the back, counterclockwise
-        realRadian, preCentroid, postCentroid = self.calRandianBetween2Vector(kCentroid, centroid1, centroid2)
-    
-        # Traverse the vertices of the face to which KCentroid belongs and find the number of vertices located inside the angle
-        count = 0  # k
-        radianBetweenPreCenAndX = self.calRandianBetweenVectorAndX(kCentroid, preCentroid)
-        radianBetweenPostCenAndX = self.calRandianBetweenVectorAndX(kCentroid, postCentroid)
-        for vertex in vertexListOfKCentroid:
-            radianBetweenVertexAndX = self.calRandianBetweenVectorAndX(kCentroid, vertex)
-            if radianBetweenVertexAndX < radianBetweenPreCenAndX and radianBetweenVertexAndX > radianBetweenPostCenAndX:
-                count += 1
-        # ideal radian for this arc with this number of vertices
-        # k/x * 2*pi*r
-        idealRadian = count / len(vertexListOfKCentroid) * 360 
-
-
-        # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(realRadian - idealRadian) / 2, preCentroid, postCentroid # TODO done. positive or negative sign
-
-
-    '''--------------calculate the real radian and two neighbour centroids-------------------''' 
->>>>>>> 7eca7125f747eea1314c05c2dde0cdece347eb37
     def calRandianBetween2Vector(self, kCentroid, centroid1, centroid2):
         dx1 = centroid1.x - kCentroid.x
         dy1 = centroid1.y - kCentroid.y
@@ -297,7 +267,6 @@ class force_directed(object):
         # print(angle2)
         included_angle = 0
         # From the x-positive half axis, the centroid(line) at the front 
-        # Check which should rotate clockwise and which should counterclockwise
         preCentroid = centroid1 if angle1 > angle2 else centroid2
         postCentroid = centroid1 if angle1 <= angle2 else centroid2
         if angle1*angle2 >= 0:
@@ -323,15 +292,10 @@ class force_directed(object):
         currentEnergy = self.checkTotalEnergy()
         if currentEnergy > self.lastTimeEnergy and 0 != self.lastTimeEnergy:
             return False
-        
-        # self.handleRotateRepusive()
         self.calRepulsiveForce()
         self.calAttractiveForce()
         self.updateCoordinates()
-<<<<<<< HEAD
-        # self.handleRotateRepusive()
-=======
->>>>>>> 1b8dce254cd8bfb9415d3162b0f75a3f57153706
+        self.handleRotateRepusive()
         print("total energy: ", currentEnergy)
         self.lastTimeEnergy = currentEnergy
         return True

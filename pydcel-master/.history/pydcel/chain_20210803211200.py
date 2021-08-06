@@ -3,7 +3,6 @@ import math
 class WrapperChain(object):
     
     def __init__(self, chain, edgeDict):
-        self.chainId = 0
         self.chain = chain
         self.incidentFacesOfChain = []
         self.chainType = self.calChainType(edgeDict) # two types: 1-inside, 2-outside
@@ -12,9 +11,6 @@ class WrapperChain(object):
         self.locateCircleRadius = None # record the correspond relationship between the locatecircle and the chain
         self.locateCircleCenter = []
         self.deg3Type = self.calDeg3Type() # two types: 1-inside(except cases of outside type), 2-outside(as long as one of the deg3 vertex is adjacent to the infinate face)
-
-    def geneChainId(self, id):
-        self.chainId = id
 
     def calOptimalLength(self):
         optimalLength = (len(self.chain) - 1) * 1
@@ -49,6 +45,8 @@ class WrapperChain(object):
     def calDeg3Type(self):
         deg3Start = self.chain[0]
         deg3End = self.chain[-1]
+        if deg3End.identifier == 79 or deg3Start.identifier == 79:
+            print()
         if len(deg3Start.incidentEdges) > len(deg3Start.incidentFaces) or len(deg3End.incidentEdges) > len(deg3End.incidentFaces):
             return 2
         else:

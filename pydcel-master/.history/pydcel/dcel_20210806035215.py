@@ -667,12 +667,11 @@ class DCEL(object):
             force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges, self.centroidFaceDict)
             force_directed_draw.setCentroidChainDict(self.buildCentroidChainDict(chainList))
             isHandle = True
-            # force_directed_draw.handleRotateRepusive()
-            # for i in range(1):
-            #     while switch == 'on' and isHandle:
-                    
-            #         # Rearrange the centroid
-            #         isHandle = force_directed_draw.handler()
+            force_directed_draw.handleRotateRepusive()
+            # for i in range(1000):
+            while switch == 'on' and isHandle:
+                    # Rearrange the centroid
+                isHandle = force_directed_draw.handler()
                     # gui = pydcel.dcelVis(self)
 
 
@@ -712,10 +711,10 @@ class DCEL(object):
 
                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
                 # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-                vertex.x = centroid_of_centroids.x
-                vertex.y = centroid_of_centroids.y
+                # vertex.x = centroid_of_centroids.x
+                # vertex.y = centroid_of_centroids.y
                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
-                force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
+                # force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
                 
                 # chainList = self.findChain(self.vertexList, self.edge_dict)
                 # print(chainList)
@@ -786,8 +785,8 @@ class DCEL(object):
 
             # ----------deg3+ outside
             # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
-            self.handleDeg3Vertex_outside(deg3ChainDict)
+            # deg3ChainDict = self.buildDeg3ChainsDict(chainList)
+            # self.handleDeg3Vertex_outside(deg3ChainDict)
 
 
                 

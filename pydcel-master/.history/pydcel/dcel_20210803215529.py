@@ -189,7 +189,7 @@ class DCEL(object):
         e_0 = vertex.incidentEdge       
         # we don't want to come near the infiniteFace
         for e in e_0.wind():
-            # print((e, e.twin, e.incidentFace))
+            print((e, e.twin, e.incidentFace))
             if e.incidentFace == self.infiniteFace:
                 print("refusing to remove vertex incident to infiniteFace...")
                 return                
@@ -426,9 +426,8 @@ class DCEL(object):
                 if isTraveledChain is True:
                     continue
                 wrapperChain = WrapperChain(chain, self.edge_dict) # class Wrapperchain
-                wrapperChain.geneChainId(len(chainList))
                 chainList.append(wrapperChain)
-                # print(chain) 
+                print(chain) 
         return chainList
 
    
@@ -471,18 +470,8 @@ class DCEL(object):
         return deg3ChainDict
                 
 
-    # chain-->face-->centroid ————> k(centroid id) - v(chain)
-    # 
-    def buildCentroidChainDict(self, chainList):
-        centroidChainDict = {} # k(centroid id) - v(chain)
-        for wrapperchain in chainList:
-            for incidentFace in wrapperchain.incidentFacesOfChain:
-                centroidKey = self.faceCentroidDict[incidentFace.identifier].identifier
-                if centroidKey not in centroidChainDict:
-                    centroidChainDict[centroidKey] = []
-                centroidChainDict[centroidKey].append(wrapperchain)
-        return centroidChainDict
 
+    
     
     # 
     def relateDeg3WithIntersection(self, kDeg3, intersection1, intersection2):
@@ -638,8 +627,7 @@ class DCEL(object):
     ---------------------------------------------------------------------------------------'''
     def handleFaces(self, switch):
         i = 1
-        gui = pydcel.dcelVis(self)  
-             
+
         for repeat in range(1):
             edges = []
             distinct_edge = set()
@@ -658,23 +646,16 @@ class DCEL(object):
             # draw original map  
             self.centroidEdges = edges          
             # gui = pydcel.dcelVis(self)  
-
-            chainList = self.findChain(self.vertexList, self.edge_dict)
-            # print(chainList)
             
             # use force_directed approach to rearrange the centroid.  
             # note:Initialize the centroid to arrange the processor
             force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges, self.centroidFaceDict)
-            force_directed_draw.setCentroidChainDict(self.buildCentroidChainDict(chainList))
             isHandle = True
-            # force_directed_draw.handleRotateRepusive()
-            # for i in range(1):
-            #     while switch == 'on' and isHandle:
-                    
-            #         # Rearrange the centroid
-            #         isHandle = force_directed_draw.handler()
+            for i in range(1000):
+                if switch == 'on' and isHandle:
+                    # Rearrange the centroid
+                    isHandle = force_directed_draw.handler()
                     # gui = pydcel.dcelVis(self)
-
 
 
             #----------------------------------------------------------------------------
@@ -689,7 +670,8 @@ class DCEL(object):
                 vertices_in_circle = self.splitCircle(centroid, radius, len(face_vertices))
                 self.faceVerticesDict[face.identifier] = {"cur_vertices":face_vertices_dict, "circle_vertices":vertices_in_circle}
                
-           
+            chainList = self.findChain(self.vertexList, self.edge_dict)
+            print(chainList)
 
             # Move point to target position
             for vertex in self.vertexList:
@@ -711,14 +693,13 @@ class DCEL(object):
 
 
                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
-                # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
                 vertex.x = centroid_of_centroids.x
                 vertex.y = centroid_of_centroids.y
                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
                 force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
                 
-                # chainList = self.findChain(self.vertexList, self.edge_dict)
-                # print(chainList)
+                chainList = self.findChain(self.vertexList, self.edge_dict)
+                print(chainList)
                 
             # before rotate           
             # just use straight line to show the results
@@ -740,7 +721,7 @@ class DCEL(object):
                     deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
                     deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
                     multi += 1
-            # gui = pydcel.dcelVis(self)
+            gui = pydcel.dcelVis(self)
 
             ####################-----------------------------##########################
             # after the force-directed method, if there existes very short chains, do the next rotate part
@@ -785,7 +766,7 @@ class DCEL(object):
                            
 
             # ----------deg3+ outside
-            # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
             deg3ChainDict = self.buildDeg3ChainsDict(chainList)
             self.handleDeg3Vertex_outside(deg3ChainDict)
 
