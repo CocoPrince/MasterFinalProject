@@ -214,8 +214,8 @@ class force_directed(object):
 
                 # TODO done move centroid1 and centroid2
                 # The ones farther forward in the counterclockwise direction rotate counterclockwise, and the ones farther back rotate clockwise 
-                preCentroid.x = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                preCentroid.y = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
+                # preCentroid.x = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+                # preCentroid.y = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
 
                 postCentroid.x = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
                 postCentroid.y = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
@@ -288,7 +288,7 @@ class force_directed(object):
         self.calRepulsiveForce()
         self.calAttractiveForce()
         self.updateCoordinates()
-        # self.handleRotateRepusive()
+        self.handleRotateRepusive()
         print("total energy: ", currentEnergy)
         self.lastTimeEnergy = currentEnergy
         return True
