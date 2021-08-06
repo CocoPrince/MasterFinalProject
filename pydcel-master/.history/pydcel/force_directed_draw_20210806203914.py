@@ -270,7 +270,7 @@ class force_directed(object):
         idealRadian = count / len(vertexListOfKCentroid) * math.radians(360)
         print("idealRadian: " + str(idealRadian))
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(idealRadian - realRadian) / 200 # TODO done. positive or negative sign
+        return abs(idealRadian - realRadian) / 1000 # TODO done. positive or negative sign
         # return self.rotateRepulsiveForce(idealRadian, realRadian)
          
 

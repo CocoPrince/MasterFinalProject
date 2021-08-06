@@ -672,7 +672,7 @@ class DCEL(object):
                     
                     # Rearrange the centroid
                     isHandle = force_directed_draw.handler()
-                gui = pydcel.dcelVis(self)
+                    gui = pydcel.dcelVis(self)
 
 
 
@@ -705,8 +705,8 @@ class DCEL(object):
                 
                 # ----------deg3+ inside
                 # move the deg3+ vertex into the ploygon formed by centroids of the around circle
-                # if True:
-                #     continue
+                if True:
+                    continue
                 if len(centroidsOfIncidentFace) < 3:
                     continue
 
@@ -787,13 +787,11 @@ class DCEL(object):
 
             # ----------deg3+ outside
             # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
-            self.handleDeg3Vertex_outside(deg3ChainDict)
+            # deg3ChainDict = self.buildDeg3ChainsDict(chainList)
+            # self.handleDeg3Vertex_outside(deg3ChainDict)
 
 
                 
-            # force_directed_draw.handleRotate()
-
 
 
                 # TODO: Check for crossovers

@@ -672,7 +672,7 @@ class DCEL(object):
                     
                     # Rearrange the centroid
                     isHandle = force_directed_draw.handler()
-                gui = pydcel.dcelVis(self)
+                    gui = pydcel.dcelVis(self)
 
 
 
@@ -792,8 +792,6 @@ class DCEL(object):
 
 
                 
-            # force_directed_draw.handleRotate()
-
 
 
                 # TODO: Check for crossovers

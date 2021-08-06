@@ -667,12 +667,12 @@ class DCEL(object):
             force_directed_draw.setCentroidChainDict(self.buildCentroidChainDict(chainList))
             isHandle = True
             # force_directed_draw.handleRotateRepusive()
-            for i in range(1):
-                while switch == 'on' and isHandle:
+            # for i in range(1):
+            #     while switch == 'on' and isHandle:
                     
-                    # Rearrange the centroid
-                    isHandle = force_directed_draw.handler()
-                gui = pydcel.dcelVis(self)
+            #         # Rearrange the centroid
+            #         isHandle = force_directed_draw.handler()
+                    # gui = pydcel.dcelVis(self)
 
 
 
@@ -705,8 +705,8 @@ class DCEL(object):
                 
                 # ----------deg3+ inside
                 # move the deg3+ vertex into the ploygon formed by centroids of the around circle
-                # if True:
-                #     continue
+                if True:
+                    continue
                 if len(centroidsOfIncidentFace) < 3:
                     continue
 
@@ -787,13 +787,11 @@ class DCEL(object):
 
             # ----------deg3+ outside
             # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
-            self.handleDeg3Vertex_outside(deg3ChainDict)
+            # deg3ChainDict = self.buildDeg3ChainsDict(chainList)
+            # self.handleDeg3Vertex_outside(deg3ChainDict)
 
 
                 
-            # force_directed_draw.handleRotate()
-
 
 
                 # TODO: Check for crossovers

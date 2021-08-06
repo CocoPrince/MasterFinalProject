@@ -91,6 +91,21 @@ class force_directed(object):
         return dist / idealDis
 
 
+    # Main function
+    def handler(self):
+        currentEnergy = self.checkTotalEnergy()
+        if currentEnergy > self.lastTimeEnergy and 0 != self.lastTimeEnergy:
+            return False
+
+        self.calRepulsiveForce()
+        self.calAttractiveForce()
+        self.handleRotateRepusive()
+        self.updateCoordinates()
+                
+        print("total energy: ", currentEnergy)
+        self.lastTimeEnergy = currentEnergy
+        return True
+
     
     '''--------------------------------------------------------------------------------------------------
                     part 1:   Rearrange the centroids to the ideal position
@@ -270,7 +285,7 @@ class force_directed(object):
         idealRadian = count / len(vertexListOfKCentroid) * math.radians(360)
         print("idealRadian: " + str(idealRadian))
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(idealRadian - realRadian) / 200 # TODO done. positive or negative sign
+        return abs(idealRadian - realRadian) / 1000 # TODO done. positive or negative sign
         # return self.rotateRepulsiveForce(idealRadian, realRadian)
          
 
@@ -320,20 +335,7 @@ class force_directed(object):
         angle1 = int(angle1 * 180/math.pi)
         return angle1
 
-    # Main function
-    def handler(self):
-        currentEnergy = self.checkTotalEnergy()
-        if currentEnergy > self.lastTimeEnergy and 0 != self.lastTimeEnergy:
-            return False
 
-        self.calRepulsiveForce()
-        self.calAttractiveForce()
-        self.handleRotateRepusive()
-        self.updateCoordinates()
-                
-        print("total energy: ", currentEnergy)
-        self.lastTimeEnergy = currentEnergy
-        return True
 
 
 

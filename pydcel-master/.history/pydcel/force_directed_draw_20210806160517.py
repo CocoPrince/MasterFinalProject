@@ -26,8 +26,7 @@ class force_directed(object):
         self.centroidChainDict = {}
         self.centroidEdgeDict = self.buildCentroidEdgeDict() # Add relationship between the centroid and the edges between centroids
         self.centroidFaceDict = centroidFaceDict # add relationship between the centroid and the face, from dcel
-        self.xRotateDict = {}
-        self.yRotateDict = {}
+
 
     # If we know two centroids, then we can know the chain between them
     def setCentroidChainDict(self, centroidChainDict):
@@ -187,8 +186,8 @@ class force_directed(object):
     '''----------------The formula for calculating forces-------------'''
     # rotate force between two centroid lines
     def rotateRepulsiveForce(self, idealRadian, realRadian):
-        # realRadian = abs(realRadian)
-        return - idealRadian / 100 * realRadian 
+        realRadian = abs(realRadian)
+        return - idealRadian / 3000*realRadian 
 
 
     # A dictionary, find all the adjacent edges(orange lines between centroids) for every centroid
@@ -236,6 +235,9 @@ class force_directed(object):
                     continue
                 if len(chainBetweenKCentroidAndPre) < 2 or len(chainBetweenKCentroidAndPost) < 2:
                     continue
+
+                
+
                 
                 # calculate the rotation angle
                 # We expect that half of the vertices on the chain belong to this arc               
@@ -245,33 +247,28 @@ class force_directed(object):
                 print("angle:" + str(angle))
 
                 # TODO done move centroid1 and centroid2
-                # prex = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                # prey = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
-                postx = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                posty = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
-                
-                # self.xDisDit[preCentroid.identifier] = self.xDisDit[preCentroid.identifier] + (prex - preCentroid.x)
-                # self.yDisDit[preCentroid.identifier] = self.yDisDit[preCentroid.identifier] + (prey - preCentroid.y)
-                self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + (postx - postCentroid.x)
-                self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + (posty - postCentroid.y)
+                # The ones farther forward in the counterclockwise direction rotate counterclockwise, and the ones farther back rotate clockwise 
+                preCentroid.x = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+                preCentroid.y = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
 
+                postCentroid.x = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+                postCentroid.y = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
                 
-
 
     '''--------------calculate the rotation angle-------------------'''
     def rotateRepulsive(self, realRadian, chainBetweenKCentroidAndPre, chainBetweenKCentroidAndPost, vertexListOfKCentroid):       
         countPre = len(chainBetweenKCentroidAndPre) if chainBetweenKCentroidAndPre is not None else 0
         countPost = len(chainBetweenKCentroidAndPost) if chainBetweenKCentroidAndPost is not None else 0
-        count = (countPre + countPost) / 2 - 1
+        count = (countPre + countPost) / 2
         print("countPre: " + str(countPre))
         print("countPost: " + str(countPost))
         print("count: " + str(count))
         # ideal radian for this arc with this number of vertices
-        idealRadian = count / len(vertexListOfKCentroid) * math.radians(360)
+        idealRadian = count / len(vertexListOfKCentroid) * 360
         print("idealRadian: " + str(idealRadian))
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(idealRadian - realRadian) / 200 # TODO done. positive or negative sign
-        # return self.rotateRepulsiveForce(idealRadian, realRadian)
+        return (realRadian - idealRadian) / 50 # TODO done. positive or negative sign
+        # return self.rotateRepulsiveForce(idealRadian, realRadian), preCentroid, postCentroid
          
 
     def getChainBetweenCentroids(self, kCentroid, vCentroid):
@@ -284,7 +281,7 @@ class force_directed(object):
         return []
 
 
-    # calculate the real radian
+    # 新方法
     def calRandianBetween2Vector(self, kCentroid, centroid1, centroid2):
         dx1 = centroid1.x - kCentroid.x
         dy1 = centroid1.y - kCentroid.y
@@ -309,10 +306,9 @@ class force_directed(object):
                 preCentroid = centroid1 if angle1 < angle2 else centroid2
                 postCentroid = centroid1 if angle1 >= angle2 else centroid2
                 included_angle = 360 - included_angle
-        included_angle = math.radians(included_angle)
         return included_angle, preCentroid, postCentroid
 
-    # calculating the angle of the vector to the positive half axis of x
+    # 新方法，计算向量与x正半轴的角度的方法
     def calRandianBetweenVectorAndX(self, kCentroid, vertex):
         dx1 = vertex.x - kCentroid.x
         dy1 = vertex.y - kCentroid.y
@@ -325,12 +321,12 @@ class force_directed(object):
         currentEnergy = self.checkTotalEnergy()
         if currentEnergy > self.lastTimeEnergy and 0 != self.lastTimeEnergy:
             return False
-
+        
+        
         self.calRepulsiveForce()
         self.calAttractiveForce()
-        self.handleRotateRepusive()
         self.updateCoordinates()
-                
+        self.handleRotateRepusive()
         print("total energy: ", currentEnergy)
         self.lastTimeEnergy = currentEnergy
         return True

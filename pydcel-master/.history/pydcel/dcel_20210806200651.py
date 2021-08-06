@@ -792,7 +792,7 @@ class DCEL(object):
 
 
                 
-            # force_directed_draw.handleRotate()
+            force_directed.handleRotate()
 
 
 

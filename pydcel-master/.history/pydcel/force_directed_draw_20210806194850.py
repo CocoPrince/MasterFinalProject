@@ -26,8 +26,7 @@ class force_directed(object):
         self.centroidChainDict = {}
         self.centroidEdgeDict = self.buildCentroidEdgeDict() # Add relationship between the centroid and the edges between centroids
         self.centroidFaceDict = centroidFaceDict # add relationship between the centroid and the face, from dcel
-        self.xRotateDict = {}
-        self.yRotateDict = {}
+
 
     # If we know two centroids, then we can know the chain between them
     def setCentroidChainDict(self, centroidChainDict):
@@ -255,7 +254,6 @@ class force_directed(object):
                 self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + (postx - postCentroid.x)
                 self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + (posty - postCentroid.y)
 
-                
 
 
     '''--------------calculate the rotation angle-------------------'''
@@ -270,7 +268,7 @@ class force_directed(object):
         idealRadian = count / len(vertexListOfKCentroid) * math.radians(360)
         print("idealRadian: " + str(idealRadian))
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(idealRadian - realRadian) / 200 # TODO done. positive or negative sign
+        return abs(idealRadian - realRadian) / 1000 # TODO done. positive or negative sign
         # return self.rotateRepulsiveForce(idealRadian, realRadian)
          
 

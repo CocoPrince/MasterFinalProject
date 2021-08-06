@@ -245,17 +245,21 @@ class force_directed(object):
                 print("angle:" + str(angle))
 
                 # TODO done move centroid1 and centroid2
-                # prex = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                # prey = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
+                prex = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+                prey = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
                 postx = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
                 posty = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
                 
                 # self.xDisDit[preCentroid.identifier] = self.xDisDit[preCentroid.identifier] + (prex - preCentroid.x)
                 # self.yDisDit[preCentroid.identifier] = self.yDisDit[preCentroid.identifier] + (prey - preCentroid.y)
-                self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + (postx - postCentroid.x)
-                self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + (posty - postCentroid.y)
+                # self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + (postx - postCentroid.x)
+                # self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + (posty - postCentroid.y)
 
-                
+                self.xRotateDict[preCentroid.identifier] = self.xRotateDict[preCentroid.identifier] + (prex - preCentroid.x)
+                self.yRotateDict[preCentroid.identifier] = self.yRotateDict[preCentroid.identifier] + (prey - preCentroid.y)
+                self.xRotateDict[postCentroid.identifier] = self.xRotateDict[postCentroid.identifier] + (postx - postCentroid.x)
+                self.yRotateDict[postCentroid.identifier] = self.yRotateDict[postCentroid.identifier] + (posty - postCentroid.y)
+
 
 
     '''--------------calculate the rotation angle-------------------'''
@@ -270,7 +274,7 @@ class force_directed(object):
         idealRadian = count / len(vertexListOfKCentroid) * math.radians(360)
         print("idealRadian: " + str(idealRadian))
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(idealRadian - realRadian) / 200 # TODO done. positive or negative sign
+        return abs(idealRadian - realRadian) / 1000 # TODO done. positive or negative sign
         # return self.rotateRepulsiveForce(idealRadian, realRadian)
          
 

@@ -792,8 +792,6 @@ class DCEL(object):
 
 
                 
-            # force_directed_draw.handleRotate()
-
 
 
                 # TODO: Check for crossovers

@@ -459,6 +459,7 @@ class DCEL(object):
                 # calculate location circle of inside chain for outside deg3+
                 if wrapperchain.deg3Type == 2:
                     wrapperchain.calLocateCircleOfInsideChain(centroid1, centroid2, radius1, radius2)
+
         
             if keyDeg3Start not in deg3ChainDict:
                 deg3ChainDict[keyDeg3Start] = [] # value(a list of all incident chains)
@@ -471,7 +472,7 @@ class DCEL(object):
                 
 
     # chain-->face-->centroid ————> k(centroid id) - v(chain)
-    # if we know a face, then we can know all its chains
+    # 
     def buildCentroidChainDict(self, chainList):
         centroidChainDict = {} # k(centroid id) - v(chain)
         for wrapperchain in chainList:
@@ -483,7 +484,7 @@ class DCEL(object):
         return centroidChainDict
 
     
-    # TODO
+    # 
     def relateDeg3WithIntersection(self, kDeg3, intersection1, intersection2):
         distance1 = math.sqrt((kDeg3.x - intersection1[0]) ** 2 + (kDeg3.y - intersection1[1]) ** 2)
         distance2 = math.sqrt((kDeg3.x - intersection2[0]) ** 2 + (kDeg3.y - intersection2[1]) ** 2)
@@ -637,7 +638,7 @@ class DCEL(object):
     ---------------------------------------------------------------------------------------'''
     def handleFaces(self, switch):
         i = 1
-        # gui = pydcel.dcelVis(self)  
+        gui = pydcel.dcelVis(self)  
              
         for repeat in range(1):
             edges = []
@@ -656,7 +657,7 @@ class DCEL(object):
 
             # draw original map  
             self.centroidEdges = edges          
-            gui = pydcel.dcelVis(self)  
+            # gui = pydcel.dcelVis(self)  
 
             chainList = self.findChain(self.vertexList, self.edge_dict)
             # print(chainList)
@@ -667,12 +668,12 @@ class DCEL(object):
             force_directed_draw.setCentroidChainDict(self.buildCentroidChainDict(chainList))
             isHandle = True
             # force_directed_draw.handleRotateRepusive()
-            for i in range(1):
-                while switch == 'on' and isHandle:
+            # for i in range(1):
+            #     while switch == 'on' and isHandle:
                     
-                    # Rearrange the centroid
-                    isHandle = force_directed_draw.handler()
-                gui = pydcel.dcelVis(self)
+            #         # Rearrange the centroid
+            #         isHandle = force_directed_draw.handler()
+                    # gui = pydcel.dcelVis(self)
 
 
 
@@ -705,8 +706,6 @@ class DCEL(object):
                 
                 # ----------deg3+ inside
                 # move the deg3+ vertex into the ploygon formed by centroids of the around circle
-                # if True:
-                #     continue
                 if len(centroidsOfIncidentFace) < 3:
                     continue
 
@@ -792,8 +791,6 @@ class DCEL(object):
 
 
                 
-            # force_directed_draw.handleRotate()
-
 
 
                 # TODO: Check for crossovers
