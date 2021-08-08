@@ -255,8 +255,8 @@ class force_directed(object):
                 # self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + (postx - postCentroid.x)
                 # self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + (posty - postCentroid.y)
 
-                self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + 0.03*((postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x - postCentroid.x)
-                self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + 0.03*((postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y - postCentroid.y)
+                self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + 0.05*((postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x - postCentroid.x)
+                self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + 0.05*((postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y - postCentroid.y)
 
                 
 
@@ -273,7 +273,7 @@ class force_directed(object):
         idealRadian = count / len(vertexListOfKCentroid) * math.radians(360)
         print("idealRadian: " + str(idealRadian))
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(idealRadian - realRadian) / 200 # TODO done. positive or negative sign
+        return abs(idealRadian - realRadian) / 1000 # TODO done. positive or negative sign
         # return self.rotateRepulsiveForce(idealRadian, realRadian)
          
 

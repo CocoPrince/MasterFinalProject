@@ -331,7 +331,7 @@ class force_directed(object):
 
         self.calRepulsiveForce()
         self.calAttractiveForce()
-        self.handleRotateRepusive()
+        # self.handleRotateRepusive()
         self.updateCoordinates()
                 
         print("total energy: ", currentEnergy)
