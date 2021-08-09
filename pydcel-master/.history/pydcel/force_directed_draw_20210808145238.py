@@ -175,21 +175,7 @@ class force_directed(object):
             centroid.x = centroid.x + disp_x
             centroid.y = centroid.y + disp_y
 
-    
-    # Main function
-    def handler(self):
-        currentEnergy = self.checkTotalEnergy()
-        if currentEnergy > self.lastTimeEnergy and 0 != self.lastTimeEnergy:
-            return False
 
-        self.calRepulsiveForce()
-        self.calAttractiveForce()
-        self.handleRotateRepusive()
-        self.updateCoordinates()
-                
-        print("total energy: ", currentEnergy)
-        self.lastTimeEnergy = currentEnergy
-        return True
 
     '''--------------------------------------------------------------------------------------------------
                     part 2:   Rotate the centroids to improve short-chain problem
@@ -202,7 +188,7 @@ class force_directed(object):
     # rotate force between two centroid lines
     def rotateRepulsiveForce(self, idealRadian, realRadian):
         # realRadian = abs(realRadian)
-        return - idealRadian / 1 * realRadian 
+        return - idealRadian / 100 * realRadian 
 
 
     # A dictionary, find all the adjacent edges(orange lines between centroids) for every centroid
@@ -269,9 +255,9 @@ class force_directed(object):
                 # self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + (postx - postCentroid.x)
                 # self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + (posty - postCentroid.y)
                 
-                # small step
-                self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + 0.03*((postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x - postCentroid.x)
-                self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + 0.03*((postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y - postCentroid.y)
+                # 解开
+                # self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + 0.03*((postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x - postCentroid.x)
+                # self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + 0.03*((postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y - postCentroid.y)
 
                 
 
@@ -338,7 +324,20 @@ class force_directed(object):
         angle1 = int(angle1 * 180/math.pi)
         return angle1
 
+    # Main function
+    def handler(self):
+        currentEnergy = self.checkTotalEnergy()
+        if currentEnergy > self.lastTimeEnergy and 0 != self.lastTimeEnergy:
+            return False
 
+        self.calRepulsiveForce()
+        self.calAttractiveForce()
+        # self.handleRotateRepusive()
+        self.updateCoordinates()
+                
+        print("total energy: ", currentEnergy)
+        self.lastTimeEnergy = currentEnergy
+        return True
 
 
 

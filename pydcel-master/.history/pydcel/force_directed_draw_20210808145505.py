@@ -175,21 +175,7 @@ class force_directed(object):
             centroid.x = centroid.x + disp_x
             centroid.y = centroid.y + disp_y
 
-    
-    # Main function
-    def handler(self):
-        currentEnergy = self.checkTotalEnergy()
-        if currentEnergy > self.lastTimeEnergy and 0 != self.lastTimeEnergy:
-            return False
 
-        self.calRepulsiveForce()
-        self.calAttractiveForce()
-        self.handleRotateRepusive()
-        self.updateCoordinates()
-                
-        print("total energy: ", currentEnergy)
-        self.lastTimeEnergy = currentEnergy
-        return True
 
     '''--------------------------------------------------------------------------------------------------
                     part 2:   Rotate the centroids to improve short-chain problem
@@ -202,7 +188,7 @@ class force_directed(object):
     # rotate force between two centroid lines
     def rotateRepulsiveForce(self, idealRadian, realRadian):
         # realRadian = abs(realRadian)
-        return - idealRadian / 1 * realRadian 
+        return - idealRadian / 100 * realRadian 
 
 
     # A dictionary, find all the adjacent edges(orange lines between centroids) for every centroid
@@ -221,57 +207,57 @@ class force_directed(object):
 
     '''------main function---'''
     # main function for ratation, with movement for centroids
-    def handleRotateRepusive(self):
-        for kCentroid, vEdgeList in self.centroidEdgeDict.items():
-            index = 0
-            # TODO each pair of neighbour orange edge 
-            # while index < 1:
-            while index < len(vEdgeList):
-                startEdge = vEdgeList[index]
-                endEdge = vEdgeList[(index+1) % len(vEdgeList)] # 最后一组是下标n-1 到 0，完成循环
-                index += 1
+    # def handleRotateRepusive(self):
+    #     for kCentroid, vEdgeList in self.centroidEdgeDict.items():
+    #         index = 0
+    #         # TODO each pair of neighbour orange edge 
+    #         # while index < 1:
+    #         while index < len(vEdgeList):
+    #             startEdge = vEdgeList[index]
+    #             endEdge = vEdgeList[(index+1) % len(vEdgeList)] # 最后一组是下标n-1 到 0，完成循环
+    #             index += 1
 
-                # Find the two centroids to rotate
-                centroid1 = startEdge.start if startEdge.start.identifier != kCentroid.identifier else startEdge.end
-                centroid2 = endEdge.start if endEdge.start.identifier != kCentroid.identifier else endEdge.end
+    #             # Find the two centroids to rotate
+    #             centroid1 = startEdge.start if startEdge.start.identifier != kCentroid.identifier else startEdge.end
+    #             centroid2 = endEdge.start if endEdge.start.identifier != kCentroid.identifier else endEdge.end
                 
-                # calculate the real radian
-                # kCentroid——centroid1 and kCentroid——centroid2
-                # And determine which side is more forward counterclockwise and which side is more back
-                realRadian, preCentroid, postCentroid = self.calRandianBetween2Vector(kCentroid, centroid1, centroid2)
+    #             # calculate the real radian
+    #             # kCentroid——centroid1 and kCentroid——centroid2
+    #             # And determine which side is more forward counterclockwise and which side is more back
+    #             realRadian, preCentroid, postCentroid = self.calRandianBetween2Vector(kCentroid, centroid1, centroid2)
 
-                # kCentroid is the center of rotation
-                chainBetweenKCentroidAndPre = self.getChainBetweenCentroids(kCentroid, preCentroid)
-                chainBetweenKCentroidAndPost = self.getChainBetweenCentroids(kCentroid, postCentroid)
+    #             # kCentroid is the center of rotation
+    #             chainBetweenKCentroidAndPre = self.getChainBetweenCentroids(kCentroid, preCentroid)
+    #             chainBetweenKCentroidAndPost = self.getChainBetweenCentroids(kCentroid, postCentroid)
 
-                # TODO               
-                # only for adajcent faces with common chains, not with only one vertex
-                if centroid1.identifier not in self.centroidChainDict or centroid2.identifier not in self.centroidChainDict:
-                    continue
-                if len(chainBetweenKCentroidAndPre) < 2 or len(chainBetweenKCentroidAndPost) < 2:
-                    continue
+    #             # TODO               
+    #             # only for adajcent faces with common chains, not with only one vertex
+    #             if centroid1.identifier not in self.centroidChainDict or centroid2.identifier not in self.centroidChainDict:
+    #                 continue
+    #             if len(chainBetweenKCentroidAndPre) < 2 or len(chainBetweenKCentroidAndPost) < 2:
+    #                 continue
                 
-                # calculate the rotation angle
-                # We expect that half of the vertices on the chain belong to this arc               
-                vertexListOfKCentroid = [v for v in self.centroidFaceDict[kCentroid.identifier].loopOuterVertices()]
-                rotateRadian = self.rotateRepulsive(realRadian, chainBetweenKCentroidAndPre, chainBetweenKCentroidAndPost, vertexListOfKCentroid)
-                angle = math.degrees(rotateRadian)
-                print("angle:" + str(angle))
+    #             # calculate the rotation angle
+    #             # We expect that half of the vertices on the chain belong to this arc               
+    #             vertexListOfKCentroid = [v for v in self.centroidFaceDict[kCentroid.identifier].loopOuterVertices()]
+    #             rotateRadian = self.rotateRepulsive(realRadian, chainBetweenKCentroidAndPre, chainBetweenKCentroidAndPost, vertexListOfKCentroid)
+    #             angle = math.degrees(rotateRadian)
+    #             print("angle:" + str(angle))
 
-                # TODO done move centroid1 and centroid2
-                # prex = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                # prey = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
-                # postx = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
-                # posty = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
+    #             # TODO done move centroid1 and centroid2
+    #             # prex = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+    #             # prey = (preCentroid.y-kCentroid.y)*math.sin(angle) + (preCentroid.x-kCentroid.x)*math.cos(angle)+kCentroid.y
+    #             # postx = (postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
+    #             # posty = (postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y
                 
-                # self.xDisDit[preCentroid.identifier] = self.xDisDit[preCentroid.identifier] + (prex - preCentroid.x)
-                # self.yDisDit[preCentroid.identifier] = self.yDisDit[preCentroid.identifier] + (prey - preCentroid.y)
-                # self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + (postx - postCentroid.x)
-                # self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + (posty - postCentroid.y)
+    #             # self.xDisDit[preCentroid.identifier] = self.xDisDit[preCentroid.identifier] + (prex - preCentroid.x)
+    #             # self.yDisDit[preCentroid.identifier] = self.yDisDit[preCentroid.identifier] + (prey - preCentroid.y)
+    #             # self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + (postx - postCentroid.x)
+    #             # self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + (posty - postCentroid.y)
                 
-                # small step
-                self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + 0.03*((postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x - postCentroid.x)
-                self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + 0.03*((postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y - postCentroid.y)
+    #             # 解开
+    #             self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + 0.03*((postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x - postCentroid.x)
+    #             self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + 0.03*((postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y - postCentroid.y)
 
                 
 
@@ -338,7 +324,20 @@ class force_directed(object):
         angle1 = int(angle1 * 180/math.pi)
         return angle1
 
+    # Main function
+    def handler(self):
+        currentEnergy = self.checkTotalEnergy()
+        if currentEnergy > self.lastTimeEnergy and 0 != self.lastTimeEnergy:
+            return False
 
+        self.calRepulsiveForce()
+        self.calAttractiveForce()
+        # self.handleRotateRepusive()
+        self.updateCoordinates()
+                
+        print("total energy: ", currentEnergy)
+        self.lastTimeEnergy = currentEnergy
+        return True
 
 
 

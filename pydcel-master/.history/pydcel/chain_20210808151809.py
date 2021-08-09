@@ -17,7 +17,7 @@ class WrapperChain(object):
         self.chainId = id
 
     def calOptimalLength(self):
-        optimalLength = (len(self.chain) - 1) * 10
+        optimalLength = (len(self.chain) - 1) * 20
         return optimalLength
 
     def calLocateCircleOfInsideChain(self, circle_1_centroid, circle_2_centroid, radius_1, radius_2):

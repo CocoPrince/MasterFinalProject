@@ -487,8 +487,8 @@ class DCEL(object):
     
     # order of the vertex on the face
     # 从0点开始出发，继续逆时针旋转，如果next在链上，则0为post，如果next不在链上，则0为pre
-    def calOrderOnFace(self, faceSmaller, wrapperChain):
-        face_vertices = [v for v in faceSmaller.loopOuterVertices()]
+def calOrderOnFace(self, faceSmall, wrapperChain):
+        face_vertices = [v for v in face.loopOuterVertices()]
         startDeg3 = wrapperChain.chain[0]
         endDeg3 = wrapperChain.chain[-1]
         # 重新组织face vertices, 使face vertices中的第一个点为startDeg3

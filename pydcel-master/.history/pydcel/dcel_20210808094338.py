@@ -487,8 +487,8 @@ class DCEL(object):
     
     # order of the vertex on the face
     # 从0点开始出发，继续逆时针旋转，如果next在链上，则0为post，如果next不在链上，则0为pre
-    def calOrderOnFace(self, faceSmaller, wrapperChain):
-        face_vertices = [v for v in faceSmaller.loopOuterVertices()]
+def calOrderOnFace(self, faceSmall, wrapperChain):
+        face_vertices = [v for v in face.loopOuterVertices()]
         startDeg3 = wrapperChain.chain[0]
         endDeg3 = wrapperChain.chain[-1]
         # 重新组织face vertices, 使face vertices中的第一个点为startDeg3
@@ -505,30 +505,9 @@ class DCEL(object):
             return startDeg3, endDeg3
         
 
+
     # order of the intersections
-    def calOrderForIntersection(self, intersection1, intersection2, appoloCircle):
-        dx1 = intersection1[0] - appoloCircle.center_x
-        dy1 = intersection1[1] - appoloCircle.center_y
-        dx2 = intersection2[0] - appoloCircle.center_x
-        dy2 = intersection2[1] - appoloCircle.center_y
-        angle1 = math.atan2(dy1, dx1)
-        angle1 = int(angle1 * 180/math.pi)
-        # print(angle1)
-        angle2 = math.atan2(dy2, dx2)
-        angle2 = int(angle2 * 180/math.pi)
-        # print(angle2)
-        included_angle = 0
-        # From the x-positive half axis, the centroid(line) at the front 
-        # Check which should rotate clockwise and which should counterclockwise
-        preIntersection = intersection1 if angle1 > angle2 else intersection2
-        postIntersection = intersection1 if angle1 <= angle2 else intersection2
-        if angle1*angle2 < 0:
-            included_angle = abs(angle1) + abs(angle2)
-            if included_angle > 180:
-                preIntersection = intersection1 if angle1 < angle2 else intersection2
-                postIntersection = intersection1 if angle1 >= angle2 else intersection2
-            
-        return preIntersection, postIntersection
+    def calOrderForIntersection(self,):
 
     
     def handleDeg3Vertex_outside(self, deg3ChainDict):
@@ -548,15 +527,7 @@ class DCEL(object):
                 if wrapperChain.deg3Type == 1:
                     continue
                 intersection1, intersection2 = wrapperChain.calLocateIntersection()
-                smallerFace = wrapperChain.getSmallerFace(self.faceCentroidDict, self.centroidRadiusDict)
-                preVertex, postVertex = self.calOrderOnFace(smallerFace, wrapperChain)
-                appoloCircle = wrapperChain.threeSectionArc.appoloCircle
-                preIntersection, postIntersection = self.calOrderForIntersection(intersection1, intersection2, appoloCircle)
-                if kDeg3.identifier == preVertex.identifier:
-                    intersection = preIntersection
-                else:
-                    intersection = postIntersection   
-
+                 = self.calOrderOnFace()
                 # intersection = self.relateDeg3WithIntersection(kDeg3, intersection1, intersection2)
                 xCoordSum += intersection[0]
                 yCoordSum += intersection[1]
@@ -566,7 +537,9 @@ class DCEL(object):
             kDeg3.y = yCoordSum / count
 
         
-                    
+
+
+
     '''------------------------------------------------------------------------------------
     Preserve the topology: not cross
     ------------------------------------------------------------------------------------'''
