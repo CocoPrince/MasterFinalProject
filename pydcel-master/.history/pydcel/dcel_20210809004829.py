@@ -508,10 +508,10 @@ class DCEL(object):
 
     # order of the intersections
     def calOrderForIntersection(self, intersection1, intersection2, appoloCircle):
-        dx1 = intersection1[0] - appoloCircle.center_x
-        dy1 = intersection1[1] - appoloCircle.center_y
-        dx2 = intersection2[0] - appoloCircle.center_x
-        dy2 = intersection2[1] - appoloCircle.center_y
+        dx1 = intersection1[0] - appoloCircle.x
+        dy1 = intersection1[1] - appoloCircle.y
+        dx2 = intersection2[0] - appoloCircle.x
+        dy2 = intersection2[1] - appoloCircle.y
         angle1 = math.atan2(dy1, dx1)
         angle1 = int(angle1 * 180/math.pi)
         # print(angle1)

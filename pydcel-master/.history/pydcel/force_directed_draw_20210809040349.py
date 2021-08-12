@@ -24,7 +24,7 @@ class force_directed(object):
         self.networkGraph = self.generateNetwork()
         self.lastTimeEnergy = 0
         self.centroidChainDict = {}
-        # self.centroidEdgeDict = self.buildCentroidEdgeDict() # Add relationship between the centroid and the edges between centroids
+        self.centroidEdgeDict = self.buildCentroidEdgeDict() # Add relationship between the centroid and the edges between centroids
         self.centroidFaceDict = centroidFaceDict # add relationship between the centroid and the face, from dcel
 
     # If we know two centroids, then we can know the chain between them

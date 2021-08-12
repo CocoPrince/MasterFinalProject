@@ -24,7 +24,7 @@ class force_directed(object):
         self.networkGraph = self.generateNetwork()
         self.lastTimeEnergy = 0
         self.centroidChainDict = {}
-        # self.centroidEdgeDict = self.buildCentroidEdgeDict() # Add relationship between the centroid and the edges between centroids
+        self.centroidEdgeDict = self.buildCentroidEdgeDict() # Add relationship between the centroid and the edges between centroids
         self.centroidFaceDict = centroidFaceDict # add relationship between the centroid and the face, from dcel
 
     # If we know two centroids, then we can know the chain between them
@@ -184,23 +184,23 @@ class force_directed(object):
 
     '''----------------The formula for calculating forces-------------'''
     # rotate force between two centroid lines
-    # def rotateRepulsiveForce(self, idealRadian, realRadian):
-    #     # realRadian = abs(realRadian)
-    #     return - idealRadian / 100 * realRadian 
+    def rotateRepulsiveForce(self, idealRadian, realRadian):
+        # realRadian = abs(realRadian)
+        return - idealRadian / 100 * realRadian 
 
 
-    # # A dictionary, find all the adjacent edges(orange lines between centroids) for every centroid
-    # # key: a centroid, value: all incident edges of this centroid
-    # def buildCentroidEdgeDict(self):
-    #     dict = {}
-    #     for edge in self.edges:
-    #         if edge.start not in dict:
-    #             dict[edge.start] = []
-    #         dict[edge.start].append(edge)
-    #         if edge.end not in dict:
-    #             dict[edge.end] = []
-    #         dict[edge.end].append(edge)
-    #     return dict
+    # A dictionary, find all the adjacent edges(orange lines between centroids) for every centroid
+    # key: a centroid, value: all incident edges of this centroid
+    def buildCentroidEdgeDict(self):
+        dict = {}
+        for edge in self.edges:
+            if edge.start not in dict:
+                dict[edge.start] = []
+            dict[edge.start].append(edge)
+            if edge.end not in dict:
+                dict[edge.end] = []
+            dict[edge.end].append(edge)
+        return dict
 
 
     '''------main function---'''
@@ -260,66 +260,66 @@ class force_directed(object):
 
 
     '''--------------calculate the rotation angle-------------------'''
-    # def rotateRepulsive(self, realRadian, chainBetweenKCentroidAndPre, chainBetweenKCentroidAndPost, vertexListOfKCentroid):       
-    #     countPre = len(chainBetweenKCentroidAndPre) if chainBetweenKCentroidAndPre is not None else 0
-    #     countPost = len(chainBetweenKCentroidAndPost) if chainBetweenKCentroidAndPost is not None else 0
-    #     count = (countPre + countPost) / 2 - 1
-    #     print("countPre: " + str(countPre))
-    #     print("countPost: " + str(countPost))
-    #     print("count: " + str(count))
-    #     # ideal radian for this arc with this number of vertices
-    #     idealRadian = count / len(vertexListOfKCentroid) * math.radians(360)
-    #     print("idealRadian: " + str(idealRadian))
-    #     # The angle to be moved should be half the difference between the actual angle and the ideal angle
-    #     return abs(idealRadian - realRadian) / 200 # TODO done. positive or negative sign
-    #     # return self.rotateRepulsiveForce(idealRadian, realRadian)
+    def rotateRepulsive(self, realRadian, chainBetweenKCentroidAndPre, chainBetweenKCentroidAndPost, vertexListOfKCentroid):       
+        countPre = len(chainBetweenKCentroidAndPre) if chainBetweenKCentroidAndPre is not None else 0
+        countPost = len(chainBetweenKCentroidAndPost) if chainBetweenKCentroidAndPost is not None else 0
+        count = (countPre + countPost) / 2 - 1
+        print("countPre: " + str(countPre))
+        print("countPost: " + str(countPost))
+        print("count: " + str(count))
+        # ideal radian for this arc with this number of vertices
+        idealRadian = count / len(vertexListOfKCentroid) * math.radians(360)
+        print("idealRadian: " + str(idealRadian))
+        # The angle to be moved should be half the difference between the actual angle and the ideal angle
+        return abs(idealRadian - realRadian) / 200 # TODO done. positive or negative sign
+        # return self.rotateRepulsiveForce(idealRadian, realRadian)
          
 
-    # def getChainBetweenCentroids(self, kCentroid, vCentroid):
-    #     for chainOfKCentroid in self.centroidChainDict[kCentroid.identifier]:
-    #         for chainOfVCentroid in self.centroidChainDict[vCentroid.identifier]:
-    #             if chainOfKCentroid.chainId == chainOfVCentroid.chainId:
-    #                 # if two faces have a common chain
-    #                 return chainOfKCentroid.chain
-    #     # if two faces do not have a common chain (with only one common vertex)
-    #     return []
+    def getChainBetweenCentroids(self, kCentroid, vCentroid):
+        for chainOfKCentroid in self.centroidChainDict[kCentroid.identifier]:
+            for chainOfVCentroid in self.centroidChainDict[vCentroid.identifier]:
+                if chainOfKCentroid.chainId == chainOfVCentroid.chainId:
+                    # if two faces have a common chain
+                    return chainOfKCentroid.chain
+        # if two faces do not have a common chain (with only one common vertex)
+        return []
 
 
-    # # calculate the real radian
-    # def calRandianBetween2Vector(self, kCentroid, centroid1, centroid2):
-    #     dx1 = centroid1.x - kCentroid.x
-    #     dy1 = centroid1.y - kCentroid.y
-    #     dx2 = centroid2.x - kCentroid.x
-    #     dy2 = centroid2.y - kCentroid.y
-    #     angle1 = math.atan2(dy1, dx1)
-    #     angle1 = int(angle1 * 180/math.pi)
-    #     # print(angle1)
-    #     angle2 = math.atan2(dy2, dx2)
-    #     angle2 = int(angle2 * 180/math.pi)
-    #     # print(angle2)
-    #     included_angle = 0
-    #     # From the x-positive half axis, the centroid(line) at the front 
-    #     # Check which should rotate clockwise and which should counterclockwise
-    #     preCentroid = centroid1 if angle1 > angle2 else centroid2
-    #     postCentroid = centroid1 if angle1 <= angle2 else centroid2
-    #     if angle1*angle2 >= 0:
-    #         included_angle = abs(angle1-angle2)
-    #     else:
-    #         included_angle = abs(angle1) + abs(angle2)
-    #         if included_angle > 180:
-    #             preCentroid = centroid1 if angle1 < angle2 else centroid2
-    #             postCentroid = centroid1 if angle1 >= angle2 else centroid2
-    #             included_angle = 360 - included_angle
-    #     included_angle = math.radians(included_angle)
-    #     return included_angle, preCentroid, postCentroid
+    # calculate the real radian
+    def calRandianBetween2Vector(self, kCentroid, centroid1, centroid2):
+        dx1 = centroid1.x - kCentroid.x
+        dy1 = centroid1.y - kCentroid.y
+        dx2 = centroid2.x - kCentroid.x
+        dy2 = centroid2.y - kCentroid.y
+        angle1 = math.atan2(dy1, dx1)
+        angle1 = int(angle1 * 180/math.pi)
+        # print(angle1)
+        angle2 = math.atan2(dy2, dx2)
+        angle2 = int(angle2 * 180/math.pi)
+        # print(angle2)
+        included_angle = 0
+        # From the x-positive half axis, the centroid(line) at the front 
+        # Check which should rotate clockwise and which should counterclockwise
+        preCentroid = centroid1 if angle1 > angle2 else centroid2
+        postCentroid = centroid1 if angle1 <= angle2 else centroid2
+        if angle1*angle2 >= 0:
+            included_angle = abs(angle1-angle2)
+        else:
+            included_angle = abs(angle1) + abs(angle2)
+            if included_angle > 180:
+                preCentroid = centroid1 if angle1 < angle2 else centroid2
+                postCentroid = centroid1 if angle1 >= angle2 else centroid2
+                included_angle = 360 - included_angle
+        included_angle = math.radians(included_angle)
+        return included_angle, preCentroid, postCentroid
 
-    # # calculating the angle of the vector to the positive half axis of x
-    # def calRandianBetweenVectorAndX(self, kCentroid, vertex):
-    #     dx1 = vertex.x - kCentroid.x
-    #     dy1 = vertex.y - kCentroid.y
-    #     angle1 = math.atan2(dy1, dx1)
-    #     angle1 = int(angle1 * 180/math.pi)
-    #     return angle1
+    # calculating the angle of the vector to the positive half axis of x
+    def calRandianBetweenVectorAndX(self, kCentroid, vertex):
+        dx1 = vertex.x - kCentroid.x
+        dy1 = vertex.y - kCentroid.y
+        angle1 = math.atan2(dy1, dx1)
+        angle1 = int(angle1 * 180/math.pi)
+        return angle1
 
     # Main function
     def handler(self):
@@ -329,7 +329,7 @@ class force_directed(object):
 
         self.calRepulsiveForce()
         self.calAttractiveForce()
-        # self.handleRotateRepusive()
+        self.handleRotateRepusive()
         self.updateCoordinates()
                 
         print("total energy: ", currentEnergy)
