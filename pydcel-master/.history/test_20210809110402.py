@@ -1,6 +1,6 @@
 import pydcel
 
-# pydcel.io.xml2ply("sampledata/karlsruhe_new.xml", "sampledata/karlsruhe_new.ply")
+# pydcel.io.xml2ply("sampledata/washington.xml", "sampledata/washington.ply")
 
 d = pydcel.io.ply2dcel('sampledata/sydney.ply')
 # d.handleFaces('off')
@@ -14,4 +14,3 @@ d.handleFaces('on')
 # washington
 # karlsruhe
 # london
-# karlsruhe_new

@@ -124,7 +124,7 @@ class Arc(object):
 
         totalArcLength = apollonisArcLength + startArcLength + endArcLength
 
-        vertexNumberOnChain = len(chain) - 1
+        vertexNumberOnChain = len(chain) - 0
         # the arc length between every two vertices on the chain
         interval = totalArcLength / vertexNumberOnChain
 
@@ -196,11 +196,11 @@ class Arc(object):
             if self.deg3StartFlag == 0: # ccw
                 chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) - math.sin(angle) * (chain[index].y - tangencyEndCircleCenter_y)
                 chain[index].y = tangencyEndCircleCenter_y + math.sin(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.cos(angle) * (chain[index].y - tangencyEndCircleCenter_y)
-                # index += 1
+                index += 1
             else: # cw
                 chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.sin(angle) * (chain[index].y - tangencyEndCircleCenter_y)
                 chain[index].y = tangencyEndCircleCenter_y - math.sin(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.cos(angle) * (chain[index].y - tangencyEndCircleCenter_y)
-                # index += 1
+                index += 1
             leftLength = apollonisArcLength - interval
         # leftInterval = interval - leftLength # should be 0
         ############################

@@ -160,7 +160,7 @@ class Arc(object):
                 chain[index].x = self.apollonisCircle.center_x + math.cos(angle) * (tangencyPointStart_x - self.apollonisCircle.center_x) - math.sin(angle) * (tangencyPointStart_y - self.apollonisCircle.center_y)
                 chain[index].y = self.apollonisCircle.center_y + math.sin(angle) * (tangencyPointStart_x - self.apollonisCircle.center_x) + math.cos(angle) * (tangencyPointStart_y - self.apollonisCircle.center_y)
                 index += 1
-            leftLength = apollonisArcLength - leftInterval
+        leftLength = apollonisArcLength - leftInterval
 
         while leftLength >= interval: # on second arc
             # Calculate the position of the movement, cw or ccw
@@ -188,7 +188,7 @@ class Arc(object):
                 chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (tangencyPointEnd_x - tangencyEndCircleCenter_x) + math.sin(angle) * (tangencyPointEnd_y - tangencyEndCircleCenter_y)
                 chain[index].y = tangencyEndCircleCenter_y - math.sin(angle) * (tangencyPointEnd_x - tangencyEndCircleCenter_x) + math.cos(angle) * (tangencyPointEnd_y - tangencyEndCircleCenter_y)
                 index += 1
-            leftLength = endArcLength - leftInterval
+        leftLength = endArcLength - leftInterval
 
         while leftLength >= interval:
             # Calculate the position of the movement, cw or ccw
@@ -196,11 +196,11 @@ class Arc(object):
             if self.deg3StartFlag == 0: # ccw
                 chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) - math.sin(angle) * (chain[index].y - tangencyEndCircleCenter_y)
                 chain[index].y = tangencyEndCircleCenter_y + math.sin(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.cos(angle) * (chain[index].y - tangencyEndCircleCenter_y)
-                # index += 1
+                index += 1
             else: # cw
                 chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.sin(angle) * (chain[index].y - tangencyEndCircleCenter_y)
                 chain[index].y = tangencyEndCircleCenter_y - math.sin(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.cos(angle) * (chain[index].y - tangencyEndCircleCenter_y)
-                # index += 1
+                index += 1
             leftLength = apollonisArcLength - interval
         # leftInterval = interval - leftLength # should be 0
         ############################

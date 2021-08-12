@@ -2,7 +2,7 @@ import pydcel
 
 # pydcel.io.xml2ply("sampledata/karlsruhe_new.xml", "sampledata/karlsruhe_new.ply")
 
-d = pydcel.io.ply2dcel('sampledata/sydney.ply')
+d = pydcel.io.ply2dcel('sampledata/karlsruhe_new.ply')
 # d.handleFaces('off')
 d.handleFaces('on')
 

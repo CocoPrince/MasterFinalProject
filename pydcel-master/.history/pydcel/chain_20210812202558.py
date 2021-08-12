@@ -89,5 +89,5 @@ class WrapperChain(object):
     def distributeInsideDeg2Chain(self):
         self.threeSectionArc.distributeDeg2Vertices(self.chain)
 
-    # def distributeOutsideDeg2Chain(self, centroid):
-    #     self.threeSectionArc.distributeOutsideDeg2Vertices(self.chain, centroid)
+    def distributeOutsideDeg2Chain(self, centroid):
+        self.threeSectionArc.distributeOutsideDeg2Vertices(self.chain, centroid)

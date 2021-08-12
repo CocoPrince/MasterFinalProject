@@ -766,14 +766,9 @@ class DCEL(object):
                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
                 force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
                 
-
-            # ----------deg3+ outside
-            # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
-            self.handleDeg3Vertex_outside(deg3ChainDict)
-
-
-
+                # chainList = self.findChain(self.vertexList, self.edge_dict)
+                # print(chainList)
+                
             # before rotate           
             # just use straight line to show the results
             for wrapperchain in chainList:
@@ -782,10 +777,30 @@ class DCEL(object):
                     continue
                 face = first_deg2.incidentFaces
                 if len(face) < 2:
-                    # wrapperchain.distributeOutsideDeg2Chain(centroid)
+                    wrapperchain.distributeOutsideDeg2Chain(centroid)
                     continue
 
                 wrapperchain.distributeInsideDeg2Chain()
+                # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
+                # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
+                # xUnitDis = xdis / (len(wrapperchain.chain) - 1)
+                # yUnitDis = ydis / (len(wrapperchain.chain) - 1)
+
+                # multi = 1
+                # for deg2 in wrapperchain.chain[1:-1]:                    
+                #     deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
+                #     deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
+                #     multi += 1
+            # gui = pydcel.dcelVis(self)
+
+            
+
+            # ----------deg3+ outside
+            # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
+            self.handleDeg3Vertex_outside(deg3ChainDict)
+
+
                 
             # force_directed_draw.handleRotate()
 

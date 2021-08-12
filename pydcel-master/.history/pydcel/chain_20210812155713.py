@@ -84,10 +84,3 @@ class WrapperChain(object):
         centroid1 = faceCentroidDict[self.incidentFacesOfChain[1].identifier]
         radius1 = centroidRadiusDict[centroid1.identifier]
         return self.incidentFacesOfChain[0] if radius0 < radius1 else self.incidentFacesOfChain[1]
-
-
-    def distributeInsideDeg2Chain(self):
-        self.threeSectionArc.distributeDeg2Vertices(self.chain)
-
-    # def distributeOutsideDeg2Chain(self, centroid):
-    #     self.threeSectionArc.distributeOutsideDeg2Vertices(self.chain, centroid)

@@ -196,11 +196,11 @@ class Arc(object):
             if self.deg3StartFlag == 0: # ccw
                 chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) - math.sin(angle) * (chain[index].y - tangencyEndCircleCenter_y)
                 chain[index].y = tangencyEndCircleCenter_y + math.sin(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.cos(angle) * (chain[index].y - tangencyEndCircleCenter_y)
-                # index += 1
+                index += 1
             else: # cw
                 chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.sin(angle) * (chain[index].y - tangencyEndCircleCenter_y)
                 chain[index].y = tangencyEndCircleCenter_y - math.sin(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.cos(angle) * (chain[index].y - tangencyEndCircleCenter_y)
-                # index += 1
+                index += 1
             leftLength = apollonisArcLength - interval
         # leftInterval = interval - leftLength # should be 0
         ############################

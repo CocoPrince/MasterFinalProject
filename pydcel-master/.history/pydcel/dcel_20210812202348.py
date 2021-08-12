@@ -782,7 +782,7 @@ class DCEL(object):
                     continue
                 face = first_deg2.incidentFaces
                 if len(face) < 2:
-                    # wrapperchain.distributeOutsideDeg2Chain(centroid)
+                    wrapperchain.distributeOutsideDeg2Chain(centroid)
                     continue
 
                 wrapperchain.distributeInsideDeg2Chain()

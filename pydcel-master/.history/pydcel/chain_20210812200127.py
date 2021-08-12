@@ -55,14 +55,14 @@ class WrapperChain(object):
             return 1
 
 
-    # calculate the intersection of locateCircle and apollonisCircle
+    # calculate the intersection of locateCircle and appoloCircle
     def calLocateIntersection(self):
         x = self.locateCircleCenter[0]   # center of locateCircle
         y = self.locateCircleCenter[1]   
         R = self.locateCircleRadius      # radius of locateCircle
-        a = self.threeSectionArc.apollonisCircle.center_x   # center of apollonisCircle
-        b = self.threeSectionArc.apollonisCircle.center_y
-        S = self.threeSectionArc.apollonisCircle.radius      # radius of apollonisCircle
+        a = self.threeSectionArc.appoloCircle.center_x   # center of appoloCircle
+        b = self.threeSectionArc.appoloCircle.center_y
+        S = self.threeSectionArc.appoloCircle.radius      # radius of appoloCircle
         d = math.sqrt((abs(a - x)) ** 2 + (abs(b - y)) ** 2)    
         A = (R ** 2 - S ** 2 + d ** 2) / (2 * d)
         h = math.sqrt(abs(R ** 2 - A ** 2))
@@ -89,5 +89,5 @@ class WrapperChain(object):
     def distributeInsideDeg2Chain(self):
         self.threeSectionArc.distributeDeg2Vertices(self.chain)
 
-    # def distributeOutsideDeg2Chain(self, centroid):
-    #     self.threeSectionArc.distributeOutsideDeg2Vertices(self.chain, centroid)
+    def distributeOutsideDeg2Chain(self, centroid):
+        self.threeSectionArc.distributeOutsideDeg2Vertices(self.chain, centroid)

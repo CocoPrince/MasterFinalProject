@@ -254,9 +254,9 @@ class force_directed(object):
                 # calculate the rotation angle
                 # We expect that half of the vertices on the chain belong to this arc               
                 vertexListOfKCentroid = [v for v in self.centroidFaceDict[kCentroid.identifier].loopOuterVertices()]
-                rotateRadian = 0.5*self.rotateRepulsive(realRadian, chainBetweenKCentroidAndPre, chainBetweenKCentroidAndPost, vertexListOfKCentroid)
+                rotateRadian = self.rotateRepulsive(realRadian, chainBetweenKCentroidAndPre, chainBetweenKCentroidAndPost, vertexListOfKCentroid)
                 angle = math.degrees(rotateRadian)
-                #print("angle:" + str(angle))
+                print("angle:" + str(angle))
 
                 # TODO done move centroid1 and centroid2
                 # prex = (preCentroid.x-kCentroid.x)*math.cos(angle) - (preCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x
@@ -270,11 +270,8 @@ class force_directed(object):
                 # self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + (posty - postCentroid.y)
                 
                 # small step
-                factor = 0.001
-                self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + ((postCentroid.x-kCentroid.x)*math.cos(factor*rotateRadian) + (postCentroid.y-kCentroid.y)*math.sin(factor*rotateRadian)+kCentroid.x - postCentroid.x)
-                self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + ((postCentroid.y-kCentroid.y)*math.cos(factor*rotateRadian) - (postCentroid.x-kCentroid.x)*math.sin(factor*rotateRadian)+kCentroid.y - postCentroid.y)
-                self.xDisDit[preCentroid.identifier] = self.xDisDit[preCentroid.identifier] + ((preCentroid.x-kCentroid.x)*math.cos(-factor*rotateRadian) + (preCentroid.y-kCentroid.y)*math.sin(-factor*rotateRadian)+kCentroid.x - preCentroid.x)
-                self.yDisDit[preCentroid.identifier] = self.yDisDit[preCentroid.identifier] + ((preCentroid.y-kCentroid.y)*math.cos(-factor*rotateRadian) - (preCentroid.x-kCentroid.x)*math.sin(-factor*rotateRadian)+kCentroid.y - preCentroid.y)
+                self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + 0.03*((postCentroid.x-kCentroid.x)*math.cos(angle) + (postCentroid.y-kCentroid.y)*math.sin(angle)+kCentroid.x - postCentroid.x)
+                self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + 0.03*((postCentroid.y-kCentroid.y)*math.cos(angle) - (postCentroid.x-kCentroid.x)*math.sin(angle)+kCentroid.y - postCentroid.y)
 
                 
 
@@ -284,14 +281,14 @@ class force_directed(object):
         countPre = len(chainBetweenKCentroidAndPre) if chainBetweenKCentroidAndPre is not None else 0
         countPost = len(chainBetweenKCentroidAndPost) if chainBetweenKCentroidAndPost is not None else 0
         count = (countPre + countPost) / 2 - 1
-        #print("countPre: " + str(countPre))
-        #print("countPost: " + str(countPost))
-        #print("count: " + str(count))
+        print("countPre: " + str(countPre))
+        print("countPost: " + str(countPost))
+        print("count: " + str(count))
         # ideal radian for this arc with this number of vertices
-        idealRadian = count / len(vertexListOfKCentroid) * 2 * math.pi
-        #print("idealRadian: " + str(idealRadian))
+        idealRadian = count / len(vertexListOfKCentroid) * math.radians(360)
+        print("idealRadian: " + str(idealRadian))
         # The angle to be moved should be half the difference between the actual angle and the ideal angle
-        return abs(idealRadian - realRadian) # TODO done. positive or negative sign
+        return abs(idealRadian - realRadian) / 200 # TODO done. positive or negative sign
         # return self.rotateRepulsiveForce(idealRadian, realRadian)
          
 

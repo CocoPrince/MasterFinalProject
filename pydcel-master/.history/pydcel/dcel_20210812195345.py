@@ -766,14 +766,9 @@ class DCEL(object):
                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
                 force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
                 
-
-            # ----------deg3+ outside
-            # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
-            self.handleDeg3Vertex_outside(deg3ChainDict)
-
-
-
+                # chainList = self.findChain(self.vertexList, self.edge_dict)
+                # print(chainList)
+                
             # before rotate           
             # just use straight line to show the results
             for wrapperchain in chainList:
@@ -782,10 +777,70 @@ class DCEL(object):
                     continue
                 face = first_deg2.incidentFaces
                 if len(face) < 2:
-                    # wrapperchain.distributeOutsideDeg2Chain(centroid)
+                    wrapperchain.distributeOutsideDeg2Chain()
                     continue
 
                 wrapperchain.distributeInsideDeg2Chain()
+                # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
+                # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
+                # xUnitDis = xdis / (len(wrapperchain.chain) - 1)
+                # yUnitDis = ydis / (len(wrapperchain.chain) - 1)
+
+                # multi = 1
+                # for deg2 in wrapperchain.chain[1:-1]:                    
+                #     deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
+                #     deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
+                #     multi += 1
+            # gui = pydcel.dcelVis(self)
+
+            ####################-----------------------------##########################
+            # after the force-directed method, if there existes very short chains, do the next rotate part
+            ########## rotate the circle to make  short chain longer
+            # for vertex in self.vertexList:
+            #     if len(vertex.incidentEdges) < 3:
+            #         continue
+            #     centroidsOfIncidentFace = []
+            #     # Find the centroids of the circle around the current deg3+ point
+            #     for faceIdentifier in vertex.incidentFaces:
+            #         centroid = self.faceCentroidDict.get(faceIdentifier)
+            #         centroidsOfIncidentFace.append(centroid)
+            #     if len(centroidsOfIncidentFace) < 3:
+            #         continue
+
+            #     # rotate
+            #     for wrapperChain in chainList:
+            #         chain = wrapperChain.chain
+            #         start3Deg = chain[0]
+            #         end3Deg = chain[-1]
+            #         if start3Deg.identifier == vertex.identifier or end3Deg.identifier == vertex.identifier:
+            #             disBetween3Deg = math.sqrt((start3Deg.x - end3Deg.x) ** 2 + (start3Deg.y - end3Deg.y) ** 2) # real length of the chain
+
+            #             # If chain length less than threshold (fractional times optimal distance), rotate
+            #             if (len(chain) - 1) * 5 > disBetween3Deg:
+            #                 faceId1 = list(chain[1].incidentFaces)[0] # two incident faces of the chain
+            #                 faceId2 = list(chain[1].incidentFaces)[1]
+            #                 centroid1 = self.faceCentroidDict.get(faceId1) # two centroids of the two incident faces
+            #                 centroid2 = self.faceCentroidDict.get(faceId2)
+            #                 # rotation angle, can be adjusted
+            #                 angle = math.radians(30)
+            #                 # formula of rotation
+            #                 # take theh cetroid1 as center, rotate the centroid2
+            #                 centroid2.x = (centroid2.x-centroid1.x)*math.cos(angle) - (centroid2.y-centroid1.y)*math.sin(angle)+centroid1.x
+            #                 centroid2.y = (centroid2.y-centroid1.y)*math.cos(angle) + (centroid2.x-centroid1.x)*math.sin(angle)+centroid1.y
+            #                 # put the deg3+ vertex at the centroid of the centroids of the rotated circles(same as before) 
+            #                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
+            #                 vertex.x = centroid_of_centroids.x
+            #                 vertex.y = centroid_of_centroids.y
+            #                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
+            #                 force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
+                           
+
+            # ----------deg3+ outside
+            # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
+            self.handleDeg3Vertex_outside(deg3ChainDict)
+
+
                 
             # force_directed_draw.handleRotate()
 

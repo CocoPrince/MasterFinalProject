@@ -17,7 +17,7 @@ class WrapperChain(object):
         self.chainId = id
 
     def calOptimalLength(self):
-        optimalLength = (len(self.chain) - 1) * 10
+        optimalLength = (len(self.chain) - 1) * 5
         return optimalLength
 
     def calLocateCircleOfInsideChain(self, circle_1_centroid, circle_2_centroid, radius_1, radius_2):
@@ -55,14 +55,14 @@ class WrapperChain(object):
             return 1
 
 
-    # calculate the intersection of locateCircle and apollonisCircle
+    # calculate the intersection of locateCircle and appoloCircle
     def calLocateIntersection(self):
         x = self.locateCircleCenter[0]   # center of locateCircle
         y = self.locateCircleCenter[1]   
         R = self.locateCircleRadius      # radius of locateCircle
-        a = self.threeSectionArc.apollonisCircle.center_x   # center of apollonisCircle
-        b = self.threeSectionArc.apollonisCircle.center_y
-        S = self.threeSectionArc.apollonisCircle.radius      # radius of apollonisCircle
+        a = self.threeSectionArc.appoloCircle.center_x   # center of appoloCircle
+        b = self.threeSectionArc.appoloCircle.center_y
+        S = self.threeSectionArc.appoloCircle.radius      # radius of appoloCircle
         d = math.sqrt((abs(a - x)) ** 2 + (abs(b - y)) ** 2)    
         A = (R ** 2 - S ** 2 + d ** 2) / (2 * d)
         h = math.sqrt(abs(R ** 2 - A ** 2))
@@ -84,10 +84,3 @@ class WrapperChain(object):
         centroid1 = faceCentroidDict[self.incidentFacesOfChain[1].identifier]
         radius1 = centroidRadiusDict[centroid1.identifier]
         return self.incidentFacesOfChain[0] if radius0 < radius1 else self.incidentFacesOfChain[1]
-
-
-    def distributeInsideDeg2Chain(self):
-        self.threeSectionArc.distributeDeg2Vertices(self.chain)
-
-    # def distributeOutsideDeg2Chain(self, centroid):
-    #     self.threeSectionArc.distributeOutsideDeg2Vertices(self.chain, centroid)
