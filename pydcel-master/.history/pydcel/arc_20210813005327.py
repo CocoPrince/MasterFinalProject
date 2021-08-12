@@ -93,7 +93,7 @@ class Arc(object):
             # clockwise
             tangencyEndCircleCenter_x = self.apollonisCircle.center_x + math.cos(deg3EndRadian) * (self.deg3End.x - self.apollonisCircle.center_x) + math.sin(deg3EndRadian) * (self.deg3End.y - self.apollonisCircle.center_y)
             tangencyEndCircleCenter_y = self.apollonisCircle.center_y - math.sin(deg3EndRadian) * (self.deg3End.x - self.apollonisCircle.center_x) + math.cos(deg3EndRadian) * (self.deg3End.y - self.apollonisCircle.center_y)
-    
+
         return deg3StartCircleRadius, tangencyStartCircleCenter_x, tangencyStartCircleCenter_y, deg3EndCircleRadius, tangencyEndCircleCenter_x, tangencyEndCircleCenter_y, dis1, dis2
 
 
@@ -107,16 +107,6 @@ class Arc(object):
         return arcLength
         
 
-    def calDividePointCCW(self, ox, oy, px, py, angle):
-        qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
-        qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
-        return qx, qy
-        
-    def calDividePointCW(self, ox, oy, px, py, angle):     
-        qx = ox + math.cos(angle) * (px - ox) + math.sin(angle) * (py - oy)
-        qy = oy - math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
-        return qx, qy
-
 
     def distributeDeg2Vertices(self, chain):
         deg3StartCircleRadius, tangencyStartCircleCenter_x, tangencyStartCircleCenter_y, deg3EndCircleRadius, tangencyEndCircleCenter_x, tangencyEndCircleCenter_y, dis1, dis2 = self.calTangencyCircle()
@@ -126,10 +116,7 @@ class Arc(object):
         tangencyPointStart_y = (self.apollonisCircle.radius * (tangencyStartCircleCenter_y - self.apollonisCircle.center_y))/dis1 + self.apollonisCircle.center_y
         tangencyPointEnd_x = (self.apollonisCircle.radius * (tangencyEndCircleCenter_x - self.apollonisCircle.center_x))/dis2 + self.apollonisCircle.center_x
         tangencyPointEnd_y = (self.apollonisCircle.radius * (tangencyEndCircleCenter_y - self.apollonisCircle.center_y))/dis2 + self.apollonisCircle.center_y
-        print("-------------------两个切点-----------------------")
-        print(tangencyPointStart_x,tangencyPointStart_y,tangencyPointEnd_x,tangencyPointEnd_y)
-        print("------------------------------两个三度点-----------------")
-        print(self.deg3Start.x,self.deg3Start.y,self.deg3End.x,self.deg3End.y)
+        
         # calculate the total three arc length
         apollonisArcLength = self.calArcLength(tangencyPointStart_x, tangencyPointEnd_x, tangencyPointStart_y, tangencyPointEnd_y, self.apollonisCircle.radius)
         startArcLength = self.calArcLength(self.deg3Start.x, tangencyPointStart_x, self.deg3Start.y, tangencyPointStart_y, deg3StartCircleRadius)
@@ -147,64 +134,74 @@ class Arc(object):
         leftLength = startArcLength
         chain[index-1].x = self.deg3Start.x
         chain[index-1].y = self.deg3Start.y
-        while leftLength >= interval: # still on first arc
+        while leftLength >= interval and index<len(chain): # still on first arc
             # Calculate the position of the movement, cw or ccw
             angle = interval / math.pi * 2
             if self.deg3StartFlag == 0:   # ccw
-                chain[index].x, chain[index].y = self.calDividePointCCW(tangencyStartCircleCenter_x, tangencyStartCircleCenter_y, chain[index-1].x, chain[index-1].y, angle)
+                chain[index].x = tangencyStartCircleCenter_x + math.cos(angle) * (chain[index-1].x - tangencyStartCircleCenter_x) - math.sin(angle) * (self.deg3Start.y - tangencyStartCircleCenter_y)
+                chain[index].y = tangencyStartCircleCenter_y + math.sin(angle) * (chain[index-1].y - tangencyStartCircleCenter_x) + math.cos(angle) * (self.deg3Start.y - tangencyStartCircleCenter_y)
                 index += 1
             else:   # clockwise
-                chain[index].x, chain[index].y = self.calDividePointCW(tangencyStartCircleCenter_x, tangencyStartCircleCenter_y, chain[index-1].x, chain[index-1].y, angle)
+                chain[index].x = tangencyStartCircleCenter_x + math.cos(angle) * (chain[index-1].y - tangencyStartCircleCenter_x) + math.sin(angle) * (self.deg3Start.y - tangencyStartCircleCenter_y)
+                chain[index].y = tangencyStartCircleCenter_y - math.sin(angle) * (chain[index-1].y - tangencyStartCircleCenter_x) + math.cos(angle) * (self.deg3Start.y - tangencyStartCircleCenter_y)
                 index += 1
-            leftLength = leftLength - interval
+            leftLength = startArcLength - interval
 
         leftInterval = interval - leftLength  # second arc start
 
-        if leftInterval > 0 and index < len(chain) - 1: # only one step, rotate arc length is leftInterval
+        if leftInterval > 0: # only one step, rotate arc length is leftInterval
             # Calculate the position of the movement, cw or ccw
             angle = leftInterval / math.pi * 2
             if self.deg3StartFlag == 0:  # cw
-                chain[index].x, chain[index].y = self.calDividePointCW(self.apollonisCircle.center_x, self.apollonisCircle.center_y, tangencyPointStart_x, tangencyPointStart_y, angle)
+                chain[index].x = self.apollonisCircle.center_x + math.cos(angle) * (tangencyPointStart_x - self.apollonisCircle.center_x) + math.sin(angle) * (tangencyPointStart_y - self.apollonisCircle.center_y)
+                chain[index].y = self.apollonisCircle.center_y - math.sin(angle) * (tangencyPointStart_x - self.apollonisCircle.center_x) + math.cos(angle) * (tangencyPointStart_y - self.apollonisCircle.center_y)
                 index += 1
             else:   # ccw
-                chain[index].x, chain[index].y = self.calDividePointCCW(self.apollonisCircle.center_x, self.apollonisCircle.center_y, tangencyPointStart_x, tangencyPointStart_y, angle)
+                chain[index].x = self.apollonisCircle.center_x + math.cos(angle) * (tangencyPointStart_x - self.apollonisCircle.center_x) - math.sin(angle) * (tangencyPointStart_y - self.apollonisCircle.center_y)
+                chain[index].y = self.apollonisCircle.center_y + math.sin(angle) * (tangencyPointStart_x - self.apollonisCircle.center_x) + math.cos(angle) * (tangencyPointStart_y - self.apollonisCircle.center_y)
                 index += 1
-        leftLength = apollonisArcLength - leftInterval
+            leftLength = apollonisArcLength - leftInterval
 
-        while leftLength > interval and index < len(chain) - 1: # on second arc
+        while leftLength >= interval and index<len(chain): # on second arc
             # Calculate the position of the movement, cw or ccw
             angle = interval / math.pi * 2
             if self.deg3StartFlag == 0: # cw
-                chain[index].x, chain[index].y = self.calDividePointCW(self.apollonisCircle.center_x, self.apollonisCircle.center_y, chain[index].x, chain[index].y, angle)
+                chain[index].x = self.apollonisCircle.center_x + math.cos(angle) * (chain[index-1].x - self.apollonisCircle.center_x) + math.sin(angle) * (chain[index].y - self.apollonisCircle.center_y)
+                chain[index].y = self.apollonisCircle.center_y - math.sin(angle) * (chain[index-1].x - self.apollonisCircle.center_x) + math.cos(angle) * (chain[index].y - self.apollonisCircle.center_y)
                 index += 1
             else:  # ccw
-                chain[index].x, chain[index].y = self.calDividePointCCW(self.apollonisCircle.center_x, self.apollonisCircle.center_y, chain[index].x, chain[index].y, angle)
+                chain[index].x = self.apollonisCircle.center_x + math.cos(angle) * (chain[index-1].x - self.apollonisCircle.center_x) - math.sin(angle) * (chain[index].y - self.apollonisCircle.center_y)
+                chain[index].y = self.apollonisCircle.center_y + math.sin(angle) * (chain[index-1].x - self.apollonisCircle.center_x) + math.cos(angle) * (chain[index].y - self.apollonisCircle.center_y)
                 index += 1
-            leftLength = leftLength - interval
+            leftLength = apollonisArcLength - interval
 
         leftInterval = interval - leftLength # start third arc
 
-        if leftInterval > 0 and index < len(chain) - 1: # only one step, rotate arc length is leftInterval
+        if leftInterval > 0: # only one step, rotate arc length is leftInterval
             # Calculate the position of the movement, cw or ccw
             angle = leftInterval / math.pi * 2
             if self.deg3StartFlag == 0: # ccw
-                chain[index].x, chain[index].y = self.calDividePointCCW(tangencyEndCircleCenter_x, tangencyEndCircleCenter_y, tangencyPointEnd_x, tangencyPointEnd_x, angle)
+                chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (tangencyPointEnd_x - tangencyEndCircleCenter_x) - math.sin(angle) * (tangencyPointEnd_y - tangencyEndCircleCenter_y)
+                chain[index].y = tangencyEndCircleCenter_y + math.sin(angle) * (tangencyPointEnd_x - tangencyEndCircleCenter_x) + math.cos(angle) * (tangencyPointEnd_y - tangencyEndCircleCenter_y)
                 index += 1
             else:    # cw
-                chain[index].x, chain[index].y = self.calDividePointCW(tangencyEndCircleCenter_x, tangencyEndCircleCenter_y, tangencyPointEnd_x, tangencyPointEnd_x, angle)
+                chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (tangencyPointEnd_x - tangencyEndCircleCenter_x) + math.sin(angle) * (tangencyPointEnd_y - tangencyEndCircleCenter_y)
+                chain[index].y = tangencyEndCircleCenter_y - math.sin(angle) * (tangencyPointEnd_x - tangencyEndCircleCenter_x) + math.cos(angle) * (tangencyPointEnd_y - tangencyEndCircleCenter_y)
                 index += 1
-        leftLength = endArcLength - leftInterval
+            leftLength = endArcLength - leftInterval
 
-        while leftLength > interval and index < len(chain) - 1:
+        while leftLength >= interval and index<len(chain):
             # Calculate the position of the movement, cw or ccw
             angle = interval / math.pi * 2
             if self.deg3StartFlag == 0: # ccw
-                chain[index].x, chain[index].y = self.calDividePointCCW(tangencyEndCircleCenter_x, tangencyEndCircleCenter_y, chain[index-1].x, chain[index-1].y, angle)
+                chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) - math.sin(angle) * (chain[index].y - tangencyEndCircleCenter_y)
+                chain[index].y = tangencyEndCircleCenter_y + math.sin(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.cos(angle) * (chain[index].y - tangencyEndCircleCenter_y)
                 # index += 1
             else: # cw
-                chain[index].x, chain[index].y = self.calDividePointCW(tangencyEndCircleCenter_x, tangencyEndCircleCenter_y, chain[index-1].x, chain[index-1].y, angle)
+                chain[index].x = tangencyEndCircleCenter_x + math.cos(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.sin(angle) * (chain[index].y - tangencyEndCircleCenter_y)
+                chain[index].y = tangencyEndCircleCenter_y - math.sin(angle) * (chain[index-1].x - tangencyEndCircleCenter_x) + math.cos(angle) * (chain[index].y - tangencyEndCircleCenter_y)
                 # index += 1
-            leftLength = leftLength - interval
+            leftLength = apollonisArcLength - interval
         # leftInterval = interval - leftLength # should be 0
         ############################
 

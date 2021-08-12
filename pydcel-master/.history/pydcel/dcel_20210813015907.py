@@ -530,6 +530,7 @@ class DCEL(object):
             
         return preIntersection, postIntersection
 
+    
     def handleDeg3Vertex_outside(self, deg3ChainDict):
         for kDeg3, vChainList in deg3ChainDict.items():
             # only handle the outside deg3+ vertex

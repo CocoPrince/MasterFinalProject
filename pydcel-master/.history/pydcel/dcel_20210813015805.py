@@ -530,6 +530,7 @@ class DCEL(object):
             
         return preIntersection, postIntersection
 
+    
     def handleDeg3Vertex_outside(self, deg3ChainDict):
         for kDeg3, vChainList in deg3ChainDict.items():
             # only handle the outside deg3+ vertex
@@ -786,7 +787,6 @@ class DCEL(object):
 
                 # wrapperchain.distributeInsideDeg2Chain()
                 
-                
             
 
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
@@ -836,7 +836,6 @@ class DCEL(object):
                     continue
 
                 wrapperchain.distributeInsideDeg2Chain()
-                gui = pydcel.dcelVis(self)
 
                 # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
