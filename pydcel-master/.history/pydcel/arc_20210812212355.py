@@ -103,7 +103,7 @@ class Arc(object):
     def calArcLength(self, x1, x2, y1, y2, radius):
         chordLength = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
         chordRadian = 2 * math.asin(chordLength/(2 * radius)) 
-        arcLength = radius * chordRadian
+        arcLength = chordLength * chordRadian
         return arcLength
         
 

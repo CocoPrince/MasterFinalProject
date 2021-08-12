@@ -103,7 +103,7 @@ class Arc(object):
     def calArcLength(self, x1, x2, y1, y2, radius):
         chordLength = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
         chordRadian = 2 * math.asin(chordLength/(2 * radius)) 
-        arcLength = radius * chordRadian
+        arcLength = chordLength * chordRadian
         return arcLength
         
 
@@ -134,7 +134,7 @@ class Arc(object):
         leftLength = startArcLength
         chain[index-1].x = self.deg3Start.x
         chain[index-1].y = self.deg3Start.y
-        while leftLength >= interval and index<len(chain): # still on first arc
+        while leftLength >= interval and len(chain)<index: # still on first arc
             # Calculate the position of the movement, cw or ccw
             angle = interval / math.pi * 2
             if self.deg3StartFlag == 0:   # ccw
@@ -162,7 +162,7 @@ class Arc(object):
                 index += 1
             leftLength = apollonisArcLength - leftInterval
 
-        while leftLength >= interval and index<len(chain): # on second arc
+        while leftLength >= interval and len(chain)<index: # on second arc
             # Calculate the position of the movement, cw or ccw
             angle = interval / math.pi * 2
             if self.deg3StartFlag == 0: # cw
@@ -190,7 +190,7 @@ class Arc(object):
                 index += 1
             leftLength = endArcLength - leftInterval
 
-        while leftLength >= interval and index<len(chain):
+        while leftLength >= interval and len(chain)<index:
             # Calculate the position of the movement, cw or ccw
             angle = interval / math.pi * 2
             if self.deg3StartFlag == 0: # ccw
