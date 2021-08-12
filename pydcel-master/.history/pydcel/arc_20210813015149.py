@@ -93,7 +93,7 @@ class Arc(object):
             # clockwise
             tangencyEndCircleCenter_x = self.apollonisCircle.center_x + math.cos(deg3EndRadian) * (self.deg3End.x - self.apollonisCircle.center_x) + math.sin(deg3EndRadian) * (self.deg3End.y - self.apollonisCircle.center_y)
             tangencyEndCircleCenter_y = self.apollonisCircle.center_y - math.sin(deg3EndRadian) * (self.deg3End.x - self.apollonisCircle.center_x) + math.cos(deg3EndRadian) * (self.deg3End.y - self.apollonisCircle.center_y)
-    
+
         return deg3StartCircleRadius, tangencyStartCircleCenter_x, tangencyStartCircleCenter_y, deg3EndCircleRadius, tangencyEndCircleCenter_x, tangencyEndCircleCenter_y, dis1, dis2
 
 
@@ -107,12 +107,12 @@ class Arc(object):
         return arcLength
         
 
-    def calDividePointCCW(self, ox, oy, px, py, angle):
+    def self.calDividePointCCW(self, ox, oy, px, py, angle):
         qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
         qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
         return qx, qy
         
-    def calDividePointCW(self, ox, oy, px, py, angle):     
+    def self.calDividePointCW(self, ox, oy, px, py, angle):     
         qx = ox + math.cos(angle) * (px - ox) + math.sin(angle) * (py - oy)
         qy = oy - math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
         return qx, qy
@@ -126,10 +126,7 @@ class Arc(object):
         tangencyPointStart_y = (self.apollonisCircle.radius * (tangencyStartCircleCenter_y - self.apollonisCircle.center_y))/dis1 + self.apollonisCircle.center_y
         tangencyPointEnd_x = (self.apollonisCircle.radius * (tangencyEndCircleCenter_x - self.apollonisCircle.center_x))/dis2 + self.apollonisCircle.center_x
         tangencyPointEnd_y = (self.apollonisCircle.radius * (tangencyEndCircleCenter_y - self.apollonisCircle.center_y))/dis2 + self.apollonisCircle.center_y
-        print("-------------------两个切点-----------------------")
-        print(tangencyPointStart_x,tangencyPointStart_y,tangencyPointEnd_x,tangencyPointEnd_y)
-        print("------------------------------两个三度点-----------------")
-        print(self.deg3Start.x,self.deg3Start.y,self.deg3End.x,self.deg3End.y)
+        
         # calculate the total three arc length
         apollonisArcLength = self.calArcLength(tangencyPointStart_x, tangencyPointEnd_x, tangencyPointStart_y, tangencyPointEnd_y, self.apollonisCircle.radius)
         startArcLength = self.calArcLength(self.deg3Start.x, tangencyPointStart_x, self.deg3Start.y, tangencyPointStart_y, deg3StartCircleRadius)

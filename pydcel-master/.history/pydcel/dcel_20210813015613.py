@@ -787,7 +787,6 @@ class DCEL(object):
 
                 # wrapperchain.distributeInsideDeg2Chain()
                 
-                
             
 
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
@@ -800,7 +799,7 @@ class DCEL(object):
                     deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
                     deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
                     multi += 1
-            gui = pydcel.dcelVis(self)
+
 
 
                 # TODO: Check for crossovers
@@ -837,7 +836,6 @@ class DCEL(object):
                     continue
 
                 wrapperchain.distributeInsideDeg2Chain()
-                gui = pydcel.dcelVis(self)
 
                 # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
