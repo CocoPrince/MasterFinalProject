@@ -109,8 +109,8 @@ class DCEL(object):
         self.radiusList = []    # all the radius of the circle
         self.infiniteFace = None
         self.centroidEdges = [] # all the edges of the centroid graph
-        self.apollonisCenterList = []
-        self.apollonisRadiusList = []
+        self.apolloCenterList = []
+        self.apolloRadiusList = []
         self.face_dict = {} # dictionary that finds faces by id
         self.edge_dict = {} # dictionary that finds hedges by id
 
@@ -454,10 +454,6 @@ class DCEL(object):
                 radius2 = self.centroidRadiusDict[centroid2.identifier]
                 arc = Arc(keyDeg3Start, keyDeg3End)
                 arc.calApollonisCircle(centroid1, centroid2, radius1, radius2)
-
-                apollonisCenterPoint = self.createVertexPure(arc.apollonisCircle.center_x, arc.apollonisCircle.center_y, 0)
-                self.apollonisCenterList.append(apollonisCenterPoint)
-                self.apollonisRadiusList.append(arc.apollonisCircle.radius)
                 
                 # TODO other properties of three section arc
                 wrapperchain.setThreeSectionArc(arc)
@@ -491,10 +487,11 @@ class DCEL(object):
     
     # order of the vertex on the face
     # 从0点开始出发，继续逆时针旋转，如果next在链上，则0为post，如果next不在链上，则0为pre
-    def calOrderOnFace(self, faceSmaller, wrapperChain):
-        face_vertices = [v for v in faceSmaller.loopOuterVertices()]
+    def calOrderOnFace(self, faceSmall, wrapperChain):
+        face_vertices = [v for v in faceSmall.loopOuterVertices()]
         startDeg3 = wrapperChain.chain[0]
         endDeg3 = wrapperChain.chain[-1]
+
         # 重新组织face vertices, 使face vertices中的第一个点为startDeg3
         splitIndex = 0
         for vertex in face_vertices:
@@ -510,11 +507,11 @@ class DCEL(object):
         
 
     # order of the intersections
-    def calOrderForIntersection(self, intersection1, intersection2, apollonisCircle):
-        dx1 = intersection1[0] - apollonisCircle.center_x
-        dy1 = intersection1[1] - apollonisCircle.center_y
-        dx2 = intersection2[0] - apollonisCircle.center_x
-        dy2 = intersection2[1] - apollonisCircle.center_y
+    def calOrderForIntersection(self, intersection1, intersection2, appoloCircle):
+        dx1 = intersection1[0] - appoloCircle.center_x
+        dy1 = intersection1[1] - appoloCircle.center_y
+        dx2 = intersection2[0] - appoloCircle.center_x
+        dy2 = intersection2[1] - appoloCircle.center_y
         angle1 = math.atan2(dy1, dx1)
         angle1 = int(angle1 * 180/math.pi)
         # print(angle1)
@@ -553,13 +550,12 @@ class DCEL(object):
                 intersection1, intersection2 = wrapperChain.calLocateIntersection()
                 smallerFace = wrapperChain.getSmallerFace(self.faceCentroidDict, self.centroidRadiusDict)
                 preVertex, postVertex = self.calOrderOnFace(smallerFace, wrapperChain)
-                apollonisCircle = wrapperChain.threeSectionArc.apollonisCircle
-                preIntersection, postIntersection = self.calOrderForIntersection(intersection1, intersection2, apollonisCircle)
+                appoloCircle = wrapperChain.threeSectionArc.appoloCircle
+                preIntersection, postIntersection = self.calOrderForIntersection(intersection1, intersection2, appoloCircle)
                 if kDeg3.identifier == preVertex.identifier:
                     intersection = preIntersection
                 else:
-                    intersection = postIntersection   
-
+                    intersection = postIntersection
                 # intersection = self.relateDeg3WithIntersection(kDeg3, intersection1, intersection2)
                 xCoordSum += intersection[0]
                 yCoordSum += intersection[1]
@@ -569,7 +565,9 @@ class DCEL(object):
             kDeg3.y = yCoordSum / count
 
         
-                    
+
+
+
     '''------------------------------------------------------------------------------------
     Preserve the topology: not cross
     ------------------------------------------------------------------------------------'''
@@ -681,7 +679,7 @@ class DCEL(object):
             face_vertices = [v for v in face.loopOuterVertices()] 
             face_hedges = [e for e in face.loopOuterEdges()] 
             centroid, radius = self.getCentroidAndRadius(face, face_vertices)
-
+         
 
     '''------------------------------------------------------------------------------------
     Main function: handle face one by one
@@ -769,14 +767,9 @@ class DCEL(object):
                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
                 force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
                 
-
-            # ----------deg3+ outside
-            # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
-            self.handleDeg3Vertex_outside(deg3ChainDict)
-
-
-
+                # chainList = self.findChain(self.vertexList, self.edge_dict)
+                # print(chainList)
+                
             # before rotate           
             # just use straight line to show the results
             for wrapperchain in chainList:
@@ -785,13 +778,7 @@ class DCEL(object):
                     continue
                 face = first_deg2.incidentFaces
                 # if len(face) < 2:
-                #     # wrapperchain.distributeOutsideDeg2Chain(centroid)
                 #     continue
-
-                # wrapperchain.distributeInsideDeg2Chain()
-                
-                
-            
 
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
@@ -803,7 +790,59 @@ class DCEL(object):
                     deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
                     deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
                     multi += 1
-            gui = pydcel.dcelVis(self)
+            # gui = pydcel.dcelVis(self)
+
+            ####################-----------------------------##########################
+            # after the force-directed method, if there existes very short chains, do the next rotate part
+            ########## rotate the circle to make  short chain longer
+            # for vertex in self.vertexList:
+            #     if len(vertex.incidentEdges) < 3:
+            #         continue
+            #     centroidsOfIncidentFace = []
+            #     # Find the centroids of the circle around the current deg3+ point
+            #     for faceIdentifier in vertex.incidentFaces:
+            #         centroid = self.faceCentroidDict.get(faceIdentifier)
+            #         centroidsOfIncidentFace.append(centroid)
+            #     if len(centroidsOfIncidentFace) < 3:
+            #         continue
+
+            #     # rotate
+            #     for wrapperChain in chainList:
+            #         chain = wrapperChain.chain
+            #         start3Deg = chain[0]
+            #         end3Deg = chain[-1]
+            #         if start3Deg.identifier == vertex.identifier or end3Deg.identifier == vertex.identifier:
+            #             disBetween3Deg = math.sqrt((start3Deg.x - end3Deg.x) ** 2 + (start3Deg.y - end3Deg.y) ** 2) # real length of the chain
+
+            #             # If chain length less than threshold (fractional times optimal distance), rotate
+            #             if (len(chain) - 1) * 5 > disBetween3Deg:
+            #                 faceId1 = list(chain[1].incidentFaces)[0] # two incident faces of the chain
+            #                 faceId2 = list(chain[1].incidentFaces)[1]
+            #                 centroid1 = self.faceCentroidDict.get(faceId1) # two centroids of the two incident faces
+            #                 centroid2 = self.faceCentroidDict.get(faceId2)
+            #                 # rotation angle, can be adjusted
+            #                 angle = math.radians(30)
+            #                 # formula of rotation
+            #                 # take theh cetroid1 as center, rotate the centroid2
+            #                 centroid2.x = (centroid2.x-centroid1.x)*math.cos(angle) - (centroid2.y-centroid1.y)*math.sin(angle)+centroid1.x
+            #                 centroid2.y = (centroid2.y-centroid1.y)*math.cos(angle) + (centroid2.x-centroid1.x)*math.sin(angle)+centroid1.y
+            #                 # put the deg3+ vertex at the centroid of the centroids of the rotated circles(same as before) 
+            #                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
+            #                 vertex.x = centroid_of_centroids.x
+            #                 vertex.y = centroid_of_centroids.y
+            #                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point
+            #                 force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
+                           
+
+            # ----------deg3+ outside
+            # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
+            self.handleDeg3Vertex_outside(deg3ChainDict)
+
+
+                
+            # force_directed_draw.handleRotate()
+
 
 
                 # TODO: Check for crossovers
@@ -834,24 +873,19 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                if len(face) < 2 or len(wrapperchain.chain) < 3:
-                    # centroid = self.faceCentroidDict[face[0]]
-                    # wrapperchain.distributeOutsideDeg2Chain(centroid)
-                    continue
+                # if len(face) < 2:
+                #     continue
 
-                wrapperchain.distributeInsideDeg2Chain()
-            gui = pydcel.dcelVis(self)
+                xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
+                ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
+                xUnitDis = xdis / (len(wrapperchain.chain) - 1)
+                yUnitDis = ydis / (len(wrapperchain.chain) - 1)
 
-                # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
-                # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
-                # xUnitDis = xdis / (len(wrapperchain.chain) - 1)
-                # yUnitDis = ydis / (len(wrapperchain.chain) - 1)
-
-                # multi = 1
-                # for deg2 in wrapperchain.chain[1:-1]:                    
-                #     deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
-                #     deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
-                #     multi += 1
+                multi = 1
+                for deg2 in wrapperchain.chain[1:-1]:                    
+                    deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
+                    deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
+                    multi += 1
 
             # draw the adjusted graph   
             gui = pydcel.dcelVis(self)  

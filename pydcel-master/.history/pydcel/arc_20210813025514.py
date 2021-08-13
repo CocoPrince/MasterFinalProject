@@ -108,17 +108,13 @@ class Arc(object):
         
 
     def calDividePointCCW(self, ox, oy, px, py, angle):
-        qx = (px - ox)*math.cos(angle) - (py - oy)*math.sin(angle)+ox
-        qy = (px - ox)*math.sin(angle) + (py - oy)*math.cos(angle)+oy 
-        # qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
-        # qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+        qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+        qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
         return qx, qy
         
-    def calDividePointCW(self, ox, oy, px, py, angle):  
-        qx = (px - ox)*math.cos(angle) + (py - oy)*math.sin(angle)+ox
-        qy = (py - oy)*math.cos(angle) - (px - ox)*math.sin(angle)+oy
-        # qx = ox + math.cos(angle) * (px - ox) + math.sin(angle) * (py - oy)
-        # qy = oy - math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    def calDividePointCW(self, ox, oy, px, py, angle):     
+        qx = ox + math.cos(angle) * (px - ox) + math.sin(angle) * (py - oy)
+        qy = oy - math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
         return qx, qy
 
 

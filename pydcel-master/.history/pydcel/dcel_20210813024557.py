@@ -839,19 +839,19 @@ class DCEL(object):
                     # wrapperchain.distributeOutsideDeg2Chain(centroid)
                     continue
 
-                wrapperchain.distributeInsideDeg2Chain()
-            gui = pydcel.dcelVis(self)
+                # wrapperchain.distributeInsideDeg2Chain()
+                # gui = pydcel.dcelVis(self)
 
-                # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
-                # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
-                # xUnitDis = xdis / (len(wrapperchain.chain) - 1)
-                # yUnitDis = ydis / (len(wrapperchain.chain) - 1)
+                xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
+                ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
+                xUnitDis = xdis / (len(wrapperchain.chain) - 1)
+                yUnitDis = ydis / (len(wrapperchain.chain) - 1)
 
-                # multi = 1
-                # for deg2 in wrapperchain.chain[1:-1]:                    
-                #     deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
-                #     deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
-                #     multi += 1
+                multi = 1
+                for deg2 in wrapperchain.chain[1:-1]:                    
+                    deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
+                    deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
+                    multi += 1
 
             # draw the adjusted graph   
             gui = pydcel.dcelVis(self)  

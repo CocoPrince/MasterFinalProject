@@ -109,8 +109,8 @@ class DCEL(object):
         self.radiusList = []    # all the radius of the circle
         self.infiniteFace = None
         self.centroidEdges = [] # all the edges of the centroid graph
-        self.apollonisCenterList = []
-        self.apollonisRadiusList = []
+        self.apolloCenterList = []
+        self.apolloRadiusList = []
         self.face_dict = {} # dictionary that finds faces by id
         self.edge_dict = {} # dictionary that finds hedges by id
 
@@ -456,8 +456,8 @@ class DCEL(object):
                 arc.calApollonisCircle(centroid1, centroid2, radius1, radius2)
 
                 apollonisCenterPoint = self.createVertexPure(arc.apollonisCircle.center_x, arc.apollonisCircle.center_y, 0)
-                self.apollonisCenterList.append(apollonisCenterPoint)
-                self.apollonisRadiusList.append(arc.apollonisCircle.radius)
+                self.apolloCenterList.append(apollonisCenterPoint)
+                self.apolloRadiusList.append(arc.apollonisCircle.radius)
                 
                 # TODO other properties of three section arc
                 wrapperchain.setThreeSectionArc(arc)
@@ -784,9 +784,9 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                # if len(face) < 2:
-                #     # wrapperchain.distributeOutsideDeg2Chain(centroid)
-                #     continue
+                if len(face) < 2:
+                    # wrapperchain.distributeOutsideDeg2Chain(centroid)
+                    continue
 
                 # wrapperchain.distributeInsideDeg2Chain()
                 
@@ -834,13 +834,13 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                if len(face) < 2 or len(wrapperchain.chain) < 3:
+                if len(face) < 2:
                     # centroid = self.faceCentroidDict[face[0]]
                     # wrapperchain.distributeOutsideDeg2Chain(centroid)
                     continue
 
                 wrapperchain.distributeInsideDeg2Chain()
-            gui = pydcel.dcelVis(self)
+                gui = pydcel.dcelVis(self)
 
                 # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y

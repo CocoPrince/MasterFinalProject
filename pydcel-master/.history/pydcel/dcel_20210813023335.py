@@ -784,9 +784,9 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                # if len(face) < 2:
-                #     # wrapperchain.distributeOutsideDeg2Chain(centroid)
-                #     continue
+                if len(face) < 2:
+                    # wrapperchain.distributeOutsideDeg2Chain(centroid)
+                    continue
 
                 # wrapperchain.distributeInsideDeg2Chain()
                 
@@ -834,13 +834,13 @@ class DCEL(object):
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
-                if len(face) < 2 or len(wrapperchain.chain) < 3:
+                if len(face) < 2:
                     # centroid = self.faceCentroidDict[face[0]]
                     # wrapperchain.distributeOutsideDeg2Chain(centroid)
                     continue
 
                 wrapperchain.distributeInsideDeg2Chain()
-            gui = pydcel.dcelVis(self)
+                gui = pydcel.dcelVis(self)
 
                 # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
