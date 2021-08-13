@@ -837,7 +837,7 @@ class DCEL(object):
                     continue
 
                 wrapperchain.distributeInsideDeg2Chain()
-            gui = pydcel.dcelVis(self)
+                gui = pydcel.dcelVis(self)
 
                 # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
