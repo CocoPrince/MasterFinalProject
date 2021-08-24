@@ -30,6 +30,8 @@ class Arc(object):
     # the ratio of the points on the circle to the centroid = the ratio of the radius
     def calApollonisCircle(self, face_1_centroid, face_2_centroid, radius_1, radius_2):
         ratio = radius_1 / radius_2
+        if ratio == 1:
+            continue
         centroidDis = math.sqrt((face_1_centroid.x - face_2_centroid.x) ** 2 + (face_1_centroid.y - face_2_centroid.y) ** 2)
         
         radius = abs(ratio / (1 - ratio ** 2)) * centroidDis

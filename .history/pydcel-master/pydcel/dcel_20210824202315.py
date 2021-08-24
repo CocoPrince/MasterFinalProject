@@ -286,7 +286,7 @@ class DCEL(object):
     # Calculate the area of the standard equilateral polygon with the same vertex number as the face(edge length = 1)
     def calEqualiteral(self, face_vertices):
         vertex_num = len(face_vertices) # The number of vertices in a face, determine the optimal area of the face
-        edge_length = 10 # Default length of each edge is 10
+        edge_length = 10 # Default length of each edge is 1
         area = edge_length**2 * vertex_num / (4 * math.tan(math.pi/vertex_num)) #formula
         print('Equaliteral:', area)
         return area
@@ -840,7 +840,7 @@ class DCEL(object):
             # final result   
             gui = pydcel.dcelVis(self)
 
-        gui.mainloop()
+       gui.mainloop()
 
         
 

@@ -62,7 +62,7 @@ class WrapperChain(object):
         x = self.locateCircleCenter[0]   # center of locateCircle
         y = self.locateCircleCenter[1]   
         R = self.locateCircleRadius      # radius of locateCircle
-        # if self.threeSectionArc.apollonisCircle is not None:
+        if self.threeSectionArc.apollonisCircle is not None:
         a = self.threeSectionArc.apollonisCircle.center_x   # center of apollonisCircle
         b = self.threeSectionArc.apollonisCircle.center_y
         S = self.threeSectionArc.apollonisCircle.radius      # radius of apollonisCircle

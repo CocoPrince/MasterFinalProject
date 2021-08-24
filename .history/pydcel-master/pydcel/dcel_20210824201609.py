@@ -286,7 +286,7 @@ class DCEL(object):
     # Calculate the area of the standard equilateral polygon with the same vertex number as the face(edge length = 1)
     def calEqualiteral(self, face_vertices):
         vertex_num = len(face_vertices) # The number of vertices in a face, determine the optimal area of the face
-        edge_length = 10 # Default length of each edge is 10
+        edge_length = 10 # Default length of each edge is 1
         area = edge_length**2 * vertex_num / (4 * math.tan(math.pi/vertex_num)) #formula
         print('Equaliteral:', area)
         return area
@@ -709,7 +709,7 @@ class DCEL(object):
             # and calculate all the adjacent faces of this face(centroid graph)
             self.calEdgesOfCentroid(self.face_dict, distinct_edge, edges)
 
-            '''1. draw original map'''
+            # draw original map  
             self.centroidEdges = edges          
             gui = pydcel.dcelVis(self)  
 
@@ -727,8 +727,6 @@ class DCEL(object):
                     
                     # Rearrange the centroid
                     isHandle = force_directed_draw.handler()
-
-                '''2. draw the map after rearranging the centroids use force-directed  method with rotation''' 
                 gui = pydcel.dcelVis(self)
 
 
@@ -762,12 +760,14 @@ class DCEL(object):
                 
                 # ----------deg3+ inside
                 # move the deg3+ vertex into the ploygon formed by centroids of the around circle
+                # if True:
+                #     continue
                 if len(centroidsOfIncidentFace) < 3:
                     continue
 
 
                 centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
-        
+                # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
                 vertex.x = centroid_of_centroids.x
                 vertex.y = centroid_of_centroids.y
                 # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
@@ -775,18 +775,28 @@ class DCEL(object):
                 
 
             # ----------deg3+ outside
-            
+            # 待恢复&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
             deg3ChainDict = self.buildDeg3ChainsDict(chainList)
             self.handleDeg3Vertex_outside(deg3ChainDict)
 
-          
-            # just use straight line to show the deg3+ vertices new locations
+
+
+            # before rotate           
+            # just use straight line to show the results
             for wrapperchain in chainList:
                 first_deg2 = wrapperchain.chain[1]
                 if len(first_deg2.incidentEdges) > 2:
                     continue
                 face = first_deg2.incidentFaces
- 
+                # if len(face) < 2:
+                #     # wrapperchain.distributeOutsideDeg2Chain(centroid)
+                #     continue
+
+                # wrapperchain.distributeInsideDeg2Chain()
+                
+                
+            
+
                 xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
                 ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
                 xUnitDis = xdis / (len(wrapperchain.chain) - 1)
@@ -797,52 +807,7 @@ class DCEL(object):
                     deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
                     deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
                     multi += 1
-
-            '''3. draw the map after locating the inside and outside deg3+ vertices''' 
             gui = pydcel.dcelVis(self)
-
-       
-
-            
-            for wrapperchain in chainList:
-                first_deg2 = wrapperchain.chain[1]
-                if len(first_deg2.incidentEdges) > 2:
-                    continue
-                face = list(first_deg2.incidentFaces)
-
-                if len(wrapperchain.chain) < 3:
-                    continue
-                # handle outside chain
-                if len(face) < 2:
-                    centroid = self.faceCentroidDict[face[0]] 
-                    radius = self.centroidRadiusDict[centroid.identifier]
-                    wrapperchain.distributeOutsideDeg2Chain(centroid, radius)
-                    continue
-                
-                # if two inside faces have the same number of vertices, we do not calculate apollonis circle,
-                # but use stright lines.
-                # if len(self.faceVerticesDict[face[0].identifier]) == len(self.faceVerticesDict[face[1].identifier]):
-                #     xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
-                #     ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
-                #     xUnitDis = xdis / (len(wrapperchain.chain) - 1)
-                #     yUnitDis = ydis / (len(wrapperchain.chain) - 1)
-
-                #     multi = 1
-                #     for deg2 in wrapperchain.chain[1:-1]:                    
-                #         deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
-                #         deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
-                #         multi += 1
-                #     continue
-
-                wrapperchain.distributeInsideDeg2Chain()
-            
-            '''4. draw the map after reinsert all the deg2 vertices on the chains with 3 arcs'''
-            # final result   
-            gui = pydcel.dcelVis(self)
-
-        gui.mainloop()
-
-        
 
 
                 # TODO: Check for crossovers
@@ -862,10 +827,65 @@ class DCEL(object):
                 #     y_distance = y_distance / 2
                 #     count +=1
                 # vertex.x = x_distance + vertex.x
-                # vertex.y = y_distance + vertex.y        
+                # vertex.y = y_distance + vertex.y
 
 
+            
 
+            # just use straight line to show the results
+            for wrapperchain in chainList:
+                first_deg2 = wrapperchain.chain[1]
+                if len(first_deg2.incidentEdges) > 2:
+                    continue
+                face = list(first_deg2.incidentFaces)
+
+                if len(wrapperchain.chain) < 3:
+                    continue
+                # handle outside chain
+                if len(face) < 2:
+                    centroid = self.faceCentroidDict[face[0]] 
+                    radius = self.centroidRadiusDict[centroid.identifier]
+                    wrapperchain.distributeOutsideDeg2Chain(centroid, radius)
+                    continue
+                
+                # if two inside faces have the same number of vertices, we do not calculate apollonis circle,
+                # but use stright lines.
+                if len(self.faceVerticesDict[face[0].identifier]) == len(self.faceVerticesDict[face[1].identifier]):
+                    xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
+                    ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
+                    xUnitDis = xdis / (len(wrapperchain.chain) - 1)
+                    yUnitDis = ydis / (len(wrapperchain.chain) - 1)
+
+                    multi = 1
+                    for deg2 in wrapperchain.chain[1:-1]:                    
+                        deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
+                        deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
+                        multi += 1
+                    continue
+
+                wrapperchain.distributeInsideDeg2Chain()
+            gui = pydcel.dcelVis(self)
+
+                # xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
+                # ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
+                # xUnitDis = xdis / (len(wrapperchain.chain) - 1)
+                # yUnitDis = ydis / (len(wrapperchain.chain) - 1)
+
+                # multi = 1
+                # for deg2 in wrapperchain.chain[1:-1]:                    
+                #     deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
+                #     deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
+                #     multi += 1
+
+            # draw the adjusted graph   
+            gui = pydcel.dcelVis(self)  
+             
+
+
+        gui.mainloop()
+
+        
+        
 
 
 
