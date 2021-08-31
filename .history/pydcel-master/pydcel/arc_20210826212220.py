@@ -240,10 +240,30 @@ class Arc(object):
         self.apollonisCircle = circle(centroid.x, centroid.y, radius, 0)
 
         # fomula https://blog.csdn.net/zx3517288/article/details/53326420
+        # d1 = math.sqrt((self.deg3Start.x - centroid.x)**2 + (self.deg3Start.y - centroid.y)**2)
+        # radius1 = d1 - radius
+        # a1 = (radius1**2 - (d1)**2 + d1**2) / (2*d1)
+        # h1 = math.sqrt((d1)**2 - (d1 - a1)**2)
+        # x0 = self.deg3Start.x + a1/d1 * (centroid.x - self.deg3Start.x)
+        # y0 = self.deg3Start.y + a1/d1 * (centroid.y - self.deg3Start.y)
+        # circle1_x = x0 - h1/d1 * (centroid.y - self.deg3Start.y)
+        # circle1_y = y0 + h1/d1 * (centroid.x - self.deg3Start.x)
+        # circle2_x = x0 + h1/d1 * (centroid.y - self.deg3Start.y)
+        # circle2_y = y0 - h1/d1 * (centroid.x - self.deg3Start.x)
+
+        # d2 = math.sqrt((self.deg3End.x - centroid.x)**2 + (self.deg3End.y - centroid.y)**2)
+        # radius2 = d2 - radius
+        # a2 = (radius2**2 - (d2)**2 + d2**2) / (2*d2)
+        # h2 = math.sqrt((d2)**2 - (d2 - a2)**2)
+        # x00 = self.deg3End.x + a2/d2 * (centroid.x - self.deg3End.x)
+        # y00 = self.deg3End.y + a2/d2 * (centroid.y - self.deg3End.y)
+        # circle3_x = x00 - h2/d2 * (centroid.y - self.deg3End.y)
+        # circle3_y = y00 + h2/d2 * (centroid.x - self.deg3End.x)
+        # circle4_x = x00 + h2/d2 * (centroid.y - self.deg3End.y)
+        # circle4_y = y00 - h2/d2 * (centroid.x - self.deg3End.x)
         d1 = math.sqrt((self.deg3Start.x - centroid.x)**2 + (self.deg3Start.y - centroid.y)**2)
-        radius1 = d1 - radius
-        a1 = (radius1**2 - (d1)**2 + d1**2) / (2*d1)
-        h1 = math.sqrt((d1)**2 - (d1 - a1)**2)
+        a1 = (radius**2 - (2*radius)**2 + d1**2) / (2*d1)
+        h1 = math.sqrt((2*radius)**2 - (d1 - a1)**2)
         x0 = self.deg3Start.x + a1/d1 * (centroid.x - self.deg3Start.x)
         y0 = self.deg3Start.y + a1/d1 * (centroid.y - self.deg3Start.y)
         circle1_x = x0 - h1/d1 * (centroid.y - self.deg3Start.y)
@@ -252,16 +272,14 @@ class Arc(object):
         circle2_y = y0 - h1/d1 * (centroid.x - self.deg3Start.x)
 
         d2 = math.sqrt((self.deg3End.x - centroid.x)**2 + (self.deg3End.y - centroid.y)**2)
-        radius2 = d2 - radius
-        a2 = (radius2**2 - (d2)**2 + d2**2) / (2*d2)
-        h2 = math.sqrt((d2)**2 - (d2 - a2)**2)
+        a2 = (radius**2 - (2*radius)**2 + d2**2) / (2*d2)
+        h2 = math.sqrt((2*radius)**2 - (d2 - a2)**2)
         x00 = self.deg3End.x + a2/d2 * (centroid.x - self.deg3End.x)
         y00 = self.deg3End.y + a2/d2 * (centroid.y - self.deg3End.y)
         circle3_x = x00 - h2/d2 * (centroid.y - self.deg3End.y)
         circle3_y = y00 + h2/d2 * (centroid.x - self.deg3End.x)
         circle4_x = x00 + h2/d2 * (centroid.y - self.deg3End.y)
         circle4_y = y00 - h2/d2 * (centroid.x - self.deg3End.x)
-        
 
 
         # cal deg3 point pre or post 
@@ -289,14 +307,14 @@ class Arc(object):
     
         if self.deg3StartFlag == 0:
             if isTargetCirclePre:
-                self.startCircleTangency = circle(circle2_x, circle2_y, radius, 0)
+                self.startCircleTangency = circle(circle2_x, circle2_y, radius1, 0)
             else:
-                self.startCircleTangency = circle(circle1_x, circle1_y, radius, 0)
+                self.startCircleTangency = circle(circle1_x, circle1_y, radius1, 0)
         else:
             if not isTargetCirclePre:
-                self.startCircleTangency = circle(circle2_x, circle2_y, radius, 0)
+                self.startCircleTangency = circle(circle2_x, circle2_y, radius1, 0)
             else:
-                self.startCircleTangency = circle(circle1_x, circle1_y, radius, 0)
+                self.startCircleTangency = circle(circle1_x, circle1_y, radius1, 0)
 
         # end circle
         end_target_x = circle3_x - self.apollonisCircle.center_x
@@ -306,16 +324,20 @@ class Arc(object):
         isTargetCirclePre = self.checkPre(end_target_x, end_target_y, end_comp_x, end_comp_y)
         if self.deg3EndFlag == 0:
             if isTargetCirclePre:
-                self.endCircleTangency = circle(circle4_x, circle4_y, radius, 0)
+                self.endCircleTangency = circle(circle4_x, circle4_y, radius2, 0)
             else:
-                self.endCircleTangency = circle(circle3_x, circle3_y, radius, 0)
+                self.endCircleTangency = circle(circle3_x, circle3_y, radius2, 0)
         else:
             if not isTargetCirclePre:
-                self.endCircleTangency = circle(circle4_x, circle4_y, radius, 0)
+                self.endCircleTangency = circle(circle4_x, circle4_y, radius2, 0)
             else:
-                self.endCircleTangency = circle(circle3_x, circle3_y, radius, 0)
+                self.endCircleTangency = circle(circle3_x, circle3_y, radius2, 0)
 
 
+    # def distributeOutsideDeg2Vertices(self, chain, centroid, radius):
+    #     # 求切点        
+
+    #     self.distributeDeg2Vertices(chain)
 
 
     def checkPre(self, target_x, target_y, comp_x, comp_y):

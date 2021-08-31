@@ -289,14 +289,14 @@ class Arc(object):
     
         if self.deg3StartFlag == 0:
             if isTargetCirclePre:
-                self.startCircleTangency = circle(circle2_x, circle2_y, radius, 0)
+                self.startCircleTangency = circle(circle2_x, circle2_y, radius1, 0)
             else:
-                self.startCircleTangency = circle(circle1_x, circle1_y, radius, 0)
+                self.startCircleTangency = circle(circle1_x, circle1_y, radius1, 0)
         else:
             if not isTargetCirclePre:
-                self.startCircleTangency = circle(circle2_x, circle2_y, radius, 0)
+                self.startCircleTangency = circle(circle2_x, circle2_y, radius1, 0)
             else:
-                self.startCircleTangency = circle(circle1_x, circle1_y, radius, 0)
+                self.startCircleTangency = circle(circle1_x, circle1_y, radius1, 0)
 
         # end circle
         end_target_x = circle3_x - self.apollonisCircle.center_x
@@ -306,14 +306,14 @@ class Arc(object):
         isTargetCirclePre = self.checkPre(end_target_x, end_target_y, end_comp_x, end_comp_y)
         if self.deg3EndFlag == 0:
             if isTargetCirclePre:
-                self.endCircleTangency = circle(circle4_x, circle4_y, radius, 0)
+                self.endCircleTangency = circle(circle4_x, circle4_y, radius2, 0)
             else:
-                self.endCircleTangency = circle(circle3_x, circle3_y, radius, 0)
+                self.endCircleTangency = circle(circle3_x, circle3_y, radius2, 0)
         else:
             if not isTargetCirclePre:
-                self.endCircleTangency = circle(circle4_x, circle4_y, radius, 0)
+                self.endCircleTangency = circle(circle4_x, circle4_y, radius2, 0)
             else:
-                self.endCircleTangency = circle(circle3_x, circle3_y, radius, 0)
+                self.endCircleTangency = circle(circle3_x, circle3_y, radius2, 0)
 
 
 

@@ -241,9 +241,8 @@ class Arc(object):
 
         # fomula https://blog.csdn.net/zx3517288/article/details/53326420
         d1 = math.sqrt((self.deg3Start.x - centroid.x)**2 + (self.deg3Start.y - centroid.y)**2)
-        radius1 = d1 - radius
-        a1 = (radius1**2 - (d1)**2 + d1**2) / (2*d1)
-        h1 = math.sqrt((d1)**2 - (d1 - a1)**2)
+        a1 = (radius**2 - (2*radius)**2 + d1**2) / (2*d1)
+        h1 = math.sqrt((2*radius)**2 - (d1 - a1)**2)
         x0 = self.deg3Start.x + a1/d1 * (centroid.x - self.deg3Start.x)
         y0 = self.deg3Start.y + a1/d1 * (centroid.y - self.deg3Start.y)
         circle1_x = x0 - h1/d1 * (centroid.y - self.deg3Start.y)
@@ -252,16 +251,14 @@ class Arc(object):
         circle2_y = y0 - h1/d1 * (centroid.x - self.deg3Start.x)
 
         d2 = math.sqrt((self.deg3End.x - centroid.x)**2 + (self.deg3End.y - centroid.y)**2)
-        radius2 = d2 - radius
-        a2 = (radius2**2 - (d2)**2 + d2**2) / (2*d2)
-        h2 = math.sqrt((d2)**2 - (d2 - a2)**2)
+        a2 = (radius**2 - (2*radius)**2 + d2**2) / (2*d2)
+        h2 = math.sqrt((2*radius)**2 - (d2 - a2)**2)
         x00 = self.deg3End.x + a2/d2 * (centroid.x - self.deg3End.x)
         y00 = self.deg3End.y + a2/d2 * (centroid.y - self.deg3End.y)
         circle3_x = x00 - h2/d2 * (centroid.y - self.deg3End.y)
         circle3_y = y00 + h2/d2 * (centroid.x - self.deg3End.x)
         circle4_x = x00 + h2/d2 * (centroid.y - self.deg3End.y)
         circle4_y = y00 - h2/d2 * (centroid.x - self.deg3End.x)
-        
 
 
         # cal deg3 point pre or post 
@@ -316,6 +313,10 @@ class Arc(object):
                 self.endCircleTangency = circle(circle3_x, circle3_y, radius, 0)
 
 
+    # def distributeOutsideDeg2Vertices(self, chain, centroid, radius):
+    #     # 求切点        
+
+    #     self.distributeDeg2Vertices(chain)
 
 
     def checkPre(self, target_x, target_y, comp_x, comp_y):

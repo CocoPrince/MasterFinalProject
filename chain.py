@@ -58,43 +58,28 @@ class WrapperChain(object):
 
 
     # calculate the intersection of locateCircle and apollonisCircle
-    def calLocateIntersection(self, centroid):
+    def calLocateIntersection(self):
         x = self.locateCircleCenter[0]   # center of locateCircle
         y = self.locateCircleCenter[1]   
         R = self.locateCircleRadius      # radius of locateCircle
-        if self.threeSectionArc is not None and self.threeSectionArc.apollonisCircle is not None:
-            a = self.threeSectionArc.apollonisCircle.center_x   # center of apollonisCircle
-            b = self.threeSectionArc.apollonisCircle.center_y
-            S = self.threeSectionArc.apollonisCircle.radius      # radius of apollonisCircle
-            d = math.sqrt((abs(a - x)) ** 2 + (abs(b - y)) ** 2)    
-            A = (R ** 2 - S ** 2 + d ** 2) / (2 * d)
-            h = math.sqrt(abs(R ** 2 - A ** 2))
-            x2 = x + A * (a - x) / d
-            y2 = y + A * (b - y) / d
-            x3 = round(x2 - h * (b - y) / d, 2)
-            y3 = round(y2 + h * (a - x) / d, 2)
-            x4 = round(x2 + h * (b - y) / d, 2)
-            y4 = round(y2 - h * (a - x) / d, 2)
-            c1 = [x3, y3]
-            c2 = [x4, y4]
-
-            
-        else:
-            x3 = x + math.cos(math.pi / 2) * (centroid.x - x) - math.sin(math.pi / 2) * (centroid.y - y)
-            y3 = y + math.sin(math.pi / 2) * (centroid.x - x) + math.cos(math.pi / 2) * (centroid.y - y)
-            
-            x4 = x + math.cos(math.pi / 2) * (centroid.x - x) + math.sin(math.pi / 2) * (centroid.y - y)
-            y4 = y - math.sin(math.pi / 2) * (centroid.x - x) + math.cos(math.pi / 2) * (centroid.y - y)
-
-            ratio = R / math.sqrt((centroid.x - x)**2 + (centroid.y - y)**2)
-            x3 = (x3 - x) * ratio + x
-            y3 = (y3 - y) * ratio + y
-            x4 = (x4 - x) * ratio + x
-            y4 = (y4 - y) * ratio + y
-
+        # if self.threeSectionArc.apollonisCircle is not None:
+        a = self.threeSectionArc.apollonisCircle.center_x   # center of apollonisCircle
+        b = self.threeSectionArc.apollonisCircle.center_y
+        S = self.threeSectionArc.apollonisCircle.radius      # radius of apollonisCircle
+        d = math.sqrt((abs(a - x)) ** 2 + (abs(b - y)) ** 2)    
+        A = (R ** 2 - S ** 2 + d ** 2) / (2 * d)
+        h = math.sqrt(abs(R ** 2 - A ** 2))
+        x2 = x + A * (a - x) / d
+        y2 = y + A * (b - y) / d
+        x3 = round(x2 - h * (b - y) / d, 2)
+        y3 = round(y2 + h * (a - x) / d, 2)
+        x4 = round(x2 + h * (b - y) / d, 2)
+        y4 = round(y2 - h * (a - x) / d, 2)
         c1 = [x3, y3]
         c2 = [x4, y4]
+
         return c1, c2
+
     def getSmallerFace(self, faceCentroidDict, centroidRadiusDict):
         centroid0 = faceCentroidDict[self.incidentFacesOfChain[0].identifier]
         radius0 = centroidRadiusDict[centroid0.identifier]

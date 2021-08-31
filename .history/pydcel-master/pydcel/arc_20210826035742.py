@@ -261,7 +261,6 @@ class Arc(object):
         circle3_y = y00 + h2/d2 * (centroid.x - self.deg3End.x)
         circle4_x = x00 + h2/d2 * (centroid.y - self.deg3End.y)
         circle4_y = y00 - h2/d2 * (centroid.x - self.deg3End.x)
-        
 
 
         # cal deg3 point pre or post 
@@ -316,6 +315,10 @@ class Arc(object):
                 self.endCircleTangency = circle(circle3_x, circle3_y, radius, 0)
 
 
+    # def distributeOutsideDeg2Vertices(self, chain, centroid, radius):
+    #     # 求切点        
+
+    #     self.distributeDeg2Vertices(chain)
 
 
     def checkPre(self, target_x, target_y, comp_x, comp_y):

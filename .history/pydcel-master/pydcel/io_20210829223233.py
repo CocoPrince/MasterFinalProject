@@ -1,8 +1,4 @@
-# .method1_Grid
-# .method2_DivideCircle
-# .method3_ReinsertChain
-
-from .method3_ReinsertChain import vertex, hedge, face, DCEL
+from .gridmethod import vertex, hedge, face, DCEL
 #from sets import Set
 from .writegrid2ply import writegrid2ply
 from xml.dom.minidom import parse
