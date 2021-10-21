@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70218" creator="Ipe 7.2.24">
-<info created="D:20100909134504" modified="D:20210810203313"/>
+<info created="D:20100909134504" modified="D:20210914212625"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -618,8 +618,150 @@ h
 489.055 248.116 l
 505.118 243.161 l
 516.225 242.306 l
+528.87 245.382 l
 525.111 240.939 l
 516.225 242.306 l
 </path>
+<path stroke="darkorange">
+0 426.172 m
+-16 432 l
+</path>
+<path stroke="darkorange">
+59.8076 241.452 m
+-16 240 l
+</path>
+<path stroke="darkorange">
+157.379 212.744 m
+-16 208 l
+</path>
+<path stroke="darkorange">
+247.945 175.493 m
+-16 176 l
+</path>
+<path stroke="darkorange">
+172.417 108.508 m
+-16 96 l
+</path>
+<path stroke="darkorange">
+368.415 0 m
+368 -16 l
+</path>
+<path stroke="darkorange">
+193.435 305.36 m
+-16 304 l
+</path>
+<path stroke="darkorange">
+191.555 361.58 m
+192 432 l
+</path>
+<path stroke="darkorange">
+268.451 377.984 m
+272 432 l
+</path>
+<path stroke="darkorange">
+-16 432 m
+192 432 l
+</path>
+<path stroke="darkorange">
+192 432 m
+272 432 l
+</path>
+<path stroke="darkorange">
+448.728 421.216 m
+448 432 l
+</path>
+<path stroke="darkorange">
+272 432 m
+448 432 l
+</path>
+<path stroke="darkorange">
+483.416 409.084 m
+496 432 l
+</path>
+<path stroke="darkorange">
+448 432 m
+496 432 l
+</path>
+<path stroke="darkorange">
+441.209 309.291 m
+608 320 l
+</path>
+<path stroke="darkorange">
+496 432 m
+608 432 l
+</path>
+<path stroke="darkorange">
+608 432 m
+608 320 l
+</path>
+<path stroke="darkorange">
+595 267.084 m
+608 272 l
+</path>
+<path stroke="darkorange">
+608 320 m
+608 272 l
+</path>
+<path stroke="darkorange">
+528.87 245.382 m
+608 240 l
+</path>
+<path stroke="darkorange">
+608 240 m
+608 272 l
+</path>
+<path stroke="darkorange">
+368 -16 m
+608 -16 l
+</path>
+<path stroke="darkorange">
+608 -16 m
+608 240 l
+</path>
+<path stroke="darkorange">
+-16 96 m
+-16 -16 l
+</path>
+<path stroke="darkorange">
+-16 -16 m
+368 -16 l
+</path>
+<path stroke="darkorange">
+-16 96 m
+-16 176 l
+</path>
+<path stroke="darkorange">
+-16 176 m
+-16 208 l
+</path>
+<path stroke="darkorange">
+-16 208 m
+-16 240 l
+</path>
+<path stroke="darkorange">
+-16 240 m
+-16 304 l
+</path>
+<path stroke="darkorange">
+-16 304 m
+-16 432 l
+</path>
+<use name="mark/disk(sx)" pos="-16 432" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="192 432" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="272 432" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="448 432" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="496 432" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="608 432" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="608 320" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="608 272" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="608 240" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="608 -16" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="368 -16" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="-16 -16" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="-16 96" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="-16 176" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="-16 208" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="-16 240" size="normal" stroke="darkorange"/>
+<use name="mark/disk(sx)" pos="-16 304" size="normal" stroke="darkorange"/>
 </page>
 </ipe>

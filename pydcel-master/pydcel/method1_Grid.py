@@ -294,6 +294,7 @@ class DCEL(object):
         optimal_area, max_roundness = self.calEqualiteral(face_vertices)
         stand_radius = math.sqrt(optimal_area/math.pi)
         radius = math.sqrt(real_area/optimal_area) * stand_radius
+        # radius = stand_radius
         return radius
 
 
@@ -579,8 +580,8 @@ class DCEL(object):
             
             optimal_area, max_roundness = self.calEqualiteral(face_vertices)
             
-            while (area > 1.5 * optimal_area) or (roundness < 0.435 * max_roundness): 
-            # while (roundness < 0.435 * max_roundness):
+            # while (area > 1.5 * optimal_area) or (roundness < 0.435 * max_roundness): 
+            while (roundness < 0.435 * max_roundness):
                 left_chain_vertices, right_chain_vertices = self.cal2WayChain(face_vertices, centroid, radius)
                 print("before")
                 print(left_chain_vertices)

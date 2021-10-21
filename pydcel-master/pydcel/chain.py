@@ -100,7 +100,10 @@ class WrapperChain(object):
         radius0 = centroidRadiusDict[centroid0.identifier]
         centroid1 = faceCentroidDict[self.incidentFacesOfChain[1].identifier]
         radius1 = centroidRadiusDict[centroid1.identifier]
-        return self.incidentFacesOfChain[0] if radius0 < radius1 else self.incidentFacesOfChain[1]
+        samllerFace = self.incidentFacesOfChain[0] if radius0 < radius1 else self.incidentFacesOfChain[1]
+        # biggerFace = self.incidentFacesOfChain[0] if samllerFace.identifier != self.incidentFacesOfChain[0].identifier else self.incidentFacesOfChain[1]
+        biggerFace = self.incidentFacesOfChain[0] if radius0 >= radius1 else self.incidentFacesOfChain[1]
+        return samllerFace, biggerFace
 
 
     def distributeInsideDeg2Chain(self):

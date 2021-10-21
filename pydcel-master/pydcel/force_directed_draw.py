@@ -187,7 +187,7 @@ class force_directed(object):
         self.handleRotateRepusive()
         self.updateCoordinates()
                 
-        print("total energy: ", currentEnergy)
+        # print("total energy: ", currentEnergy)
         self.lastTimeEnergy = currentEnergy
         return True
 
@@ -251,7 +251,7 @@ class force_directed(object):
                 angle = math.degrees(rotateRadian)
 
                 # small step
-                factor = 0.001
+                factor = 0.002
                 self.xDisDit[postCentroid.identifier] = self.xDisDit[postCentroid.identifier] + ((postCentroid.x-kCentroid.x)*math.cos(factor*rotateRadian) + (postCentroid.y-kCentroid.y)*math.sin(factor*rotateRadian)+kCentroid.x - postCentroid.x)
                 self.yDisDit[postCentroid.identifier] = self.yDisDit[postCentroid.identifier] + ((postCentroid.y-kCentroid.y)*math.cos(factor*rotateRadian) - (postCentroid.x-kCentroid.x)*math.sin(factor*rotateRadian)+kCentroid.y - postCentroid.y)
                 self.xDisDit[preCentroid.identifier] = self.xDisDit[preCentroid.identifier] + ((preCentroid.x-kCentroid.x)*math.cos(-factor*rotateRadian) + (preCentroid.y-kCentroid.y)*math.sin(-factor*rotateRadian)+kCentroid.x - preCentroid.x)
@@ -386,7 +386,7 @@ class force_directed(object):
                 idealDis = self.centroidRadiusDict.get(centroid.identifier)
                 total = total + (abs(dist) - idealDis) * (abs(dist) - idealDis)
                 # total = total + (abs(dist) - idealDis)
-                print(total)                               
+                # print(total)                               
             # check if the total energy is the minimum
             if last_time_total_energy != 0.0 and last_time_total_energy <= total:
                 print("\n")

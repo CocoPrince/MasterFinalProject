@@ -83,9 +83,22 @@ def datadict2dcel(datadict):
     D = DCEL()
 
     # create vertices for all points
+    x_max = 0
+    x_min = 10000
+    y_max = 0
+    y_min = 10000
+ 
     for v in datadict['coords']:
         dcel_v = D.createVertex(v[0], v[1], v[2])
         dcel_v.incidentFaces = vertices_faces.get(dcel_v.identifier)
+
+        # to check the vertices that we add by hand
+        x_max = x_max if x_max > v[0] else v[0]
+        x_min = x_min if x_min < v[0] else v[0]
+        y_max = y_max if y_max > v[1] else v[1]
+        y_min = y_min if y_min < v[1] else v[1]
+
+    D.onBoundary = [x_min, x_max, y_min, y_max]
 
     # create faces
     for f in range(len(datadict['faces'])):
@@ -217,7 +230,7 @@ def xml2ply(xml_path, ply_path):
         f.write("end_header\n")
 
         for v in vertexDict:
-            x_y = v.split("-")
+            x_y = v.split(";")
             x = float(x_y[0])
             y = float(x_y[1])
             f.write("{} {} {}\n".format(x, y, 0))
@@ -251,8 +264,8 @@ def xml2graph(path):
             coord_list = path.text.split('\n')
             for coord in coord_list:
                 if coord != '':
-                    x_y = coord.split(" ")
-                    vertex_tag = (x_y[0] + '-' + x_y[1])
+                    x_y = coord.split(" ")    
+                    vertex_tag = (x_y[0] + ';' + x_y[1])
                     coord_list_all.append(vertex_tag)
                     if len(vertex_list) != 0:
                         key = vertex_list[len(vertex_list)-1]
@@ -269,6 +282,8 @@ def xml2graph(path):
                     vertex_list.append(vertex_tag)
                     coord_index_dict[vertex_tag] = count
                     count += 1
+    # graph: record all the directions(neighbours) for each vertex]
+    print(len(graph))
     return graph, coord_list_all[0]
 
 
@@ -307,24 +322,28 @@ def check_big_loop(loop_list, loop_set, graph):
     for vertex_loop in loop_list:
         nerbor_count = 0
         inside_count = 0
+        if len(graph[vertex_loop]) <= 2:
+            continue
         for neibor_vertex in graph[vertex_loop]:
-            x_y = neibor_vertex.split('-')
+            x_y = neibor_vertex.split(';')
             if True == ray_tracing_method(float(x_y[0]), float(x_y[1]), loop_list) and neibor_vertex not in loop_set:
                 inside_count += 1
+                return False
             if neibor_vertex in loop_set:
                 nerbor_count += 1
-        if inside_count > 0 or nerbor_count > 2:
-            return False
+                if nerbor_count > 2:
+                    return False
     return True
 
-
+# check if a vertex is on the loop. 
+# When a vertex's degree is larger than 3, then check the third edge. If it is on the loop, then it is a big loop.
 def ray_tracing_method(x,y,poly):
     n = len(poly)
     inside = False
-    p1x_str,p1y_str = poly[0].split('-')
+    p1x_str,p1y_str = poly[0].split(';')
     p1x,p1y = float(p1x_str), float(p1y_str)
     for i in range(n+1):
-        p2x_str,p2y_str = poly[i % n].split('-')
+        p2x_str,p2y_str = poly[i % n].split(';')
         p2x,p2y = float(p2x_str), float(p2y_str)
         if y > min(p1y,p2y):
             if y <= max(p1y,p2y):
@@ -340,7 +359,7 @@ def ray_tracing_method(x,y,poly):
 def sort(loop_list):
     coords = []
     for vertex_loop in loop_list:
-        x_y = vertex_loop.split("-")
+        x_y = vertex_loop.split(";")
         coords.append((float(x_y[0]), float(x_y[1])))
     
     # 输入的多边形为二维数组(x, y)，多行两列，可以是二维列表，也可以是npumpy二维数组
@@ -395,5 +414,5 @@ def sort(loop_list):
     x_p = res[:, 0]
     y_p = res[:, 1]
     for x, y in zip(x_p, y_p):
-        result_list.append(str(x) + "-" + str(y))
+        result_list.append(str(x) + ";" + str(y))
     return result_list

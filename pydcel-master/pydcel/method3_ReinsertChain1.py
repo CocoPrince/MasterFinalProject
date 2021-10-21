@@ -8,6 +8,7 @@ from .force_directed_draw import *
 import queue
 from .chain import *
 from .arc import *
+import numpy as np
 
 '''---------------------------------------------------------------------
 data structure: DCEL
@@ -21,6 +22,8 @@ class vertex(object):
         self.incidentEdge = None    # one arbitrary edge that is incident to the vertex
         self.incidentFaces = set()   # all faces that are incident to the vertex
         self.incidentEdges = set()   # all edges that are incident to the vertex
+        self.isAddedByHand = False
+
        
         
     def setTopology(self, newIncedentEdge):
@@ -41,6 +44,7 @@ class hedge(object):
         self.incidentFace = None    # the face to its left
         self.next = None
         self.previous = None
+        self.isAddedByHand = False
 
     def setTopology(self, newOrigin, newTwin, newIncindentFace, newNext, newPrevious):
         self.origin = newOrigin
@@ -76,6 +80,7 @@ class face(object):
         self.identifier = identifier   # id ofthe face
         self.outerHedges = None      # all outer hedges of the face 
         self.innerHedges = None      # all inner hedges of the face
+        self.isAddedByHand = False
 
     def setTopology(self, newOuterHedges, newInnerHedges=None):
         self.outerHedges = newOuterHedges
@@ -113,6 +118,9 @@ class DCEL(object):
         self.apollonisRadiusList = []
         self.face_dict = {} # dictionary that finds faces by id
         self.edge_dict = {} # dictionary that finds hedges by id
+        self.onBoundary = [] # 0-x_min, 1-x_max, 2-y_min, 3-y_max
+        self.face_area = []
+        self.hedge_length = []
 
     def getNewId(self, L):
         if len(L) == 0:
@@ -286,29 +294,34 @@ class DCEL(object):
     # Calculate the area of the standard equilateral polygon with the same vertex number as the face(edge length = 1)
     def calEqualiteral(self, face_vertices):
         vertex_num = len(face_vertices) # The number of vertices in a face, determine the optimal area of the face
-        edge_length = 15 # Default length of each edge is 10
+        edge_length = 10 # Default length of each edge is 10
         area = edge_length**2 * vertex_num / (4 * math.tan(math.pi/vertex_num)) #formula
-        print('Equaliteral:', area)
+        # print('Equaliteral:', area)
         return area
     
     # Calculate the radius of the circle
-    def calCentroidAndRadius(self, face_vertices):
+    def calCentroidAndRadius(self, face_vertices, isCalRadius, isAddedByHand):
         centroid, real_area = self.calCentroid(face_vertices) # centroid of the circle is the same as the face 
+        
         optimal_area = self.calEqualiteral(face_vertices) # real_area: current area of the face, optimal_area: area of the equilateral polygon
+        if not isAddedByHand:
+            print(abs(real_area - optimal_area))
+            self.face_area.append(abs(real_area - optimal_area))
         stand_radius = math.pow(optimal_area/math.pi, 1/2) * 1 # The radius of a circle that is as large as the area of the equilateral polygon
-        radius = math.sqrt(real_area/optimal_area) * stand_radius # radius of this face's circle
+        # radius = math.sqrt(real_area/optimal_area) * stand_radius # radius of this face's circle
         radius = stand_radius
-        self.radiusList.append(radius)
+        if isCalRadius:
+            self.radiusList.append(radius)
         return centroid, radius
 
 
     # Record all the incident edges of a vertex
     # NOTE: Cannot use .twin, .previous or .next!!!
-    def getAllIncidentEdge(self, vertex): 
+    def getAllIncidentEdge(self, vertex, edge_dict): 
         edge_list = []   # All edges that incident to a vertex
         edge_identifier_set = vertex.incidentEdges  # identifier set of all incidentEdges
         for edge_identifier in edge_identifier_set:               
-            edge = self.edge_dict[edge_identifier]
+            edge = edge_dict[edge_identifier]
             edge_list.append(edge)
         return edge_list, edge_identifier_set
     
@@ -334,7 +347,7 @@ class DCEL(object):
     def getDestinationVerticesOnCircle(self, face_dict, vertex):
         destination_vertices = [] # the corresponding position for a vertex on the circle
         distinct_set = set()
-        for incident_face_id in vertex.incidentFaces: # for all incidientFace to a vertex 
+        for incident_face_id in vertex.faces: # for all incidientFace to a vertex 
             incident_face = face_dict[incident_face_id]
             if incident_face.identifier == "i":  # skip the infinite face
                 continue
@@ -388,6 +401,195 @@ class DCEL(object):
         return x_distance, y_distance
 
 
+
+    def findChain(self, vertexList, edge_dict):
+        chainList = []    # All chains that start from a deg3+ vertex and end at a deg3+ vertex
+        
+        q = queue.Queue() # store deg3+ vertices
+        
+        # find a start deg3+ vertex
+        for vertex in vertexList:
+            if len(vertex.incidentEdges) > 2:
+                # 
+                q.put(vertex)
+                
+        # find chain
+        TraveledVertexSet = set() # record if a vertex has been traveled
+        while not q.empty():
+            vertex = q.get()           
+
+            edge_list, edge_identifier_set = self.getAllIncidentEdge(vertex, edge_dict) 
+
+            for edge in edge_list:
+                chain = []     # one of the chain in chainList
+                chain.append(vertex) 
+                edge = edge.next    
+                nextVertex = edge.origin  
+                isTraveledChain = False      # # record if a chain has been traveled  
+                while len(nextVertex.incidentEdges) < 3:
+                    # TODO
+                    if nextVertex.identifier in TraveledVertexSet:
+                        isTraveledChain = True
+                        break
+                    chain.append(nextVertex)
+                    TraveledVertexSet.add(nextVertex.identifier)
+                    edge = edge.next
+                    nextVertex = edge.origin               
+                chain.append(nextVertex)
+                # TODO
+                if isTraveledChain is True:
+                    continue
+                wrapperChain = WrapperChain(chain, self.edge_dict) # class Wrapperchain
+                wrapperChain.geneChainId(len(chainList))
+                chainList.append(wrapperChain)
+                # print(chain) 
+        return chainList
+
+   
+
+    # build the dictionary of the chains, used to calculate the optimal distance between two deg3+ vertices
+    # the optimal distance is proportional to the number of deg2 vertices on the chain
+    # the optimal distance is used to determine the radius of positioning-circle for deg3+ vertices with infinit face
+    # key: deg3 vertex, value: all chains incident with this vertex
+    def buildDeg3ChainsDict(self, chainList):
+        deg3ChainDict = {} # a dict for deg3+ vertices
+        for wrapperchain in chainList:
+            keyDeg3Start = wrapperchain.chain[0] # start deg3+ vertex
+            keyDeg3End = wrapperchain.chain[-1]  # end deg3+ vertex
+
+            # calculate location circle of inside chain for outside deg3+
+            if 1 == wrapperchain.chainType:
+                incidentFace1 = wrapperchain.incidentFacesOfChain[0]
+                incidentFace2 = wrapperchain.incidentFacesOfChain[1]
+                centroid1 = self.faceCentroidDict[incidentFace1.identifier]
+                centroid2 = self.faceCentroidDict[incidentFace2.identifier]
+                radius1 = self.centroidRadiusDict[centroid1.identifier]
+                radius2 = self.centroidRadiusDict[centroid2.identifier]
+                arc = Arc(keyDeg3Start, keyDeg3End)
+
+                # if two faces have same number of vertices
+                vertexNumsIncidentFace1 = len(self.faceVerticesDict[incidentFace1.identifier].get("cur_vertices"))
+                vertexNumsIncidentFace2 = len(self.faceVerticesDict[incidentFace2.identifier].get("cur_vertices"))
+                if vertexNumsIncidentFace1 != vertexNumsIncidentFace2:
+
+                    arc.calApollonisCircle(centroid1, centroid2, radius1, radius2)
+
+                    apollonisCenterPoint = self.createVertexPure(arc.apollonisCircle.center_x, arc.apollonisCircle.center_y, 0)
+                    self.apollonisCenterList.append(apollonisCenterPoint)
+                    self.apollonisRadiusList.append(arc.apollonisCircle.radius)
+                    
+                    # TODO other properties of three section arc
+                    wrapperchain.setThreeSectionArc(arc)
+                # calculate location circle of inside chain for outside deg3+
+                if wrapperchain.deg3Type == 2:
+                    wrapperchain.calLocateCircleOfInsideChain(centroid1, centroid2, radius1, radius2)
+        
+            if keyDeg3Start not in deg3ChainDict:
+                deg3ChainDict[keyDeg3Start] = [] # value(a list of all incident chains)
+            deg3ChainDict[keyDeg3Start].append(wrapperchain)
+
+            if keyDeg3End not in deg3ChainDict:
+                deg3ChainDict[keyDeg3End] = []
+            deg3ChainDict[keyDeg3End].append(wrapperchain)
+        return deg3ChainDict
+                
+
+    # chain-->face-->centroid ————> k(centroid id) - v(chain)
+    # if we know a face, then we can know all its chains
+    def buildCentroidChainDict(self, chainList):
+        centroidChainDict = {} # k(centroid id) - v(chain)
+        for wrapperchain in chainList:
+            for incidentFace in wrapperchain.incidentFacesOfChain:
+                centroidKey = self.faceCentroidDict[incidentFace.identifier].identifier
+                if centroidKey not in centroidChainDict:
+                    centroidChainDict[centroidKey] = []
+                centroidChainDict[centroidKey].append(wrapperchain)
+        return centroidChainDict
+
+    
+    
+    # order of the vertex on the face
+    # 从0点开始出发，继续逆时针旋转，如果next在链上，则0为post，如果next不在链上，则0为pre
+    def calOrderOnFace(self, faceSmaller, wrapperChain):
+        face_vertices = [v for v in faceSmaller.loopOuterVertices()]
+        startDeg3 = wrapperChain.chain[0]
+        endDeg3 = wrapperChain.chain[-1]
+        # 重新组织face vertices, 使face vertices中的第一个点为startDeg3
+        splitIndex = 0
+        for vertex in face_vertices:
+            if startDeg3.identifier == vertex.identifier:
+                break
+            splitIndex += 1
+
+        nextVertexIdOnFace = face_vertices[(splitIndex + 1) % len(face_vertices)].identifier
+        if nextVertexIdOnFace == wrapperChain.chain[1].identifier:
+            return endDeg3, startDeg3
+        else:
+            return startDeg3, endDeg3
+        
+
+    # order of the intersections
+    def calOrderForIntersection(self, intersection1, intersection2, centroid):
+        dx1 = intersection1[0] - centroid.x
+        dy1 = intersection1[1] - centroid.y
+        dx2 = intersection2[0] - centroid.x
+        dy2 = intersection2[1] - centroid.y
+        angle1 = math.atan2(dy1, dx1)
+        angle1 = int(angle1 * 180/math.pi)
+        # print(angle1)
+        angle2 = math.atan2(dy2, dx2)
+        angle2 = int(angle2 * 180/math.pi)
+        # print(angle2)
+        included_angle = 0
+        # From the x-positive half axis, the centroid(line) at the front 
+        # Check which should rotate clockwise and which should counterclockwise
+        preIntersection = intersection1 if angle1 <= angle2 else intersection2
+        postIntersection = intersection1 if angle1 > angle2 else intersection2
+        if angle1*angle2 < 0:
+            included_angle = abs(angle1) + abs(angle2)
+            if included_angle > 180:
+                preIntersection = intersection1 if angle1 >= angle2 else intersection2
+                postIntersection = intersection1 if angle1 < angle2 else intersection2
+            
+        return preIntersection, postIntersection
+
+    def handleDeg3Vertex_outside(self, deg3ChainDict):
+        for kDeg3, vChainList in deg3ChainDict.items():
+            # only handle the outside deg3+ vertex
+            if len(kDeg3.incidentFaces) == len(kDeg3.incidentEdges):
+                continue
+
+            # 2 or more inside chains
+            xCoordSum = 0
+            yCoordSum = 0
+            count = 0
+            for wrapperChain in vChainList:
+                # TODO whether empty chain should be deal with
+                if wrapperChain.chainType == 2:
+                    continue
+                if wrapperChain.deg3Type == 1:
+                    continue
+                
+                smallerFace, biggerFace = wrapperChain.getSmallerFace(self.faceCentroidDict, self.centroidRadiusDict)
+                centroidSmaller = self.faceCentroidDict[smallerFace.identifier]
+                centroidBigger = self.faceCentroidDict[biggerFace.identifier]
+                preVertex, postVertex = self.calOrderOnFace(smallerFace, wrapperChain)
+                intersection1, intersection2 = wrapperChain.calLocateIntersection(centroidSmaller)
+                preIntersection, postIntersection = self.calOrderForIntersection(intersection1, intersection2, centroidBigger)
+                if kDeg3.identifier == preVertex.identifier:
+                    intersection = preIntersection
+                else:
+                    intersection = postIntersection   
+
+                # intersection = self.relateDeg3WithIntersection(kDeg3, intersection1, intersection2)
+                xCoordSum += intersection[0]
+                yCoordSum += intersection[1]
+                count += 1
+            
+            kDeg3.x = xCoordSum / count
+            kDeg3.y = yCoordSum / count
+
+        
                     
     '''------------------------------------------------------------------------------------
     Preserve the topology: not cross
@@ -395,7 +597,10 @@ class DCEL(object):
     # Check if the target location will break the topology
     def checkNewPosition(self, vertex, x_distance, y_distance, incident_edge_list, edge_identifier_set):
         # Temporarily modify the point coordinates, used to detect whether the topology is broken
-
+        
+        # if(vertex.identifier == 58):
+        #     print("烦死了。")
+        
         reset_x = vertex.x
         reset_y = vertex.y 
         vertex.x = x_distance + vertex.x
@@ -411,7 +616,8 @@ class DCEL(object):
                     p2 = edge.next.origin
                     p3 = incident_edge.origin
                     p4 = incident_edge.next.origin
-                   
+                    # if(p1.identifier == 56 or p1.identifier == 57):
+                    #     print("????????????????")
                 
                     count_set.add(p1.identifier)
                     count_set.add(p2.identifier)
@@ -461,7 +667,7 @@ class DCEL(object):
             centroid = self.faceCentroidDict.get(face.identifier)
             radius = self.centroidRadiusDict.get(centroid.identifier)
         else:
-            centroid, radius = self.calCentroidAndRadius(face_vertices)
+            centroid, radius = self.calCentroidAndRadius(face_vertices, True, face.isAddedByHand)
             self.faceCentroidDict[face.identifier] = centroid
             self.centroidFaceDict[centroid.identifier] = face
             self.centroidRadiusDict[centroid.identifier] = radius
@@ -501,35 +707,89 @@ class DCEL(object):
     '''------------------------------------------------------------------------------------
     Main function: handle face one by one
     ---------------------------------------------------------------------------------------'''
+    
+    # record the vertices that we add by hand
+    def calIsAddedByHand(self, vertex):
+        if vertex.x == self.onBoundary[0] or vertex.x == self.onBoundary[1] or vertex.y == self.onBoundary[2] or vertex.y == self.onBoundary[3]:
+            vertex.isAddedByHand = True
+            for hedgeId in vertex.incidentEdges:
+                hedge = self.edge_dict[hedgeId]
+                hedge.isAddedByHand = True
+                hedge.twin.isAddedByHand = True
+            for faceId in vertex.incidentFaces:
+                face = self.face_dict[faceId]
+                face.isAddedByHand = True
+
+    def calAveMaxMin(self, num_list):
+        total = 0
+        min = num_list[0]
+        max = num_list[0]
+        for num in num_list:
+            total += num
+            if num > max:
+                max = num
+            if num < min:
+                min = num
+        var = np.var(num_list)
+        return total / len(num_list), var, max, min
+    
     def handleFaces(self, switch):
         i = 1
         # gui = pydcel.dcelVis(self)  
-             
-        for repeat in range(2):
+
+        for repeat in range(1):
             edges = []
             distinct_edge = set()
-
             
             for face in self.faceList:
                 self.face_dict[face.identifier] = face
             for hedge in self.hedgeList:
                 self.edge_dict[hedge.identifier] = hedge
+            for vertex in self.vertexList:
+                self.calIsAddedByHand(vertex)
+            for hedge in self.hedgeList:
+                length = self.calDistance(hedge.origin, hedge.twin.origin)
+                if not hedge.isAddedByHand:
+                    self.hedge_length.append(length)
+                    # print(length)
+            ave, var, max, min = self.calAveMaxMin(self.hedge_length)
+            print("hedge length before optimize —— ave, var, max, min:", ave, var, max, min)
+            
+            
 
             #-------------------------------------------------------------------    
             # Traversal faces 1st time: calculate the centroids and radius of all faces
             # and calculate all the adjacent faces of this face(centroid graph)
             self.calEdgesOfCentroid(self.face_dict, distinct_edge, edges)
 
+            # calculate ave area, max area, min area before optimize
+            ave, var, max, min = self.calAveMaxMin(self.face_area)
+            print("real area before optimize —— ave, var, max, min：", ave, var, max, min)
+
+
             '''1. draw original map'''
             self.centroidEdges = edges          
-            gui = pydcel.dcelVis(self)  
+            gui = pydcel.dcelVis(self) 
+             
 
+            chainList = self.findChain(self.vertexList, self.edge_dict)
+            # print(chainList)
             
-           
+            # use force_directed approach to rearrange the centroid.  
+            # note:Initialize the centroid to arrange the processor
+            force_directed_draw = force_directed(self.centroidList, self.centroidRadiusDict, edges, self.centroidFaceDict)
+            force_directed_draw.setCentroidChainDict(self.buildCentroidChainDict(chainList))
+            isHandle = True
+            # force_directed_draw.handleRotateRepusive()
             for i in range(1):
+                while switch == 'on' and isHandle:
+                    
+                    # Rearrange the centroid
+                    isHandle = force_directed_draw.handler()
 
                 '''2. draw the map after rearranging the centroids use force-directed  method with rotation''' 
                 gui = pydcel.dcelVis(self)
+            
 
 
 
@@ -539,6 +799,9 @@ class DCEL(object):
             for face in self.faceList:
                 face_vertices = [v for v in face.loopOuterVertices()]
                 centroid = self.faceCentroidDict.get(face.identifier)
+                if face.isAddedByHand:
+                    centroid.isAddedByHand = True
+
                 radius = self.centroidRadiusDict.get(centroid.identifier)
 
                 face_vertices_dict = self.verticesSort(face_vertices) 
@@ -549,38 +812,116 @@ class DCEL(object):
 
             # Move point to target position
             for vertex in self.vertexList:
-                
-                edge_list, edge_identifier_set = self.getAllIncidentEdge(vertex)
-                destination_vertices = self.getDestinationVerticesOnCircle(self.face_dict, vertex)
+                if len(vertex.incidentEdges) < 3:
+                    continue
+                # edge_list, edge_identifier_set = self.getAllIncidentEdge(vertex, edge_dict)
+                # destination_vertices = self.getDestinationVerticesOnCircle(face_dict, vertex)
                 centroidsOfIncidentFace = []
+                # Find the centroids of the circle around the current deg3+ point
+                for faceIdentifier in vertex.incidentFaces:
+                    centroid = self.faceCentroidDict.get(faceIdentifier)
+                    centroidsOfIncidentFace.append(centroid)
+
+                
+                # ----------deg3+ inside
+                # move the deg3+ vertex into the ploygon formed by centroids of the around circle
+                if len(centroidsOfIncidentFace) < 3:
+                    continue
 
 
-                # # TODO: Check for crossovers
-                x_distance, y_distance = self.calNewPosition(vertex, destination_vertices)
-                # proportion = 0
-                # for i in range(1, 10):
-                #     if not self.checkNewPosition(vertex, x_distance * (i / 10), y_distance * (i / 10), edge_list, edge_identifier_set):
-                #         break
-                #     proportion = i / 10
-
-                # vertex.x = x_distance * proportion + vertex.x
-                # vertex.y = y_distance * proportion + vertex.y
-                # -------------------------
-                count = 0
-                while not self.checkNewPosition(vertex, x_distance, y_distance, edge_list, edge_identifier_set):
-                    x_distance = x_distance / 2
-                    y_distance = y_distance / 2
-                    count +=1
-                vertex.x = x_distance + vertex.x
-                vertex.y = y_distance + vertex.y
+                centroid_of_centroids, area_of_centroids = self.calCentroid(centroidsOfIncidentFace)
+        
+                vertex.x = centroid_of_centroids.x
+                vertex.y = centroid_of_centroids.y
+                # Use the centroids to calculate the attraction and repulsive force and move the current deg3+ point               
+                force_directed_draw.handle3DegVertex_inside(vertex, centroidsOfIncidentFace)
                 
 
-     
+            # ----------deg3+ outside
+            
+            deg3ChainDict = self.buildDeg3ChainsDict(chainList)
+            self.handleDeg3Vertex_outside(deg3ChainDict)
+
+          
+            # just use straight line to show the deg3+ vertices new locations
+            for wrapperchain in chainList:
+                first_deg2 = wrapperchain.chain[1]
+                if len(first_deg2.incidentEdges) > 2:
+                    continue
+                face = first_deg2.incidentFaces
+ 
+                xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
+                ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
+                xUnitDis = xdis / (len(wrapperchain.chain) - 1)
+                yUnitDis = ydis / (len(wrapperchain.chain) - 1)
+
+                multi = 1
+                for deg2 in wrapperchain.chain[1:-1]:                    
+                    deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
+                    deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
+                    multi += 1
+
+            '''3. draw the map after locating the inside and outside deg3+ vertices''' 
             gui = pydcel.dcelVis(self)
+            
+       
 
+            
+            for wrapperchain in chainList:
+                first_deg2 = wrapperchain.chain[1]
+                if len(first_deg2.incidentEdges) > 2:
+                    continue
+                face = list(first_deg2.incidentFaces)
 
+                if len(wrapperchain.chain) < 3:
+                    continue
+                # handle outside chain
+                if len(face) < 2:
+                    centroid = self.faceCentroidDict[face[0]] 
+                    radius = self.centroidRadiusDict[centroid.identifier]
+                    wrapperchain.distributeOutsideDeg2Chain(centroid, radius)
+                    continue
+                
+                # if two inside faces have the same number of vertices, we do not calculate apollonis circle,
+                # but use stright lines.
+                if len(self.faceVerticesDict[face[0]].get("cur_vertices")) == len(self.faceVerticesDict[face[1]].get("cur_vertices")):
+                    xdis = wrapperchain.chain[-1].x - wrapperchain.chain[0].x
+                    ydis = wrapperchain.chain[-1].y - wrapperchain.chain[0].y
+                    xUnitDis = xdis / (len(wrapperchain.chain) - 1)
+                    yUnitDis = ydis / (len(wrapperchain.chain) - 1)
 
+                    multi = 1
+                    for deg2 in wrapperchain.chain[1:-1]:                    
+                        deg2.x = wrapperchain.chain[0].x + multi * xUnitDis
+                        deg2.y = wrapperchain.chain[0].y + multi * yUnitDis
+                        multi += 1
+                    continue
+
+                wrapperchain.distributeInsideDeg2Chain()
+            
+            # real area statistic after optimize
+            self.face_area = []
+            for face in self.faceList:
+                face_vertices = [v for v in face.loopOuterVertices()] 
+                self.calCentroidAndRadius(face_vertices, False, face.isAddedByHand)
+            ave, var, max, min = self.calAveMaxMin(self.face_area)
+            print("real area after optimize —— ave, var, max, min：", ave, var, max, min)
+
+            # hedge length statistic after optimize
+            self.hedge_length = []
+            for hedge in self.hedgeList:
+                length = self.calDistance(hedge.origin, hedge.twin.origin)
+                if not hedge.isAddedByHand:
+                    self.hedge_length.append(length)
+                    print(length)
+            ave, var, max, min = self.calAveMaxMin(self.hedge_length)
+            print("hedge length after optimize —— ave, var, max, min:", ave, var, max, min)
+
+            '''4. draw the map after reinsert all the deg2 vertices on the chains with 3 arcs'''
+            # final result   
+            gui = pydcel.dcelVis(self)
         gui.mainloop()
+        
 
         
 

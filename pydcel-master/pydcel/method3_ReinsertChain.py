@@ -8,6 +8,7 @@ from .force_directed_draw import *
 import queue
 from .chain import *
 from .arc import *
+import numpy as np
 
 '''---------------------------------------------------------------------
 data structure: DCEL
@@ -21,6 +22,8 @@ class vertex(object):
         self.incidentEdge = None    # one arbitrary edge that is incident to the vertex
         self.incidentFaces = set()   # all faces that are incident to the vertex
         self.incidentEdges = set()   # all edges that are incident to the vertex
+        self.isAddedByHand = False
+
        
         
     def setTopology(self, newIncedentEdge):
@@ -41,6 +44,7 @@ class hedge(object):
         self.incidentFace = None    # the face to its left
         self.next = None
         self.previous = None
+        self.isAddedByHand = False
 
     def setTopology(self, newOrigin, newTwin, newIncindentFace, newNext, newPrevious):
         self.origin = newOrigin
@@ -76,6 +80,7 @@ class face(object):
         self.identifier = identifier   # id ofthe face
         self.outerHedges = None      # all outer hedges of the face 
         self.innerHedges = None      # all inner hedges of the face
+        self.isAddedByHand = False
 
     def setTopology(self, newOuterHedges, newInnerHedges=None):
         self.outerHedges = newOuterHedges
@@ -113,6 +118,10 @@ class DCEL(object):
         self.apollonisRadiusList = []
         self.face_dict = {} # dictionary that finds faces by id
         self.edge_dict = {} # dictionary that finds hedges by id
+        self.onBoundary = [] # 0-x_min, 1-x_max, 2-y_min, 3-y_max
+        self.face_area = []
+        self.hedge_length = []
+        self.roundness = []
 
     def getNewId(self, L):
         if len(L) == 0:
@@ -286,19 +295,24 @@ class DCEL(object):
     # Calculate the area of the standard equilateral polygon with the same vertex number as the face(edge length = 1)
     def calEqualiteral(self, face_vertices):
         vertex_num = len(face_vertices) # The number of vertices in a face, determine the optimal area of the face
-        edge_length = 10 # Default length of each edge is 10
+        edge_length = 5 # Default length of each edge is 10
         area = edge_length**2 * vertex_num / (4 * math.tan(math.pi/vertex_num)) #formula
-        print('Equaliteral:', area)
+        # print('Equaliteral:', area)
         return area
     
     # Calculate the radius of the circle
-    def calCentroidAndRadius(self, face_vertices):
+    def calCentroidAndRadius(self, face_vertices, isCalRadius, isAddedByHand):
         centroid, real_area = self.calCentroid(face_vertices) # centroid of the circle is the same as the face 
+        
         optimal_area = self.calEqualiteral(face_vertices) # real_area: current area of the face, optimal_area: area of the equilateral polygon
+        if not isAddedByHand:
+            print(abs(real_area - optimal_area))
+            self.face_area.append(abs(real_area - optimal_area))
         stand_radius = math.pow(optimal_area/math.pi, 1/2) * 1 # The radius of a circle that is as large as the area of the equilateral polygon
         # radius = math.sqrt(real_area/optimal_area) * stand_radius # radius of this face's circle
         radius = stand_radius
-        self.radiusList.append(radius)
+        if isCalRadius:
+            self.radiusList.append(radius)
         return centroid, radius
 
 
@@ -530,13 +544,13 @@ class DCEL(object):
         included_angle = 0
         # From the x-positive half axis, the centroid(line) at the front 
         # Check which should rotate clockwise and which should counterclockwise
-        preIntersection = intersection1 if angle1 > angle2 else intersection2
-        postIntersection = intersection1 if angle1 <= angle2 else intersection2
+        preIntersection = intersection1 if angle1 <= angle2 else intersection2
+        postIntersection = intersection1 if angle1 > angle2 else intersection2
         if angle1*angle2 < 0:
             included_angle = abs(angle1) + abs(angle2)
             if included_angle > 180:
-                preIntersection = intersection1 if angle1 < angle2 else intersection2
-                postIntersection = intersection1 if angle1 >= angle2 else intersection2
+                preIntersection = intersection1 if angle1 >= angle2 else intersection2
+                postIntersection = intersection1 if angle1 < angle2 else intersection2
             
         return preIntersection, postIntersection
 
@@ -557,11 +571,12 @@ class DCEL(object):
                 if wrapperChain.deg3Type == 1:
                     continue
                 
-                smallerFace = wrapperChain.getSmallerFace(self.faceCentroidDict, self.centroidRadiusDict)
-                centroid = self.faceCentroidDict[smallerFace.identifier]
+                smallerFace, biggerFace = wrapperChain.getSmallerFace(self.faceCentroidDict, self.centroidRadiusDict)
+                centroidSmaller = self.faceCentroidDict[smallerFace.identifier]
+                centroidBigger = self.faceCentroidDict[biggerFace.identifier]
                 preVertex, postVertex = self.calOrderOnFace(smallerFace, wrapperChain)
-                intersection1, intersection2 = wrapperChain.calLocateIntersection(centroid)
-                preIntersection, postIntersection = self.calOrderForIntersection(intersection1, intersection2, centroid)
+                intersection1, intersection2 = wrapperChain.calLocateIntersection(centroidSmaller)
+                preIntersection, postIntersection = self.calOrderForIntersection(intersection1, intersection2, centroidBigger)
                 if kDeg3.identifier == preVertex.identifier:
                     intersection = preIntersection
                 else:
@@ -653,7 +668,7 @@ class DCEL(object):
             centroid = self.faceCentroidDict.get(face.identifier)
             radius = self.centroidRadiusDict.get(centroid.identifier)
         else:
-            centroid, radius = self.calCentroidAndRadius(face_vertices)
+            centroid, radius = self.calCentroidAndRadius(face_vertices, True, face.isAddedByHand)
             self.faceCentroidDict[face.identifier] = centroid
             self.centroidFaceDict[centroid.identifier] = face
             self.centroidRadiusDict[centroid.identifier] = radius
@@ -693,28 +708,98 @@ class DCEL(object):
     '''------------------------------------------------------------------------------------
     Main function: handle face one by one
     ---------------------------------------------------------------------------------------'''
+    
+    # record the vertices that we add by hand
+    def calIsAddedByHand(self, vertex):
+        if vertex.x == self.onBoundary[0] or vertex.x == self.onBoundary[1] or vertex.y == self.onBoundary[2] or vertex.y == self.onBoundary[3]:
+            vertex.isAddedByHand = True
+            for hedgeId in vertex.incidentEdges:
+                hedge = self.edge_dict[hedgeId]
+                hedge.isAddedByHand = True
+                hedge.twin.isAddedByHand = True
+            for faceId in vertex.incidentFaces:
+                face = self.face_dict[faceId]
+                face.isAddedByHand = True
+
+    # calculate the centroid of a face (polygon)
+    def calAllCentroid(self, face_vertices):
+        x = 0
+        y = 0
+        totalArea = 0
+        eachArea = 0
+        n = len(face_vertices)
+        for i in range(n):
+            eachArea = self.calArea(face_vertices[i], face_vertices[(i + 1) % n]) # A triangle formed by two vertices and the origin
+            x += (face_vertices[i].x + face_vertices[(i + 1) % n].x)*eachArea # The centroid divided by 3 for each step is dealt with at the end
+            y += (face_vertices[i].y + face_vertices[(i + 1) % n].y)*eachArea
+            totalArea += eachArea # total area of the face
+        x = x / (totalArea * 3) #the coordinate for the centroid of the face
+        y = y / (totalArea * 3)
+        centroid = self.createVertexPure(round(x, 3), round(y, 3), 0)
+        return centroid, abs(totalArea)
+
+    def calRoundness(self, face_vertices):
+        centroid, area = self.calAllCentroid(face_vertices)
+        perimeter = self.calPerimeter(face_vertices)
+        roundness = 4 * math.pi * area / perimeter**2
+        return roundness
+
+    def calAveMaxMin(self, num_list):
+        total = 0
+        min = num_list[0]
+        max = num_list[0]
+        for num in num_list:
+            total += num
+            if num > max:
+                max = num
+            if num < min:
+                min = num
+        var = np.var(num_list)
+        return total / len(num_list), var, max, min
+    
     def handleFaces(self, switch):
         i = 1
         # gui = pydcel.dcelVis(self)  
-             
+
         for repeat in range(1):
             edges = []
             distinct_edge = set()
-
             
             for face in self.faceList:
                 self.face_dict[face.identifier] = face
+                face_vertices = [v for v in face.loopOuterVertices()]
+                self.roundness.append(self.calRoundness(face_vertices))
             for hedge in self.hedgeList:
                 self.edge_dict[hedge.identifier] = hedge
+            for vertex in self.vertexList:
+                self.calIsAddedByHand(vertex)
+            for hedge in self.hedgeList:
+                length = self.calDistance(hedge.origin, hedge.twin.origin)
+                if not hedge.isAddedByHand:
+                    self.hedge_length.append(length)
+                    # print(length)
+            ave, var, max, min = self.calAveMaxMin(self.hedge_length)
+            print("hedge length before optimize —— ave, var, max, min:", ave, var, max, min)
+
+            ave, var, max, min = self.calAveMaxMin(self.roundness)
+            print("roundness before optimize —— ave, var, max, min:", ave, var, max, min)
+            
+            
 
             #-------------------------------------------------------------------    
             # Traversal faces 1st time: calculate the centroids and radius of all faces
             # and calculate all the adjacent faces of this face(centroid graph)
             self.calEdgesOfCentroid(self.face_dict, distinct_edge, edges)
 
+            # calculate ave area, max area, min area before optimize
+            ave, var, max, min = self.calAveMaxMin(self.face_area)
+            print("real area before optimize —— ave, var, max, min：", ave, var, max, min)
+
+
             '''1. draw original map'''
             self.centroidEdges = edges          
-            gui = pydcel.dcelVis(self)  
+            gui = pydcel.dcelVis(self) 
+             
 
             chainList = self.findChain(self.vertexList, self.edge_dict)
             # print(chainList)
@@ -733,6 +818,7 @@ class DCEL(object):
 
                 '''2. draw the map after rearranging the centroids use force-directed  method with rotation''' 
                 gui = pydcel.dcelVis(self)
+            
 
 
 
@@ -742,6 +828,9 @@ class DCEL(object):
             for face in self.faceList:
                 face_vertices = [v for v in face.loopOuterVertices()]
                 centroid = self.faceCentroidDict.get(face.identifier)
+                if face.isAddedByHand:
+                    centroid.isAddedByHand = True
+
                 radius = self.centroidRadiusDict.get(centroid.identifier)
 
                 face_vertices_dict = self.verticesSort(face_vertices) 
@@ -803,7 +892,7 @@ class DCEL(object):
 
             '''3. draw the map after locating the inside and outside deg3+ vertices''' 
             gui = pydcel.dcelVis(self)
-
+            
        
 
             
@@ -839,11 +928,35 @@ class DCEL(object):
 
                 wrapperchain.distributeInsideDeg2Chain()
             
+            # real area statistic after optimize
+            self.face_area = []
+            self.roundness = []
+            for face in self.faceList:
+                face_vertices = [v for v in face.loopOuterVertices()] 
+                self.calCentroidAndRadius(face_vertices, False, face.isAddedByHand)
+                self.roundness.append(self.calRoundness(face_vertices))
+            ave, var, max, min = self.calAveMaxMin(self.face_area)
+            print("real area after optimize —— ave, var, max, min：", ave, var, max, min)
+
+            ave, var, max, min = self.calAveMaxMin(self.roundness)
+            print("roundness after optimize —— ave, var, max, min:", ave, var, max, min)
+
+
+            # hedge length statistic after optimize
+            self.hedge_length = []
+            for hedge in self.hedgeList:
+                length = self.calDistance(hedge.origin, hedge.twin.origin)
+                if not hedge.isAddedByHand:
+                    self.hedge_length.append(length)
+                    # print(length)
+            ave, var, max, min = self.calAveMaxMin(self.hedge_length)
+            print("hedge length after optimize —— ave, var, max, min:", ave, var, max, min)
+
             '''4. draw the map after reinsert all the deg2 vertices on the chains with 3 arcs'''
             # final result   
             gui = pydcel.dcelVis(self)
-
         gui.mainloop()
+        
 
         
 

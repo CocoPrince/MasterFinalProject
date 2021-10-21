@@ -76,7 +76,8 @@ class dcelVis(Tk):
         return (x,y)
 
     def print_help(self, event):
-        print(HELP)
+        pass
+        # print(HELP)
 
     def print_dcel(self, event):
         print((self.D))
@@ -117,8 +118,8 @@ class dcelVis(Tk):
         self.draw_dcel_hedges()
         self.draw_dcel_vertices()
         self.draw_centroid()
-        self.draw_vertex_on_circle()
-        self.draw_centroid_edges()
+        # self.draw_vertex_on_circle()
+        # self.draw_centroid_edges()
         # self.draw_arc()
         
         self.hedge_it = self.type_iterator('hedge')
@@ -181,7 +182,7 @@ class dcelVis(Tk):
         print(e)
         self.draw.deleteItems(self.highlight_cache)
 
-        i1 = self.draw_dcel_face(e.incidentFace, fill='#ffc0bf', outline='')
+        i1 = self.draw_dcel_face(e.incidentFace, fill='white', outline='')
         i4 = self.draw_dcel_vertex(e.origin, size=7, fill='red', outline='')
         i2 = self.draw_dcel_hedge(e.__next__, arrow=LAST, arrowshape=(7,6,2), width=2, fill='#1a740c')
         i3 = self.draw_dcel_hedge(e.previous, arrow=LAST, arrowshape=(7,6,2), width=2, fill='#0d4174')
@@ -203,13 +204,15 @@ class dcelVis(Tk):
         print(f)
         self.draw.deleteItems(self.highlight_cache)
 
-        i1 = self.draw_dcel_face(f, fill='#ffc0bf', outline='')
+        i1 = self.draw_dcel_face(f, fill='white', outline='')
         i2 = self.draw_dcel_hedge(f.outerComponent, arrow=LAST, arrowshape=(7,6,2), width=3, fill='red')
 
         self.highlight_cache = [i1,i2]
 
     def draw_dcel_vertices(self):
         for v in self.D.vertexList:
+            if v.isAddedByHand:
+                continue
             self.bgdcel_cache.append(self.draw_dcel_vertex(v))
             # self.bgdcel_cache.append(self.draw_dcel_id_text(v, fill='green', text="v"+str(v.identifier)))
 
@@ -217,12 +220,14 @@ class dcelVis(Tk):
         options = {'size':5, 'fill':'red', 'outline':''}
         count = 1
         for v, radius in zip(self.D.centroidList, self.D.radiusList):
+            if v.isAddedByHand:
+                continue
             self.bgdcel_cache.append(self.draw_dcel_vertex(v, size=2, fill='black', outline = ''))
             self.bgdcel_cache.append(self.draw_dcel_circle(v, size=radius, fill='', outline = 'green'))
             self.bgdcel_cache.append(self.draw_dcel_id_text(v, fill='black', text="v"+str(v.identifier)))
 
-            text_str = "coord: v%s(%s, %s), radius:%d" % (str(v.identifier), str(round(v.x, 1)), str(round(v.y, 1)), radius)
-            self.bgdcel_cache.append(self.draw_dcel_text(v, fill='black', size=15 * count, text=text_str))
+            # text_str = "coord: v%s(%s, %s), radius:%d" % (str(v.identifier), str(round(v.x, 1)), str(round(v.y, 1)), radius)
+            # self.bgdcel_cache.append(self.draw_dcel_text(v, fill='black', size=15 * count, text=text_str))
             count += 1
 
     def draw_arc(self):
@@ -263,8 +268,10 @@ class dcelVis(Tk):
 
     def draw_dcel_hedges(self):
         for e in self.D.hedgeList:
+            if e.isAddedByHand:
+                continue
             self.bgdcel_cache.append(self.draw_dcel_hedge(e))
-                
+            
 
     def draw_dcel_hedge(self, e, **options):
         if options == {}:
@@ -298,7 +305,7 @@ class dcelVis(Tk):
             return
 
         if options == {}:
-            options = {'fill':'#eeeeee', 'outline':''}
+            options = {'fill':'#ffffff', 'outline':''}
         
         vlist = [ (v.x, v.y) for v in f.loopOuterVertices() ]
         return self.draw.polygon(vlist, **options)
